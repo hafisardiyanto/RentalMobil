@@ -94,6 +94,11 @@ class AdminController extends Controller
         return redirect()->route('admin.cars.index')->with('success', 'Mobil baru berhasil ditambahkan!');
     }
 
+    public function show(Car $car)
+    {
+        return view('admin.cars.show', compact('car'));
+    }
+
     public function edit(Car $car)
     {
         return view('admin.cars.edit', compact('car'));
