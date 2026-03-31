@@ -52,20 +52,35 @@
 
         <div style="margin-bottom: 2rem;">
             <label style="display: block; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-main);">Gambar Saat Ini</label>
-            <div style="margin-bottom: 1rem;">
-                <img src="{{ $car->image_path }}" alt="Foto Mobil" style="width: 200px; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid #E2E8F0;">
+            <div style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                @if(is_array($car->images) && count($car->images) > 0)
+                    @foreach($car->images as $img)
+                        <div style="padding: 0.5rem; border: 1px solid #E2E8F0; border-radius: 8px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px;">
+                            <img src="{{ $img }}" alt="Foto Mobil" style="width: 100%; height: 100px; object-fit: cover; border-radius: 4px;">
+                            <span style="margin-top: 0.5rem; font-size: 0.75rem; color: #64748B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: inline-block; text-align: center;">Gambar Tersimpan</span>
+                        </div>
+                    @endforeach
+                @elseif($car->image_path)
+                    <div style="padding: 0.5rem; border: 1px solid #E2E8F0; border-radius: 8px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px;">
+                        <img src="{{ $car->image_path }}" alt="Foto Mobil" style="width: 100%; height: 100px; object-fit: cover; border-radius: 4px;">
+                        <span style="margin-top: 0.5rem; font-size: 0.75rem; color: #64748B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: inline-block; text-align: center;">Gambar Tersimpan</span>
+                    </div>
+                @else
+                    <span style="color: #64748B;">Belum ada gambar</span>
+                @endif
             </div>
-            <label style="display: block; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-main);">Ganti Foto Kendaraan (Opsional)</label>
+            
+            <label style="display: block; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-main);">Ganti Foto Kendaraan (Opsional, Bisa pilih > 1 foto)</label>
             <div style="border: 2px dashed #CBD5E1; padding: 2rem; border-radius: 8px; text-align: center; background: #F8FAFC; position: relative;">
-                <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/jpg" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; z-index: 10;">
+                <input type="file" name="images[]" id="imageInput" multiple accept="image/jpeg,image/png,image/jpg" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; z-index: 10;">
                 <div id="uploadPlaceholder" style="color: #64748B;">
                     <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">📸</span>
                     <strong>Klik / Tarik file Foto ke sini untuk mengganti</strong><br>
-                    <span style="font-size: 0.85rem;">Maksimal 2MB (JPG, PNG)</span>
+                    <span style="font-size: 0.85rem;">Maksimal 2MB per file (JPG, PNG)</span>
                 </div>
-                <img id="imagePreview" src="" alt="Preview Foto" style="display: none; max-width: 100%; max-height: 200px; margin: 0 auto; border-radius: 8px; position: relative; z-index: 5;">
+                <div id="previewContainer" style="display: none; gap: 1rem; flex-wrap: wrap; justify-content: center; position: relative; z-index: 5; margin-top: 1rem;"></div>
             </div>
-            @error('image') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
+            @error('images') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
         </div>
 
         <div style="display: flex; gap: 1rem;">
@@ -78,19 +93,37 @@
 
 <script>
     document.getElementById('imageInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('imagePreview').src = e.target.result;
-                document.getElementById('imagePreview').style.display = 'block';
-                document.getElementById('uploadPlaceholder').style.display = 'none';
-            }
-            reader.readAsDataURL(file);
+        const previewContainer = document.getElementById('previewContainer');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        previewContainer.innerHTML = '';
+        
+        if (this.files.length > 0) {
+            uploadPlaceholder.style.display = 'none';
+            previewContainer.style.display = 'flex';
+            
+            Array.from(this.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.style = 'padding: 0.5rem; border: 1px solid #E2E8F0; border-radius: 8px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px; z-index: 5; position: relative;';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style = 'width: 100%; height: 100px; object-fit: cover; border-radius: 4px;';
+                    
+                    const label = document.createElement('span');
+                    label.innerText = file.name;
+                    label.style = 'margin-top: 0.5rem; font-size: 0.75rem; color: #64748B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: inline-block; text-align: center;';
+                    
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(label);
+                    previewContainer.appendChild(wrapper);
+                }
+                reader.readAsDataURL(file);
+            });
         } else {
-            document.getElementById('imagePreview').src = '';
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('uploadPlaceholder').style.display = 'block';
+            previewContainer.style.display = 'none';
+            uploadPlaceholder.style.display = 'block';
         }
     });
 </script>

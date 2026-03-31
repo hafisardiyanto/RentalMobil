@@ -62,13 +62,22 @@ class AdminController extends Controller
             'year' => 'required|integer|min:2000|max:'.(date('Y') + 1),
             'price_per_day' => 'required|numeric|min:0',
             'is_available' => 'required|boolean',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('cars', 'public');
-            $imagePath = Storage::url($path);
+        $imagePaths = [];
+        $firstImagePath = null;
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $key => $file) {
+                $path = $file->store('cars', 'public');
+                $url = Storage::url($path);
+                $imagePaths[] = $url;
+                if ($key === 0) {
+                    $firstImagePath = $url;
+                }
+            }
         }
 
         Car::create([
@@ -77,7 +86,8 @@ class AdminController extends Controller
             'license_plate' => $validated['license_plate'],
             'year' => $validated['year'],
             'price_per_day' => $validated['price_per_day'],
-            'image_path' => $imagePath,
+            'image_path' => $firstImagePath,
+            'images' => $imagePaths,
             'is_available' => $validated['is_available'],
         ]);
 
@@ -98,18 +108,24 @@ class AdminController extends Controller
             'year' => 'required|integer|min:2000|max:'.(date('Y') + 1),
             'price_per_day' => 'required|numeric|min:0',
             'is_available' => 'required|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $imagePath = $car->image_path;
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($car->image_path) {
-                $oldPath = str_replace('/storage/', '', $car->image_path);
-                Storage::disk('public')->delete($oldPath);
+        $imagePaths = is_array($car->images) ? $car->images : [];
+        $firstImagePath = $car->image_path;
+
+        if ($request->hasFile('images')) {
+            // Append new images instead of replacing them
+            foreach ($request->file('images') as $key => $file) {
+                $path = $file->store('cars', 'public');
+                $url = Storage::url($path);
+                $imagePaths[] = $url;
+                
+                if (empty($firstImagePath) && count($imagePaths) === 1) {
+                    $firstImagePath = $url;
+                }
             }
-            $path = $request->file('image')->store('cars', 'public');
-            $imagePath = Storage::url($path);
         }
 
         $car->update([
@@ -118,7 +134,8 @@ class AdminController extends Controller
             'license_plate' => $validated['license_plate'],
             'year' => $validated['year'],
             'price_per_day' => $validated['price_per_day'],
-            'image_path' => $imagePath,
+            'image_path' => $firstImagePath,
+            'images' => $imagePaths,
             'is_available' => $validated['is_available'],
         ]);
 
@@ -127,9 +144,12 @@ class AdminController extends Controller
 
     public function destroy(Car $car)
     {
-        if ($car->image_path) {
-            $oldPath = str_replace('/storage/', '', $car->image_path);
-            Storage::disk('public')->delete($oldPath);
+        if (is_array($car->images)) {
+            foreach ($car->images as $img) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $img));
+            }
+        } elseif ($car->image_path) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $car->image_path));
         }
         $car->delete();
         return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil dihapus!');
