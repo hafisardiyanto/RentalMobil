@@ -1,0 +1,54 @@
+# Goal Description: Login Google & Pengiriman Password via Email
+
+Fitur ini memungkinkan pengguna untuk masuk (Login/Register) menggunakan akun Google. Jika pengguna pertama kali mendaftar via Google, sistem akan secara otomatis membuatkan password untuk akun mereka dan mengirimkan informasi tersebut ke email mereka menggunakan konfigurasi SMTP Gmail yang telah Anda siapkan.
+
+## User Review Required
+
+> [!IMPORTANT]
+> Konfigurasi SMTP di `.env` sudah terlihat benar (menggunakan Gmail App Password). Namun, untuk mengaktifkan Login Google, Anda harus menyiapkan **Google Client ID** dan **Google Client Secret** dari [Google Cloud Console](https://console.cloud.google.com/).
+
+## Proposed Changes
+
+### 1. Dependencies & Environment
+#### [MODIFY] `composer.json`
+- Menambahkan package `laravel/socialite` untuk menangani OAuth Google.
+#### [MODIFY] `.env`
+- Menambahkan placeholder untuk `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, dan `GOOGLE_REDIRECT_URL`.
+
+### 2. Database
+#### [NEW] `database/migrations/xxxx_xx_xx_add_google_id_to_users_table.php`
+- Menambahkan kolom `google_id` pada tabel `users` untuk menyimpan ID unik dari Google.
+
+### 3. Mail (SMTP)
+#### [NEW] `app/Mail/SendPasswordMail.php`
+- Membuat class Mailable untuk mengirimkan password yang digenerate otomatis ke email pengguna.
+#### [NEW] `resources/views/emails/password.blade.php`
+- Desain template email yang elegan untuk mengirimkan informasi password.
+
+### 4. Logic & Controllers
+#### [MODIFY] `config/services.php`
+- Mendaftarkan layanan `google` agar bisa digunakan oleh Socialite.
+#### [MODIFY] `app/Http/Controllers/AuthController.php`
+- Menambahkan method `redirectToGoogle()` untuk mengarahkan user ke halaman login Google.
+- Menambahkan method `handleGoogleCallback()` untuk memproses data dari Google, membuat user baru (jika belum ada), men-generate password, dan mengirim email.
+
+### 5. Routing & Views
+#### [MODIFY] `routes/web.php`
+- Menambahkan route untuk redirect ke Google dan callback-nya.
+#### [MODIFY] `resources/views/auth/login.blade.php`
+- Menambahkan tombol "Login with Google" yang mencolok dan premium.
+
+## Open Questions
+
+1. Apakah Anda sudah memiliki **Google Client ID** dan **Secret**? Jika belum, saya akan memberikan instruksi cara mendapatkannya.
+2. Apakah Anda ingin password yang di-generate memiliki format tertentu (misal: 10 karakter acak) atau format lainnya?
+
+## Verification Plan
+
+### Automated Tests
+- Menjalankan `php artisan tinker` untuk mengetes pengiriman email SMTP menggunakan konfigurasi Anda.
+
+### Manual Verification
+- Klik tombol "Login with Google".
+- Verifikasi user baru masuk ke database dengan `google_id`.
+- Verifikasi email terkirim ke kotak masuk (menggunakan Mailtrap atau inbox pribadi Anda).

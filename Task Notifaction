@@ -1,0 +1,10 @@
+# Task List: Google Login & Password Email
+
+- `[/]` Install `laravel/socialite`
+- `[ ]` Create migration for `google_id` in users table
+- `[ ]` Configure `config/services.php`
+- `[ ]` Create `SendPasswordMail` Mailable & Email template
+- `[ ]` Implement Google Login logic in `AuthController`
+- `[ ]` Add Google Login routes in `web.php`
+- `[ ]` Add "Login with Google" button in login view
+- `[ ]` Final Verification (Testing SMTP & OAuth)
