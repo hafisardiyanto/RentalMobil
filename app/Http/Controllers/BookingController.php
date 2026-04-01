@@ -7,9 +7,13 @@ use App\Models\Car;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+
+use App\Traits\WhatsappTrait;
 
 class BookingController extends Controller
 {
+    use WhatsappTrait;
     public function index()
     {
         $bookings = Booking::where('user_id', Auth::id())->with('car')->orderBy('id', 'desc')->get();
@@ -39,7 +43,7 @@ class BookingController extends Controller
         $days = $startDate->diffInDays($endDate) ?: 1; // Minimal 1 hari
         $totalPrice = $days * $car->price_per_day;
 
-        Booking::create([
+        $booking = Booking::create([
             'user_id' => Auth::id(),
             'car_id' => $car->id,
             'start_date' => $request->start_date,
@@ -48,6 +52,33 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('bookings.index')->with('success', 'Pemesanan Anda berhasil dikirim! Silakan tunggu konfirmasi admin.');
+        $adminWa = config('services.fonnte.admin_wa_number');
+        $fonnteToken = config('services.fonnte.token');
+        
+        // 1. Kirim Notifikasi via Fonnte API ke Admin
+        $notifMessage = "*[SISTEM RENTAL] PESANAN BARU MASUK*\n\n"
+            . "Halo Admin, ada pesanan baru dari pengguna aplikasi:\n\n"
+            . "👤 Nama: " . Auth::user()->name . "\n"
+            . "📞 No. WA: " . (Auth::user()->phone ?? 'Tidak Ada') . "\n"
+            . "🚗 Mobil: " . $car->brand . " " . $car->name . " (" . $car->license_plate . ")\n"
+            . "🗓️ Tanggal: " . $startDate->format('d M Y') . " s/d " . $endDate->format('d M Y') . " (" . $days . " Hari)\n"
+            . "💰 Total Harga: Rp " . number_format($totalPrice, 0, ',', '.') . "\n\n"
+            . "Harap periksa di Dashboard Web Mimin ya!";
+
+        $adminWa = config('services.fonnte.admin_wa_number');
+        $this->sendWhatsapp($adminWa, $notifMessage);
+
+        // 2. Persiapkan link WhatsApp Redirect untuk User
+        $waRedirectText = "Halo Admin RentalMobil,\n\n"
+            . "Saya ingin mengkonfirmasi pesanan saya dengan ID #" . $booking->id . " untuk penyewaan mobil *" . $car->brand . " " . $car->name . "*.\n\n"
+            . "Tgl Sewa: " . $startDate->format('d M Y') . " sampai " . $endDate->format('d M Y') . "\n"
+            . "Harga Total: Rp " . number_format($totalPrice, 0, ',', '.') . "\n\n"
+            . "Mohon arahannya untuk proses verifikasi dan pembayarannya. Terima kasih.";
+        
+        $adminWaFormatted = $this->formatNumber($adminWa);
+        $waUrl = 'https://api.whatsapp.com/send?phone=' . urlencode($adminWaFormatted) . '&text=' . urlencode($waRedirectText);
+
+        // Mengembalikan view sukses (transisi 3 detik sebelum redirect)
+        return view('bookings.success', compact('waUrl', 'booking'));
     }
 }

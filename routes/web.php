@@ -13,10 +13,15 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'processLogin']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'processRegister']);
+    Route::get('/register/success', [AuthController::class, 'showRegisterSuccess'])->name('register.success');
 
     // Google Login
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+    // Forgot Password
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.email');
 });
 
 Route::middleware('auth')->group(function () {

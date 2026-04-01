@@ -19,12 +19,15 @@
                 @enderror
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: 2rem;">
                 <label for="password">Kata Sandi</label>
                 <input type="password" id="password" name="password" class="form-control" required placeholder="Masukkan kata sandi">
                 @error('password')
                     <span class="error-msg">{{ $message }}</span>
                 @enderror
+                <div style="text-align: right; margin-top: 0.5rem;">
+                    <a href="{{ route('password.request') }}" style="font-size: 0.85rem; color: var(--primary); text-decoration: none;">Lupa Password?</a>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary auth-btn" style="margin-bottom: 1rem;">Masuk</button>

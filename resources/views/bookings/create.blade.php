@@ -110,6 +110,9 @@
             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem; padding: 1.2rem;">
                 Konfirmasi Sewa Sekarang
             </button>
+            <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: #64748B; line-height: 1.5;">
+                <span style="font-size: 1rem;">💬</span> Setelah menekan tombol ini, pesanan Anda akan dicatat ke dalam sistem dan Anda akan diarahkan langsung ke aplikasi WhatsApp untuk berkomunikasi dengan Pemilik Rental.
+            </p>
         </form>
     </div>
 </div>

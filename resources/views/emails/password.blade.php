@@ -15,9 +15,9 @@
         <div class="header">Selamat Datang di RentalMobil!</div>
         <div class="content">
             Halo <strong>{{ $user->name }}</strong>,<br><br>
-            Terima kasih telah bergabung dengan RentalMobil menggunakan akun Google Anda. Berikut adalah password sementara yang dapat Anda gunakan untuk login secara manual:
+            Selamat bergabung dengan RentalMobil! Akun Anda telah berhasil dibuat. Berikut adalah ringkasan akun Anda untuk login secara manual:
             <div class="password-box">{{ $password }}</div>
-            Simpan password ini dengan aman. Anda dapat mengubahnya kapan saja melalui halaman profil Anda.
+            Simpan informasi ini dengan aman. Anda dapat mengubah password Anda kapan saja melalui halaman profil.
         </div>
         <div class="footer">
             &copy; {{ date('Y') }} RentalMobil. Perjalanan Mewah Mulai dari Sini.

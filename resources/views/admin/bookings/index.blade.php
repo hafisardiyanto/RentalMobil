@@ -25,6 +25,7 @@
                 <td>
                     <div class="customer-name">{{ $booking->user->name }}</div>
                     <div class="customer-email">{{ $booking->user->email }}</div>
+                    <div style="font-size: 0.85rem; color: #059669; font-weight: 600;">📞 {{ $booking->user->phone ?? '-' }}</div>
                 </td>
                 <td>
                     <div class="car-info">{{ $booking->car->brand }} {{ $booking->car->name }}</div>

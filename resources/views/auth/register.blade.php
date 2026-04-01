@@ -19,10 +19,18 @@
                 @enderror
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: 2rem;">
                 <label for="email">Alamat Email</label>
                 <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" required placeholder="contoh@email.com">
                 @error('email')
+                    <span class="error-msg">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="phone">Nomor WhatsApp</label>
+                <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone') }}" required placeholder="Contoh: 08123456789">
+                @error('phone')
                     <span class="error-msg">{{ $message }}</span>
                 @enderror
             </div>

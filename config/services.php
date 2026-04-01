@@ -37,4 +37,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URL'),
     ],
 
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+        'admin_wa_number' => env('ADMIN_WA_NUMBER'),
+    ],
+
 ];
