@@ -139,3 +139,26 @@ footer {
 .animate-fade-in {
     animation: fadeInDown 0.6s ease-out forwards;
 }
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    nav {
+        padding: 1rem 5%;
+        flex-direction: column;
+        gap: 1rem;
+        position: static;
+    }
+
+    .nav-links {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    main {
+        padding-top: 20px;
+    }
+
+    .alert {
+        margin: 1rem 2%;
+    }
+}

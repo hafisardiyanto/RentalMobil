@@ -17,6 +17,9 @@
             Halo <strong>{{ $user->name }}</strong>,<br><br>
             Selamat bergabung dengan RentalMobil! Akun Anda telah berhasil dibuat. Berikut adalah ringkasan akun Anda untuk login secara manual:
             <div class="password-box">{{ $password }}</div>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ config('app.url') }}" style="background-color: #4F46E5; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">Masuk ke Website</a>
+            </div>
             Simpan informasi ini dengan aman. Anda dapat mengubah password Anda kapan saja melalui halaman profil.
         </div>
         <div class="footer">

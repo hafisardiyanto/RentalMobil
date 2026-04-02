@@ -14,7 +14,7 @@
     </div>
     <div class="hero-image">
         <!-- Placeholder for a premium car image -->
-        <div style="background: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1000') no-repeat center center / cover; width: 600px; height: 400px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: inline-block;"></div>
+        <div style="background: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1000') no-repeat center center / cover; width: 100%; max-width: 600px; height: 400px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: inline-block;"></div>
     </div>
 </div>
 
@@ -39,7 +39,7 @@
 
 <div class="features" id="tentang" style="background: var(--background);">
     <h2>Mengapa Memilih Kami?</h2>
-    <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="grid">
         <div class="card" style="text-align: center;">
             <div style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">🛡️</div>
             <h3>Aman & Terpercaya</h3>

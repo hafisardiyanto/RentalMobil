@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 use App\Traits\WhatsappTrait;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingConfirmationToOwner;
 
 class BookingController extends Controller
 {
@@ -68,7 +70,15 @@ class BookingController extends Controller
         $adminWa = config('services.fonnte.admin_wa_number');
         $this->sendWhatsapp($adminWa, $notifMessage);
 
-        // 2. Persiapkan link WhatsApp Redirect untuk User
+        // 2. Kirim Notifikasi via Email ke Admin
+        try {
+            $adminEmail = env('ADMIN_EMAIL', 'hafisardiyanto19@gmail.com');
+            Mail::to($adminEmail)->send(new BookingConfirmationToOwner($booking));
+        } catch (\Exception $e) {
+            \Log::error("Gagal mengirim email notifikasi booking: " . $e->getMessage());
+        }
+
+        // 3. Persiapkan link WhatsApp Redirect untuk User
         $waRedirectText = "Halo Admin RentalMobil,\n\n"
             . "Saya ingin mengkonfirmasi pesanan saya dengan ID #" . $booking->id . " untuk penyewaan mobil *" . $car->brand . " " . $car->name . "*.\n\n"
             . "Tgl Sewa: " . $startDate->format('d M Y') . " sampai " . $endDate->format('d M Y') . "\n"
