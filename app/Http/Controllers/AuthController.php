@@ -124,9 +124,11 @@ class AuthController extends Controller
 
     public function showResetPassword($token, Request $request)
     {
+        $user = User::where('email', $request->email)->first();
         return view('auth.reset-password', [
             'token' => $token,
-            'email' => $request->email
+            'email' => $request->email,
+            'phone' => $user ? $user->phone : ''
         ]);
     }
 
@@ -136,6 +138,7 @@ class AuthController extends Controller
             'token' => 'required',
             'email' => 'required|email|exists:users,email',
             'password' => 'required|min:6|confirmed',
+            'phone' => 'required|min:10',
         ]);
 
         // Verifikasi token
@@ -145,36 +148,35 @@ class AuthController extends Controller
             ->first();
 
         if (!$reset) {
-            return back()->withErrors(['email' => 'Token reset password tidak valid atau sudah kedaluwarsa.']);
+            return back()->with('error', 'Token reset password tidak valid atau sudah kedaluwarsa.');
         }
 
         // Cek kedaluwarsa (opsional, misal 60 menit)
         if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-            return back()->withErrors(['email' => 'Token reset password sudah kedaluwarsa.']);
+            return back()->with('error', 'Token reset password sudah kedaluwarsa.');
         }
 
         $user = User::where('email', $request->email)->first();
         $user->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone // Update nomor WA/Phone
         ]);
 
         // Hapus token setelah digunakan
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
         // KIRIM KONFIRMASI VIA WHATSAPP (Password Baru)
-        if ($user->phone) {
-            $message = "*[RESET PASSWORD BERHASIL]*\n\n"
-                . "Halo " . $user->name . ",\n"
-                . "Password akun RentalMobil Anda telah berhasil diubah.\n\n"
-                . "Berikut adalah password baru Anda:\n"
-                . "*Password: " . $request->password . "*\n\n"
-                . "Jika Anda tidak merasa melakukan ini, segera hubungi admin. Terima kasih.";
+        $message = "*[RESET PASSWORD BERHASIL]*\n\n"
+            . "Halo " . $user->name . ",\n"
+            . "Password akun RentalMobil Anda telah berhasil diubah.\n\n"
+            . "Berikut adalah password baru Anda:\n"
+            . "*Password: " . $request->password . "*\n\n"
+            . "Jika Anda tidak merasa melakukan ini, segera hubungi admin. Terima kasih.";
 
-            $this->sendWhatsapp($user->phone, $message);
-        }
+        $this->sendWhatsapp($user->phone, $message);
 
-        return redirect()->route('login')->with('success', 'Password berhasil diubah. Silakan login kembali.');
+        return redirect()->route('login')->with('success', 'Password berhasil diubah. Konfirmasi telah dikirim ke WhatsApp Anda.');
     }
 
     public function logout(Request $request)

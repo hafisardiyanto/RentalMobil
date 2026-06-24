@@ -46,6 +46,14 @@
                     placeholder="Ulangi password baru">
             </div>
 
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Nomor WhatsApp (Fonnte)</label>
+                <input type="text" name="phone" value="{{ $phone }}" required 
+                    class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    placeholder="Contoh: 08123456789">
+                <p class="text-xs text-slate-500 mt-1">Konfirmasi password baru akan dikirim ke nomor ini.</p>
+            </div>
+
             <button type="submit" 
                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg shadow-indigo-200">
                 Simpan & Beritahu via WhatsApp
