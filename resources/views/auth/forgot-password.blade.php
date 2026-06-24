@@ -35,7 +35,7 @@
     <div class="auth-card">
         <h2 style="margin-bottom: 1rem; font-weight: 800; color: #1E293B;">Lupa Password? 🔑</h2>
         <p style="color: #64748B; margin-bottom: 2rem; line-height: 1.6;">
-            Masukkan alamat email akun Anda. Kami akan mengirimkan **identitas password baru** langsung ke nomor WhatsApp yang terdaftar.
+            Masukkan alamat email akun Anda. Kami akan mengirimkan **link untuk atur ulang password** ke email Anda. Setelah berhasil diubah, password baru akan dikonfirmasi via WhatsApp.
         </p>
 
         @if(session('success'))
@@ -61,7 +61,7 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn-primary">Kirim Password ke WA</button>
+            <button type="submit" class="btn-primary">Kirim Link Reset Password</button>
 
             <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
                 <a href="{{ route('login') }}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Kembali ke Login</a>
