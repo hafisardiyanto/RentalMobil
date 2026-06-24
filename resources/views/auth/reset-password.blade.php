@@ -46,13 +46,11 @@
                     placeholder="Ulangi password baru">
             </div>
 
-            <p class="text-sm text-slate-500 italic">
-                *Notifikasi akan dikirim ke nomor WhatsApp yang terdaftar.
-            </p>
+            
 
             <button type="submit" 
                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg shadow-indigo-200">
-                Simpan & Beritahu via WhatsApp
+                Simpan 
             </button>
         </form>
     </div>
