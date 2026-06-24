@@ -46,13 +46,9 @@
                     placeholder="Ulangi password baru">
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">Nomor WhatsApp</label>
-                <input type="text" name="no_wa" value="{{ $no_wa }}" required 
-                    class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                    placeholder="Contoh: 08123456789">
-                <p class="text-xs text-slate-500 mt-1">Konfirmasi password baru akan dikirim ke nomor ini.</p>
-            </div>
+            <p class="text-sm text-slate-500 italic">
+                *Notifikasi akan dikirim ke nomor WhatsApp yang terdaftar.
+            </p>
 
             <button type="submit" 
                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg shadow-indigo-200">

@@ -124,11 +124,9 @@ class AuthController extends Controller
 
     public function showResetPassword($token, Request $request)
     {
-        $user = User::where('email', $request->email)->first();
         return view('auth.reset-password', [
             'token' => $token,
-            'email' => $request->email,
-            'no_wa' => $user ? $user->phone : ''
+            'email' => $request->email
         ]);
     }
 
@@ -138,7 +136,6 @@ class AuthController extends Controller
             'token' => 'required',
             'email' => 'required|email|exists:users,email',
             'password' => 'required|min:6|confirmed',
-            'no_wa' => 'required|min:10',
         ]);
 
         // Verifikasi token
@@ -159,8 +156,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
         $user->update([
-            'password' => Hash::make($request->password),
-            'phone' => $request->no_wa // Simpan ke kolom phone
+            'password' => Hash::make($request->password)
         ]);
 
         // Hapus token setelah digunakan
