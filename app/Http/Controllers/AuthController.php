@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use App\Mail\SendPasswordMail;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use App\Traits\WhatsappTrait;
+use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -95,27 +98,83 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-        
-        // Generate password baru secara acak
-        $newPassword = Str::random(8);
-        $user->update([
-            'password' => Hash::make($newPassword)
+        $token = Str::random(64);
+
+        // Simpan token ke tabel password_reset_tokens
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'email' => $user->email,
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]
+        );
+
+        $resetUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
+
+        // KIRIM EMAIL LINK RESET
+        try {
+            Mail::to($user->email)->send(new ResetPasswordMail($user, $resetUrl));
+            return back()->with('success', 'Link reset password telah dikirim ke email Anda.');
+        } catch (\Exception $e) {
+            \Log::error("Gagal mengirim email reset: " . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat mengirim email.');
+        }
+    }
+
+    public function showResetPassword($token, Request $request)
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
+    }
+
+    public function processResetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        // KIRIM PASSWORD BARU VIA WHATSAPP
-        $resetMessage = "*[LUPA PASSWORD]*\n\n"
-            . "Halo " . $user->name . ",\n"
-            . "Kami menerima permintaan pengaturan ulang kata sandi untuk akun Anda.\n\n"
-            . "Berikut adalah password sementara Anda:\n"
-            . "*Password Baru: " . $newPassword . "*\n\n"
-            . "Segera login dan ubah password Anda di halaman profil demi keamanan. Terima kasih.";
+        // Verifikasi token
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
 
-        if ($user->phone) {
-            $this->sendWhatsapp($user->phone, $resetMessage);
-            return back()->with('success', 'Password baru berhasil dikirim ke WhatsApp Anda.');
+        if (!$reset) {
+            return back()->withErrors(['email' => 'Token reset password tidak valid atau sudah kedaluwarsa.']);
         }
 
-        return back()->with('error', 'Gagal mengirim WhatsApp. Pastikan nomor telpon Anda sudah benar.');
+        // Cek kedaluwarsa (opsional, misal 60 menit)
+        if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return back()->withErrors(['email' => 'Token reset password sudah kedaluwarsa.']);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        // Hapus token setelah digunakan
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        // KIRIM KONFIRMASI VIA WHATSAPP (Password Baru)
+        if ($user->phone) {
+            $message = "*[RESET PASSWORD BERHASIL]*\n\n"
+                . "Halo " . $user->name . ",\n"
+                . "Password akun RentalMobil Anda telah berhasil diubah.\n\n"
+                . "Berikut adalah password baru Anda:\n"
+                . "*Password: " . $request->password . "*\n\n"
+                . "Jika Anda tidak merasa melakukan ini, segera hubungi admin. Terima kasih.";
+
+            $this->sendWhatsapp($user->phone, $message);
+        }
+
+        return redirect()->route('login')->with('success', 'Password berhasil diubah. Silakan login kembali.');
     }
 
     public function logout(Request $request)
