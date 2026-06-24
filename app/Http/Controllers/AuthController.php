@@ -132,47 +132,68 @@ class AuthController extends Controller
 
     public function processResetPassword(Request $request)
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|min:6|confirmed',
-        ]);
+        \Log::info("Memulai proses reset password untuk: " . $request->email);
 
-        // Verifikasi token
-        $reset = DB::table('password_reset_tokens')
-            ->where('email', $request->email)
-            ->where('token', $request->token)
-            ->first();
+        try {
+            $request->validate([
+                'token' => 'required',
+                'email' => 'required|email|exists:users,email',
+                'password' => 'required|min:6|confirmed',
+            ]);
 
-        if (!$reset) {
-            return back()->with('error', 'Token reset password tidak valid atau sudah kedaluwarsa.');
-        }
+            // Verifikasi token
+            $reset = DB::table('password_reset_tokens')
+                ->where('email', $request->email)
+                ->first();
 
-        // Cek kedaluwarsa (opsional, misal 60 menit)
-        if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+            if (!$reset || $reset->token !== $request->token) {
+                \Log::warning("Token tidak cocok atau tidak ditemukan untuk: " . $request->email);
+                return back()->with('error', 'Token reset password tidak valid atau sudah kedaluwarsa.');
+            }
+
+            // Cek kedaluwarsa (misal 60 menit)
+            if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+                \Log::warning("Token kedaluwarsa untuk: " . $request->email);
+                DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+                return back()->with('error', 'Token reset password sudah kedaluwarsa.');
+            }
+
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                \Log::error("User tidak ditemukan saat reset password: " . $request->email);
+                return back()->with('error', 'User tidak ditemukan.');
+            }
+
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+
+            \Log::info("Password berhasil diupdate untuk: " . $request->email);
+
+            // Hapus token setelah digunakan
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-            return back()->with('error', 'Token reset password sudah kedaluwarsa.');
+
+            // KIRIM KONFIRMASI VIA WHATSAPP (Password Baru)
+            $message = "*[RESET PASSWORD BERHASIL]*\n\n"
+                . "Halo " . $user->name . ",\n"
+                . "Password akun RentalMobil Anda telah berhasil diubah.\n\n"
+                . "Berikut adalah password baru Anda:\n"
+                . "*Password: " . $request->password . "*\n\n"
+                . "Jika Anda tidak merasa melakukan ini, segera hubungi admin. Terima kasih.";
+
+            if ($user->phone) {
+                \Log::info("Mengirim WA konfirmasi ke: " . $user->phone);
+                $this->sendWhatsapp($user->phone, $message);
+            } else {
+                \Log::warning("User tidak punya nomor HP untuk dikirimi WA: " . $request->email);
+            }
+
+            return redirect()->route('login')->with('success', 'Password berhasil diubah. Konfirmasi telah dikirim ke WhatsApp Anda.');
+
+        } catch (\Exception $e) {
+            \Log::error("Eror saat processResetPassword: " . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
-
-        $user = User::where('email', $request->email)->first();
-        $user->update([
-            'password' => Hash::make($request->password)
-        ]);
-
-        // Hapus token setelah digunakan
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-
-        // KIRIM KONFIRMASI VIA WHATSAPP (Password Baru)
-        $message = "*[RESET PASSWORD BERHASIL]*\n\n"
-            . "Halo " . $user->name . ",\n"
-            . "Password akun RentalMobil Anda telah berhasil diubah.\n\n"
-            . "Berikut adalah password baru Anda:\n"
-            . "*Password: " . $request->password . "*\n\n"
-            . "Jika Anda tidak merasa melakukan ini, segera hubungi admin. Terima kasih.";
-
-        $this->sendWhatsapp($user->phone, $message);
-
-        return redirect()->route('login')->with('success', 'Password berhasil diubah. Konfirmasi telah dikirim ke WhatsApp Anda.');
     }
 
     public function logout(Request $request)
