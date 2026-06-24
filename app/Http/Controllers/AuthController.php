@@ -177,9 +177,7 @@ class AuthController extends Controller
             $message = "*[RESET PASSWORD BERHASIL]*\n\n"
                 . "Halo " . $user->name . ",\n"
                 . "Password akun RentalMobil Anda telah berhasil diubah.\n\n"
-                . "Berikut adalah password baru Anda:\n"
-                . "*Password: " . $request->password . "*\n\n"
-                . "Jika Anda tidak merasa melakukan ini, segera hubungi admin. Terima kasih.";
+                . "Keamanan akun Anda adalah prioritas kami. Jika Anda tidak merasa melakukan perubahan ini, segera hubungi admin kami. Terima kasih.";
 
             if ($user->phone) {
                 \Log::info("Mengirim WA konfirmasi ke: " . $user->phone);
