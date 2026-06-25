@@ -176,7 +176,7 @@ class AuthController extends Controller
             // KIRIM KONFIRMASI VIA WHATSAPP (Password Baru)
             $message = "*[RESET PASSWORD BERHASIL]*\n\n"
                 . "Halo " . $user->name . ",\n"
-                . "Password akun RentalMobil Anda telah berhasil diubah.\n\n"
+                . "Password akun User RentalMobil Anda telah berhasil diubah.\n\n"
                 . "Keamanan akun Anda adalah prioritas kami. Jika Anda tidak merasa melakukan perubahan ini, segera hubungi admin kami. Terima kasih.";
 
             if ($user->phone) {
