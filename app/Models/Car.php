@@ -10,7 +10,14 @@ class Car extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'brand', 'license_plate', 'year', 'price_per_day', 'image_path', 'images', 'is_available'
+        'name',
+        'brand',
+        'license_plate',
+        'year',
+        'price_per_day',
+        'image_path',
+        'images',
+        'is_available'
     ];
 
     protected $casts = [
@@ -20,5 +27,39 @@ class Car extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Mengecek ketersediaan mobil berdasarkan retang tanggal, 
+     * mengabaikan booking yang statusnya ditolak/dibatalkan/selesai.
+     */
+    public function isAvailableBetween($startDate, $endDate)
+    {
+        if (!$this->is_available) {
+            return false;
+        }
+
+        // Cek irisan booking
+        $overlappingBookings = $this->bookings()
+            ->whereIn('status_booking', [
+                'Menunggu Konfirmasi',
+                'Menunggu Pembayaran',
+                'Pembayaran Diverifikasi',
+                'Booking Dikonfirmasi',
+                'Sedang Disewa',
+                'Menunggu Pengembalian'
+            ])
+            ->where(function ($query) use ($startDate, $endDate) {
+                // Saling bersinggungan tanggal
+                $query->whereBetween('start_date', [$startDate, $endDate])
+                    ->orWhereBetween('end_date', [$startDate, $endDate])
+                    ->orWhere(function ($q) use ($startDate, $endDate) {
+                    $q->where('start_date', '<=', $startDate)
+                        ->where('end_date', '>=', $endDate);
+                });
+            })
+            ->count();
+
+        return $overlappingBookings === 0;
     }
 }

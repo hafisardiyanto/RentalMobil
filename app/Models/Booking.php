@@ -10,7 +10,33 @@ class Booking extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'car_id', 'start_date', 'end_date', 'total_price', 'status'
+        'nomor_booking',
+        'user_id',
+        'car_id',
+        'start_date',
+        'end_date',
+        'durasi',
+        'harga_per_hari',
+        'subtotal',
+        'diskon',
+        'biaya_tambahan',
+        'total',
+        'deposit',
+        'status_booking',
+        'status_pembayaran',
+        'catatan',
+        'payment_proof',
+        'km_awal',
+        'bbm_awal',
+        'kondisi_awal',
+        'foto_awal',
+        'km_akhir',
+        'bbm_akhir',
+        'kondisi_akhir',
+        'foto_akhir',
+        'waktu_pengembalian',
+        'denda_terlambat',
+        'biaya_kerusakan'
     ];
 
     public function user()

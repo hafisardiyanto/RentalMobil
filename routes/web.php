@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     // Admin Panel Routes
     Route::middleware('is_admin')->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        
+
         // Cars CRUD
         Route::get('/cars', [AdminController::class, 'index'])->name('admin.cars.index');
         Route::get('/cars/create', [AdminController::class, 'create'])->name('admin.cars.create');
@@ -45,6 +45,14 @@ Route::middleware('auth')->group(function () {
         // Bookings Management
         Route::get('/bookings', [AdminController::class, 'bookingsIndex'])->name('admin.bookings.index');
         Route::put('/bookings/{booking}/status', [AdminController::class, 'updateBookingStatus'])->name('admin.bookings.update-status');
+        Route::put('/bookings/{booking}/payment-status', [AdminController::class, 'updatePaymentStatus'])->name('admin.bookings.update-payment-status');
+        
+        // Handover & Return
+        Route::get('/bookings/{booking}/handover', [AdminController::class, 'handoverForm'])->name('admin.bookings.handover');
+        Route::post('/bookings/{booking}/handover', [AdminController::class, 'processHandover'])->name('admin.bookings.process-handover');
+        Route::get('/bookings/{booking}/return', [AdminController::class, 'returnForm'])->name('admin.bookings.return');
+        Route::post('/bookings/{booking}/return', [AdminController::class, 'processReturn'])->name('admin.bookings.process-return');
+        
         Route::delete('/bookings/{booking}', [AdminController::class, 'destroyBooking'])->name('admin.bookings.destroy');
     });
 
@@ -52,4 +60,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+
+    // User Payment Routes
+    Route::get('/bookings/{booking}/payment', [BookingController::class, 'paymentForm'])->name('bookings.payment');
+    Route::post('/bookings/{booking}/payment', [BookingController::class, 'uploadPayment'])->name('bookings.payment.upload');
+
+    // User Action/Cancel
+    Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancelBooking'])->name('bookings.cancel');
 });

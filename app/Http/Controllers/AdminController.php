@@ -14,31 +14,34 @@ class AdminController extends Controller
     {
         $today = Carbon::today();
 
-        // 1. Total Revenue (Pendapatan Keseluruhan yang status completed atau approved)
-        $totalRevenue = Booking::whereIn('status', ['approved', 'completed'])->sum('total_price');
+        // 1. Total Pendapatan
+        $totalRevenue = Booking::whereIn('status_booking', ['Selesai'])->sum('total');
 
         // 2. Mobil yang Paling Sering Disewa
         $frequentCars = Car::withCount('bookings')
-                            ->orderByDesc('bookings_count')
-                            ->take(5)
-                            ->get();
+            ->orderByDesc('bookings_count')
+            ->take(5)
+            ->get();
 
         // 3. Mobil yang sedang digunakan (Sewa) saat ini
         $activeBookings = Booking::with(['user', 'car'])
-                                 ->whereDate('start_date', '<=', $today)
-                                 ->whereDate('end_date', '>=', $today)
-                                 ->whereIn('status', ['approved', 'pending'])
-                                 ->get();
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('end_date', '>=', $today)
+            ->where('status_booking', 'Sedang Disewa')
+            ->get();
 
-        // 4. Mobil yang diBooking untuk di masa depan
+        // 4. Mobil yang diBooking untuk di masa depan & menunggu konfirmasi
         $upcomingBookings = Booking::with(['user', 'car'])
-                                   ->whereDate('start_date', '>', $today)
-                                   ->orderBy('start_date', 'asc')
-                                   ->take(5)
-                                   ->get();
+            ->whereNotIn('status_booking', ['Selesai', 'Dibatalkan', 'Ditolak'])
+            ->orderBy('id', 'desc')
+            ->take(5)
+            ->get();
 
         return view('admin.dashboard', compact(
-            'totalRevenue', 'frequentCars', 'activeBookings', 'upcomingBookings'
+            'totalRevenue',
+            'frequentCars',
+            'activeBookings',
+            'upcomingBookings'
         ));
     }
 
@@ -59,7 +62,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'license_plate' => 'required|string|unique:cars,license_plate',
-            'year' => 'required|integer|min:2000|max:'.(date('Y') + 1),
+            'year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
             'price_per_day' => 'required|numeric|min:0',
             'is_available' => 'required|boolean',
             'images' => 'required|array',
@@ -110,7 +113,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'license_plate' => 'required|string|unique:cars,license_plate,' . $car->id,
-            'year' => 'required|integer|min:2000|max:'.(date('Y') + 1),
+            'year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
             'price_per_day' => 'required|numeric|min:0',
             'is_available' => 'required|boolean',
             'images' => 'nullable|array',
@@ -126,7 +129,7 @@ class AdminController extends Controller
                 $path = $file->store('cars', 'public');
                 $url = Storage::url($path);
                 $imagePaths[] = $url;
-                
+
                 if (empty($firstImagePath) && count($imagePaths) === 1) {
                     $firstImagePath = $url;
                 }
@@ -169,30 +172,101 @@ class AdminController extends Controller
     public function updateBookingStatus(Request $request, Booking $booking)
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,approved,completed,cancelled',
+            'status_booking' => 'required|in:Menunggu Konfirmasi,Menunggu Pembayaran,Pembayaran Diverifikasi,Booking Dikonfirmasi,Sedang Disewa,Menunggu Pengembalian,Selesai,Ditolak,Dibatalkan',
         ]);
 
-        $booking->update(['status' => $validated['status']]);
-
-        // Logic for car availability
-        if (in_array($validated['status'], ['completed', 'cancelled'])) {
-            $booking->car->update(['is_available' => true]);
-        } elseif ($validated['status'] === 'approved') {
-            $booking->car->update(['is_available' => false]);
-        }
+        $booking->update(['status_booking' => $validated['status_booking']]);
 
         return redirect()->route('admin.bookings.index')->with('success', 'Status pesanan berhasil diperbarui!');
     }
 
+    public function updatePaymentStatus(Request $request, Booking $booking)
+    {
+        $validated = $request->validate([
+            'status_pembayaran' => 'required|in:Belum Bayar,Menunggu Verifikasi,Dibayar Sebagian,Lunas',
+        ]);
+
+        $booking->update(['status_pembayaran' => $validated['status_pembayaran']]);
+
+        // Auto update booking status if Lunas
+        if ($validated['status_pembayaran'] === 'Lunas') {
+            $booking->update(['status_booking' => 'Booking Dikonfirmasi']);
+        }
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Status Pembayaran berhasil diperbarui!');
+    }
+
+    public function handoverForm(Booking $booking)
+    {
+        return view('admin.bookings.handover', compact('booking'));
+    }
+
+    public function processHandover(Request $request, Booking $booking)
+    {
+        $validated = $request->validate([
+            'km_awal' => 'nullable|integer',
+            'bbm_awal' => 'nullable|string',
+            'kondisi_awal' => 'nullable|string',
+            'foto_awal' => 'nullable|image',
+        ]);
+
+        if ($request->hasFile('foto_awal')) {
+            $path = $request->file('foto_awal')->store('operational', 'public');
+            $validated['foto_awal'] = Storage::url($path);
+        }
+
+        $validated['status_booking'] = 'Sedang Disewa';
+
+        $booking->update($validated);
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil diserahterimakan.');
+    }
+
+    public function returnForm(Booking $booking)
+    {
+        return view('admin.bookings.return', compact('booking'));
+    }
+
+    public function processReturn(Request $request, Booking $booking)
+    {
+        $validated = $request->validate([
+            'km_akhir' => 'nullable|integer',
+            'bbm_akhir' => 'nullable|string',
+            'kondisi_akhir' => 'nullable|string',
+            'foto_akhir' => 'nullable|image',
+            'denda_terlambat' => 'nullable|integer',
+            'biaya_kerusakan' => 'nullable|integer',
+        ]);
+
+        if ($request->hasFile('foto_akhir')) {
+            $path = $request->file('foto_akhir')->store('operational', 'public');
+            $validated['foto_akhir'] = Storage::url($path);
+        }
+
+        $validated['denda_terlambat'] = $validated['denda_terlambat'] ?? 0;
+        $validated['biaya_kerusakan'] = $validated['biaya_kerusakan'] ?? 0;
+
+        $validated['waktu_pengembalian'] = now();
+        $validated['status_booking'] = 'Selesai';
+
+        // Update Total tagihan dengan denda
+        $additional = $validated['denda_terlambat'] + $validated['biaya_kerusakan'];
+        if ($additional > 0) {
+            $booking->total += $additional;
+            $booking->biaya_tambahan += $additional;
+            $booking->save();
+        }
+
+        $booking->update($validated);
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil dikembalikan.');
+    }
+
     public function destroyBooking(Booking $booking)
     {
-        // If the booking being deleted is the one making the car unavailable, make it available again
-        if ($booking->status === 'approved' || $booking->status === 'pending') {
-             // Optional: Check if there are other active bookings for the same car. 
-             // Simplest for now: if this is deleted, the car is likely available.
-             $booking->car->update(['is_available' => true]);
-        }
-        
+        // Don't need to manually update car availability as it is dynamic now based on date span
+
+
         $booking->delete();
         return redirect()->route('admin.bookings.index')->with('success', 'Pesanan berhasil dihapus!');
     }

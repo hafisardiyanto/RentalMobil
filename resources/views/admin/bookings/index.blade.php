@@ -5,83 +5,121 @@
 @endpush
 
 @section('content')
-<h1 class="page-title">Manajemen Pemesanan (Bookings)</h1>
+    <h1 class="page-title">Manajemen Pemesanan (Bookings)</h1>
 
-<div class="box table-box">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Pelanggan</th>
-                <th>Mobil</th>
-                <th>Durasi Sewa</th>
-                <th>Total Harga</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($bookings as $booking)
-            <tr>
-                <td>
-                    <div class="customer-name">{{ $booking->user->name }}</div>
-                    <div class="customer-email">{{ $booking->user->email }}</div>
-                    <div style="font-size: 0.85rem; color: #059669; font-weight: 600;">📞 {{ $booking->user->phone ?? '-' }}</div>
-                </td>
-                <td>
-                    <div class="car-info">{{ $booking->car->brand }} {{ $booking->car->name }}</div>
-                    <div class="car-plate">{{ $booking->car->license_plate }}</div>
-                </td>
-                <td>
-                    <div class="duration-text">
-                        {{ \Carbon\Carbon::parse($booking->start_date)->format('d M Y') }} - <br>
-                        {{ \Carbon\Carbon::parse($booking->end_date)->format('d M Y') }}
-                    </div>
-                </td>
-                <td>
-                    <span class="price-text">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
-                </td>
-                <td>
-                    @php
-                        $statusColors = [
-                            'pending' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
-                            'approved' => ['bg' => '#DBEAFE', 'text' => '#1E40AF'],
-                            'completed' => ['bg' => '#D1FAE5', 'text' => '#065F46'],
-                            'cancelled' => ['bg' => '#FEE2E2', 'text' => '#991B1B'],
-                        ];
-                        $colors = $statusColors[$booking->status] ?? ['bg' => '#F3F4F6', 'text' => '#374151'];
-                    @endphp
-                    <span class="status-badge" style="background: {{ $colors['bg'] }}; color: {{ $colors['text'] }};">
-                        {{ $booking->status }}
-                    </span>
-                </td>
-                <td>
-                    <div class="action-container">
-                        <form action="{{ route('admin.bookings.update-status', $booking->id) }}" method="POST" class="status-form">
-                            @csrf
-                            @method('PUT')
-                            <select name="status" class="status-select" onchange="this.form.submit()">
-                                <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="approved" {{ $booking->status == 'approved' ? 'selected' : '' }}>Approved</option>
-                                <option value="completed" {{ $booking->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                                <option value="cancelled" {{ $booking->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                            </select>
-                        </form>
-                        <form action="{{ route('admin.bookings.destroy', $booking->id) }}" method="POST" onsubmit="return confirm('Hapus data pesanan ini?')" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-delete">Hapus</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="6" class="empty-state">
-                    📅 Belum ada data pemesanan.
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+    <div class="box table-box">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Pelanggan</th>
+                    <th>Mobil</th>
+                    <th>Durasi Sewa</th>
+                    <th>Total Harga & Pembayaran</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($bookings as $booking)
+                    <tr>
+                        <td>
+                            <div class="customer-name">{{ $booking->user->name }}</div>
+                            <div class="customer-email">{{ $booking->user->email }}</div>
+                            <div style="font-size: 0.85rem; color: #059669; font-weight: 600;">📞
+                                {{ $booking->user->phone ?? '-' }}</div>
+                        </td>
+                        <td>
+                            <div class="car-info">{{ $booking->car->brand }} {{ $booking->car->name }}</div>
+                            <div class="car-plate">{{ $booking->car->license_plate }}</div>
+                        </td>
+                        <td>
+                            <div class="duration-text">
+                                {{ \Carbon\Carbon::parse($booking->start_date)->format('d M Y') }} - <br>
+                                {{ \Carbon\Carbon::parse($booking->end_date)->format('d M Y') }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="price-text" style="display: block; margin-bottom: 0.5rem;">Rp {{ number_format($booking->total, 0, ',', '.') }}</span>
+                            @if($booking->payment_proof)
+                                <a href="{{ $booking->payment_proof }}" target="_blank" style="font-size: 0.85rem; color: var(--primary); font-weight: bold; text-decoration: none;">🔍 Lihat Bukti TF</a>
+                            @else
+                                <span style="font-size: 0.85rem; color: #94A3B8;">Belum bayar</span>
+                            @endif
+                        </td>
+                        <td>
+                            @php
+                                $statusColors = [
+                                    'Menunggu Konfirmasi' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
+                                    'Menunggu Pembayaran' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
+                                    'Pembayaran Diverifikasi' => ['bg' => '#DBEAFE', 'text' => '#1E40AF'],
+                                    'Booking Dikonfirmasi' => ['bg' => '#DBEAFE', 'text' => '#1E40AF'],
+                                    'Sedang Disewa' => ['bg' => '#DBEAFE', 'text' => '#1E40AF'],
+                                    'Menunggu Pengembalian' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
+                                    'Selesai' => ['bg' => '#D1FAE5', 'text' => '#065F46'],
+                                    'Dibatalkan' => ['bg' => '#FEE2E2', 'text' => '#991B1B'],
+                                    'Ditolak' => ['bg' => '#FEE2E2', 'text' => '#991B1B'],
+                                ];
+                                $colors = $statusColors[$booking->status_booking] ?? ['bg' => '#F3F4F6', 'text' => '#374151'];
+                            @endphp
+                            <span class="status-badge" style="background: {{ $colors['bg'] }}; color: {{ $colors['text'] }};">
+                                {{ $booking->status_booking }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-container">
+                                <form action="{{ route('admin.bookings.update-status', $booking->id) }}" method="POST"
+                                    class="status-form">
+                                    @csrf
+                                    @method('PUT')
+                                    <select name="status_booking" class="status-select" onchange="this.form.submit()">
+                                        <option value="Menunggu Konfirmasi" {{ $booking->status_booking == 'Menunggu Konfirmasi' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
+                                        <option value="Menunggu Pembayaran" {{ $booking->status_booking == 'Menunggu Pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
+                                        <option value="Pembayaran Diverifikasi" {{ $booking->status_booking == 'Pembayaran Diverifikasi' ? 'selected' : '' }}>Pembayaran Diverifikasi</option>
+                                        <option value="Booking Dikonfirmasi" {{ $booking->status_booking == 'Booking Dikonfirmasi' ? 'selected' : '' }}>Booking Dikonfirmasi</option>
+                                        <option value="Sedang Disewa" {{ $booking->status_booking == 'Sedang Disewa' ? 'selected' : '' }}>Sedang Disewa</option>
+                                        <option value="Menunggu Pengembalian" {{ $booking->status_booking == 'Menunggu Pengembalian' ? 'selected' : '' }}>Menunggu Pengembalian</option>
+                                        <option value="Selesai" {{ $booking->status_booking == 'Selesai' ? 'selected' : '' }}>
+                                            Selesai</option>
+                                        <option value="Ditolak" {{ $booking->status_booking == 'Ditolak' ? 'selected' : '' }}>
+                                            Ditolak</option>
+                                        <option value="Dibatalkan" {{ $booking->status_booking == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                                    </select>
+                                </form>
+                                @if(in_array($booking->status_booking, ['Booking Dikonfirmasi']))
+                                    <a href="{{ route('admin.bookings.handover', $booking->id) }}" style="display: block; margin-top: 0.5rem; background: var(--primary); color: white; padding: 0.4rem; text-align: center; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">🔑 Serah Terima</a>
+                                @endif
+                                
+                                @if(in_array($booking->status_booking, ['Sedang Disewa']))
+                                    <a href="{{ route('admin.bookings.return', $booking->id) }}" style="display: block; margin-top: 0.5rem; background: #059669; color: white; padding: 0.4rem; text-align: center; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">🔙 Pengembalian</a>
+                                @endif
+
+                                <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST" class="status-form" style="margin-top: 0.5rem;">
+                                    @csrf
+                                    @method('PUT')
+                                    <select name="status_pembayaran" class="status-select" style="background: #F8FAFC;" onchange="this.form.submit()">
+                                        <option value="Belum Bayar" {{ $booking->status_pembayaran == 'Belum Bayar' ? 'selected' : '' }}>Belum Bayar</option>
+                                        <option value="Menunggu Verifikasi" {{ $booking->status_pembayaran == 'Menunggu Verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                                        <option value="Dibayar Sebagian" {{ $booking->status_pembayaran == 'Dibayar Sebagian' ? 'selected' : '' }}>Dibayar DP</option>
+                                        <option value="Lunas" {{ $booking->status_pembayaran == 'Lunas' ? 'selected' : '' }}>Lunas</option>
+                                    </select>
+                                </form>
+                                <form action="{{ route('admin.bookings.destroy', $booking->id) }}" method="POST"
+                                    onsubmit="return confirm('Hapus data pesanan ini?')" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-delete">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            📅 Belum ada data pemesanan.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 @endsection
