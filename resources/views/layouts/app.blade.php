@@ -22,9 +22,9 @@
             <a href="/#armada">Armada</a>
             <a href="/#tentang">Tentang</a>
             @auth
-                @if(Auth::user()->role === 'admin')
+                @if(in_array(Auth::user()->role, ['admin', 'owner']))
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-primary" style="padding: 0.4rem 1rem;">Dashboard
-                        Admin</a>
+                        {{ Auth::user()->role === 'owner' ? 'Owner' : 'Admin' }}</a>
                 @else
                     <a href="{{ route('bookings.index') }}"
                         style="color: var(--primary); font-weight: 600; margin-right: 1.5rem; text-decoration: none;">Riwayat
