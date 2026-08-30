@@ -74,22 +74,26 @@
                     <tr>
                         <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Durasi</td>
                         <td style="font-weight: bold;">: {{ date('d M Y', strtotime($booking->start_date)) }} s/d
-                            {{ date('d M Y', strtotime($booking->end_date)) }} ({{ $booking->durasi }} Hari)</td>
+                            {{ date('d M Y', strtotime($booking->end_date)) }} ({{ $booking->durasi }} Hari)
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Biaya Sewa Pokok</td>
                         <td style="font-weight: bold; color: #047857;">: Rp
-                            {{ number_format($booking->subtotal, 0, ',', '.') }}</td>
+                            {{ number_format($booking->subtotal, 0, ',', '.') }}
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Uang Jaminan (Deposit)</td>
                         <td style="font-weight: bold; color: #D97706;">: Rp
-                            {{ number_format($booking->deposit, 0, ',', '.') }}</td>
+                            {{ number_format($booking->deposit, 0, ',', '.') }}
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding: 8px 0; border-bottom: 1px solid #eee;">Total Tagihan Akhir</td>
                         <td style="font-weight: bold; font-size: 1.2rem; color: #E11D48;">: Rp
-                            {{ number_format($booking->total, 0, ',', '.') }}</td>
+                            {{ number_format($booking->total, 0, ',', '.') }}
+                        </td>
                     </tr>
                 </table>
 
@@ -190,7 +194,8 @@
                     <h4>🔙 Proses Pengembalian (Return & Kalkulasi Akhir)</h4>
                     <p style="color: #64748B; margin-bottom: 1rem;">Lengkapi data akhir kedatangan mobil. Tagihan
                         denda/kerusakan otomatis dipotong dari Saldo Deposit Rp
-                        {{ number_format($booking->deposit, 0, ',', '.') }}.</p>
+                        {{ number_format($booking->deposit, 0, ',', '.') }}.
+                    </p>
 
                     <form action="{{ route('admin.bookings.process-return', $booking->id) }}" method="POST"
                         enctype="multipart/form-data">
@@ -239,12 +244,33 @@
                             Diterima & Finalisasi Invoice</button>
                     </form>
                 </div>
+            @elseif($booking->status_booking === 'Menunggu Pelunasan')
+                <div
+                    style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #EF4444; margin-bottom: 1rem;">
+                    <h4>⚠️ Menunggu Pelunasan Tagihan Susulan</h4>
+                    <p style="color: #64748B; margin-bottom: 1rem;">Pelanggan memiliki Tagihan Susulan sebesar <b>Rp
+                            {{ number_format($booking->tagihan_susulan, 0, ',', '.') }}</b> yang melebihi batas Deposit.
+                        Transaksi tidak dapat diselesaikan ke tahap Selesai sebelum tunggakan dilunasi.</p>
+                    <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST"
+                        style="margin-top: 1rem;">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status_pembayaran" value="Lunas">
+                        <input type="hidden" name="deposit" value="{{ $booking->deposit }}">
+                        <button type="submit"
+                            style="background: #10B981; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-weight:bold; color:white; cursor:pointer;">Konfirmasi
+                            Pelunasan & Tutup Booking Transaksi (Lunas)</button>
+                    </form>
+                </div>
             @elseif($booking->status_booking === 'Selesai')
                 <div style="text-align: center; padding: 2rem;">
                     <h3>✅ Transaksi Selesai</h3>
                     <p style="color: #64748b;">Mobil telah dikembalikan dan Invoice telah resmi diterbitkan.</p>
                     <a href="{{ route('admin.bookings.index') }}" class="btn btn-primary" style="margin-top: 1rem;">Kembali ke
                         Riwayat</a>
+                    <a href="{{ route('bookings.invoice', $booking->id) }}" class="btn btn-outline" target="_blank"
+                        style="margin-top: 1rem; margin-left:1rem; border: 1px solid #1e40af; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; color: #1e40af;">Cetak
+                        Invoice Final</a>
                 </div>
             @else
                 <div style="text-align: center; padding: 2rem;">

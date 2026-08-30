@@ -197,8 +197,12 @@ class AdminController extends Controller
         ]);
 
         // Auto update booking status if Lunas
-        if ($validated['status_pembayaran'] === 'Lunas' && $booking->status_booking === 'Menunggu Konfirmasi') {
-            $booking->update(['status_booking' => 'Booking Dikonfirmasi']);
+        if ($validated['status_pembayaran'] === 'Lunas') {
+            if ($booking->status_booking === 'Menunggu Konfirmasi') {
+                $booking->update(['status_booking' => 'Booking Dikonfirmasi']);
+            } elseif ($booking->status_booking === 'Menunggu Pelunasan') {
+                $booking->update(['status_booking' => 'Selesai', 'tagihan_susulan' => 0]);
+            }
         }
 
         return redirect()->route('admin.bookings.index')->with('success', 'Status Pembayaran & Deposit berhasil diperbarui!');
@@ -257,36 +261,35 @@ class AdminController extends Controller
         $validated['biaya_kerusakan'] = $validated['biaya_kerusakan'] ?? 0;
 
         $validated['waktu_pengembalian'] = now();
-        $validated['status_booking'] = 'Selesai';
+        $validated['status_booking'] = 'Selesai'; // Default jika tidak ada tunggakan
 
         $additional = $validated['denda_terlambat'] + $validated['biaya_kerusakan'];
-
+        
         // Logika Deposit
         if ($additional > 0) {
             $booking->total += $additional;
             $booking->biaya_tambahan += $additional;
-
+            
             if ($booking->deposit > 0) {
                 if ($additional > $booking->deposit) {
-                    $sisaTagihan = $additional - $booking->deposit;
-                    $booking->deposit = 0; // Deposit hangus 100%
-                    $booking->tagihan_susulan = $sisaTagihan;
-                    $booking->status_pembayaran = 'Belum Lunas'; // Rubah bayaran karena ada tunggakan
-                } else {
-                    $booking->deposit = $booking->deposit - $additional; // Sisa deposit dikembalikan
+                    $booking->tagihan_susulan = $additional - $booking->deposit;
+                    $booking->status_pembayaran = 'Belum Lunas';
+                    $validated['status_booking'] = 'Menunggu Pelunasan';
                 }
             } else {
                 $booking->tagihan_susulan = $additional;
                 $booking->status_pembayaran = 'Belum Lunas';
+                $validated['status_booking'] = 'Menunggu Pelunasan';
             }
             $booking->save();
         }
 
         $booking->update($validated);
-
+        
         // Update Status Mobil kembali
         if ($booking->car) {
-            $booking->car->update(['status_mobil' => 'Tersedia']);
+            $statusMobil = ($validated['biaya_kerusakan'] > 0) ? 'Maintenance' : 'Tersedia';
+            $booking->car->update(['status_mobil' => $statusMobil]);
         }
 
         return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil dikembalikan & Kalkulasi Tagihan Selesai.');

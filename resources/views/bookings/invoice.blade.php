@@ -164,10 +164,61 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" style="text-align: right; padding-top: 20px;"><strong>TOTAL KESELURUHAN:</strong>
+                    <td colspan="3" style="text-align: right; padding-top: 20px;"><strong>TOTAL BIAYA:</strong>
                     </td>
-                    <td class="total" style="padding-top: 20px;">Rp {{ number_format($booking->total, 0, ',', '.') }}
+                    <td class="total" style="padding-top: 20px; color:#1e293b;">Rp
+                        {{ number_format($booking->total, 0, ',', '.') }}
                     </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right; padding-top: 10px; color: #64748B;">Pembayaran Awal /
+                        Booking:</td>
+                    <td style="padding-top: 10px; text-align: right; font-weight:bold; color: #3B82F6;">Rp
+                        {{ number_format($booking->subtotal, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right; padding-top: 5px; color: #64748B;">Jaminan Deposit
+                        Diserahkan:</td>
+                    <td style="padding-top: 5px; text-align: right; font-weight:bold; color: #D97706;">Rp
+                        {{ number_format($booking->deposit, 0, ',', '.') }}</td>
+                </tr>
+                @php
+                    $dendaKerusakan = $booking->denda_terlambat + $booking->biaya_kerusakan;
+                @endphp
+                @if($dendaKerusakan > 0 && $booking->deposit >= $dendaKerusakan)
+                    <tr>
+                        <td colspan="3" style="text-align: right; padding-top: 5px; color: #64748B;">Deposit Digunakan Utk
+                            Denda/Rusak:</td>
+                        <td style="padding-top: 5px; text-align: right; font-weight:bold; color: #EF4444;">- Rp
+                            {{ number_format($dendaKerusakan, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right; padding-top: 10px; font-weight:bold; color: #059669;">SISA
+                            DEPOSIT DIKEMBALIKAN TUNAI:</td>
+                        <td style="padding-top: 10px; text-align: right; font-weight:bold; color: #059669; font-size:18px;">
+                            Rp {{ number_format($booking->deposit - $dendaKerusakan, 0, ',', '.') }}</td>
+                    </tr>
+                @elseif($dendaKerusakan > 0 && $booking->deposit < $dendaKerusakan)
+                    <tr>
+                        <td colspan="3" style="text-align: right; padding-top: 5px; color: #64748B;">Deposit Disita Penuh
+                            Utk Denda:</td>
+                        <td style="padding-top: 5px; text-align: right; font-weight:bold; color: #EF4444;">- Rp
+                            {{ number_format($booking->deposit, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right; padding-top: 10px; font-weight:bold; color: #E11D48;">
+                            KEKURANGAN / TAGIHAN SUSULAN:</td>
+                        <td style="padding-top: 10px; text-align: right; font-weight:bold; color: #E11D48; font-size:18px;">
+                            Rp {{ number_format($booking->tagihan_susulan, 0, ',', '.') }}</td>
+                    </tr>
+                @endif
+                <tr>
+                    <td colspan="3"
+                        style="text-align: right; padding-top: 10px; font-weight:bold; border-top: 2px solid #E2E8F0;">
+                        STATUS AKHIR:</td>
+                    <td
+                        style="padding-top: 10px; text-align: right; font-weight:bold; color: {{ $booking->status_pembayaran === 'Lunas' ? '#059669' : '#E11D48' }}; font-size: 24px; border-top: 2px solid #E2E8F0;">
+                        {{ strtoupper($booking->status_pembayaran) }}</td>
                 </tr>
             </tfoot>
         </table>
