@@ -12,13 +12,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seeding Akun Admin (Pemilik Rental)
+        // Seeding Akun Admin (Operasional)
         \App\Models\User::updateOrCreate(
             ['email' => 'admin@rentalmobil.com'],
             [
                 'name' => 'Administrator Rental',
                 'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
                 'role' => 'admin'
+            ]
+        );
+
+        // Seeding Akun Owner (Pemilik Bisnis)
+        \App\Models\User::updateOrCreate(
+            ['email' => 'owner@rentalmobil.com'],
+            [
+                'name' => 'Pemilik Bisnis Utama',
+                'password' => \Illuminate\Support\Facades\Hash::make('owner123'),
+                'role' => 'owner'
             ]
         );
 
