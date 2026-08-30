@@ -161,4 +161,12 @@ class BookingController extends Controller
 
         return redirect()->back()->with('success', 'Booking berhasil dibatalkan secara sepihak.');
     }
+
+    public function invoice(Booking $booking)
+    {
+        if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+        return view('bookings.invoice', compact('booking'));
+    }
 }

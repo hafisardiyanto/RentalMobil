@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -46,13 +47,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/bookings', [AdminController::class, 'bookingsIndex'])->name('admin.bookings.index');
         Route::put('/bookings/{booking}/status', [AdminController::class, 'updateBookingStatus'])->name('admin.bookings.update-status');
         Route::put('/bookings/{booking}/payment-status', [AdminController::class, 'updatePaymentStatus'])->name('admin.bookings.update-payment-status');
-        
+
         // Handover & Return
         Route::get('/bookings/{booking}/handover', [AdminController::class, 'handoverForm'])->name('admin.bookings.handover');
         Route::post('/bookings/{booking}/handover', [AdminController::class, 'processHandover'])->name('admin.bookings.process-handover');
         Route::get('/bookings/{booking}/return', [AdminController::class, 'returnForm'])->name('admin.bookings.return');
         Route::post('/bookings/{booking}/return', [AdminController::class, 'processReturn'])->name('admin.bookings.process-return');
-        
+
+        // Reports
+        Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports.index');
+
         Route::delete('/bookings/{booking}', [AdminController::class, 'destroyBooking'])->name('admin.bookings.destroy');
     });
 
@@ -61,10 +65,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
 
-    // User Payment Routes
+    // User Profile Routes
+    Route::get('/profile', [ProfileController::class, 'showProfile'])->name('profile.index');
+    Route::put('/profile/identity', [ProfileController::class, 'updateIdentity'])->name('profile.identity');
+
+    // User Payment & Invoice Routes
     Route::get('/bookings/{booking}/payment', [BookingController::class, 'paymentForm'])->name('bookings.payment');
     Route::post('/bookings/{booking}/payment', [BookingController::class, 'uploadPayment'])->name('bookings.payment.upload');
 
-    // User Action/Cancel
-    Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancelBooking'])->name('bookings.cancel');
+    // Cancellation
+    Route::put('/bookings/{booking}/cancel', [BookingController::class, 'cancelBooking'])->name('bookings.cancel');
+
+    // Invoice
+    Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->name('bookings.invoice');
 });

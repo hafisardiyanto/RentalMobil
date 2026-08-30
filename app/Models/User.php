@@ -23,6 +23,10 @@ class User extends Authenticatable
         'password',
         'role',
         'phone',
+        'nik',
+        'address',
+        'sim_photo',
+        'ktp_photo',
     ];
 
     /**

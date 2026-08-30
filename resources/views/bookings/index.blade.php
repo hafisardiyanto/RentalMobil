@@ -108,6 +108,9 @@
                                         </form>
                                     @else
                                         <span style="color: #64748B; font-weight: bold;">{{ $booking->status_pembayaran }}</span>
+                                        @if($booking->status_booking === 'Selesai')
+                                            <a href="{{ route('bookings.invoice', $booking->id) }}" style="color: #047857; font-size: 0.85rem; font-weight: bold; text-decoration: underline; display: block; margin-top: 5px;" target="_blank">📄 Cetak Invoice</a>
+                                        @endif
                                     @endif
                                 </div>
                             </td>

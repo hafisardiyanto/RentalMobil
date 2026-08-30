@@ -262,6 +262,21 @@ class AdminController extends Controller
         return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil dikembalikan.');
     }
 
+    public function reports(Request $request)
+    {
+        $query = Booking::where('status_booking', 'Selesai')->with(['user', 'car']);
+
+        if ($request->has('bulan') && $request->bulan) {
+            $query->whereMonth('created_at', date('m', strtotime($request->bulan)))
+                ->whereYear('created_at', date('Y', strtotime($request->bulan)));
+        }
+
+        $bookings = $query->orderBy('waktu_pengembalian', 'desc')->get();
+        $totalPendapatan = $bookings->sum('total');
+
+        return view('admin.reports.index', compact('bookings', 'totalPendapatan'));
+    }
+
     public function destroyBooking(Booking $booking)
     {
         // Don't need to manually update car availability as it is dynamic now based on date span
