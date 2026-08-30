@@ -64,7 +64,7 @@
                 @csrf
             </form>
             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                style="color: #FCA5A5;">🚪 Keluar (Logout)</a>
+                class="logout-link">🚪 Keluar (Logout)</a>
         </div>
     </aside>
 
@@ -72,19 +72,18 @@
         <header class="top-navbar">
             <div class="user-info">
                 <span>Welcome, {{ Auth::user()->name }}</span>
-                <span
-                    style="background: var(--primary); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">Admin</span>
+                <span class="admin-badge">Admin</span>
             </div>
         </header>
 
         <main class="content-area">
             @if(session('success'))
-                <div class="alert alert-success" style="margin: 0 0 1.5rem 0;">
+                <div class="alert alert-success alert-box">
                     {{ session('success') }}
                 </div>
             @endif
             @if(session('error'))
-                <div class="alert alert-danger" style="margin: 0 0 1.5rem 0;">
+                <div class="alert alert-danger alert-box">
                     {{ session('error') }}
                 </div>
             @endif

@@ -108,3 +108,321 @@
     padding: 3rem;
     color: #64748B;
 }
+
+/* -----------------------------
+   BOOKING SHOW VIEW CSS
+------------------------------*/
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #F1F5F9;
+    padding-bottom: 1rem;
+}
+
+.booking-header h2 {
+    margin: 0;
+    color: #1e293b;
+}
+
+.booking-date {
+    margin: 5px 0 0 0;
+    color: #64748b;
+}
+
+.status-row {
+    margin-bottom: 5px;
+}
+
+.status-pill {
+    background: #E2E8F0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.info-section-title {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-table td.label-col {
+    width: 150px;
+}
+
+.info-val {
+    font-weight: bold;
+}
+
+.text-success {
+    color: #047857;
+}
+
+.text-warning {
+    color: #D97706;
+}
+
+.text-danger {
+    color: #E11D48;
+}
+
+.large-price {
+    font-size: 1.2rem;
+}
+
+.doc-thumbnails {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.doc-thumbnails img {
+    height: 60px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.proof-img {
+    height: 100px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.action-area {
+    background: #F8FAFC;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+}
+
+.action-area-title {
+    margin-top: 0;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+}
+
+.action-panel {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.panel-primary {
+    border-left: 4px solid var(--primary);
+}
+
+.panel-warning {
+    border-left: 4px solid #F59E0B;
+}
+
+.panel-success {
+    border-left: 4px solid #10B981;
+}
+
+.panel-danger {
+    border-left: 4px solid #EF4444;
+}
+
+.panel-desc {
+    color: #64748B;
+    margin-bottom: 1rem;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-grid-2-1 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.b-form-group {
+    margin-bottom: 1rem;
+}
+
+.b-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.b-label-sm {
+    font-size: 0.85rem;
+}
+
+.b-input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.b-input-sm {
+    padding: 0.5rem;
+}
+
+.btn-start {
+    background: #F59E0B;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-return {
+    background: #10B981;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-finalize {
+    background: #1e40af;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+.fines-form-box {
+    background: #F8FAFC;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid #E2E8F0;
+}
+
+.fines-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.fines-table thead tr {
+    background: #F1F5F9;
+    text-align: left;
+}
+
+.fines-table th,
+.fines-table td {
+    padding: 8px;
+}
+
+.fines-table tbody tr {
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.fine-proof-link {
+    font-size: 0.75rem;
+}
+
+.fine-amount {
+    color: #E11D48;
+    font-weight: bold;
+    text-align: right;
+}
+
+.fine-date {
+    color: #64748B;
+    font-size: 0.85rem;
+}
+
+.audit-log-box {
+    background: #F8FAFC;
+    border: 1px dashed #CBD5E1;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.audit-log-title {
+    margin: 0 0 10px 0;
+    color: #64748B;
+}
+
+.audit-log-list {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.audit-log-list li {
+    margin-bottom: 5px;
+}
+
+.pending-cashier-msg {
+    color: #F59E0B;
+    text-align: center;
+    border: 1px dashed #F59E0B;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.completed-box {
+    text-align: center;
+    padding: 2rem;
+}
+
+.completed-box h3 {
+    margin-bottom: 0.5rem;
+}
+
+.completed-box p {
+    color: #64748b;
+}
+
+.btn-print {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    border: 1px solid #1e40af;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #1e40af;
+    display: inline-block;
+}

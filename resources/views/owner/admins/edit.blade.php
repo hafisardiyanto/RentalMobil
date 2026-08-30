@@ -1,11 +1,16 @@
 @extends('layouts.admin')
 
+@push('admin_styles')
+    <link rel="stylesheet" href="{{ asset('css/owner/admins.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/owner/roles.css') }}">
+@endpush
+
 @section('content')
-    <div class="box" style="max-width: 600px; margin: 0 auto;">
-        <h2 style="margin-top: 0; margin-bottom: 1.5rem; color: #1e293b;">Edit Data Admin</h2>
+    <div class="box admin-form-box">
+        <h2 class="admin-page-title">Edit Data Admin</h2>
 
         @if ($errors->any())
-            <div style="background: #FEE2E2; color: #B91C1C; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
+            <div class="admin-alerts error">
                 <ul style="margin: 0; padding-left: 20px;">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -18,47 +23,43 @@
             @csrf
             @method('PUT')
 
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Lengkap</label>
-                <input type="text" name="name" value="{{ old('name', $admin->name) }}" required
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group-admin">
+                <label>Nama Lengkap</label>
+                <input type="text" name="name" value="{{ old('name', $admin->name) }}" required class="input-admin">
             </div>
 
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Alamat Email</label>
-                <input type="email" name="email" value="{{ old('email', $admin->email) }}" required
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group-admin">
+                <label>Alamat Email</label>
+                <input type="email" name="email" value="{{ old('email', $admin->email) }}" required class="input-admin">
             </div>
 
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Jabatan (Role Pegawai)</label>
-                <select name="admin_role_id"
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group-admin">
+                <label>Jabatan (Role Pegawai)</label>
+                <select name="admin_role_id" class="input-admin">
                     <option value="">-- Tidak Memiliki Jabatan Khusus (Hanya Dashboard) --</option>
                     @foreach($roles as $role)
                         <option value="{{ $role->id }}" {{ $admin->admin_role_id == $role->id ? 'selected' : '' }}>
-                            {{ $role->name }}</option>
+                            {{ $role->name }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Ganti Kata Sandi (Opsional)</label>
+            <div class="form-group-admin">
+                <label>Ganti Kata Sandi (Opsional)</label>
                 <input type="password" name="password" placeholder="Kosongkan jika tidak ingin ganti password"
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+                    class="input-admin">
             </div>
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Konfirmasi Kata Sandi Baru</label>
+            <div class="form-group-admin" style="margin-bottom: 1.5rem;">
+                <label>Konfirmasi Kata Sandi Baru</label>
                 <input type="password" name="password_confirmation" placeholder="Ulangi password baru (jika diisi)"
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+                    class="input-admin">
             </div>
 
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <a href="{{ route('owner.admins.index') }}" class="btn btn-outline"
-                    style="padding: 0.75rem 1.5rem; text-decoration: none; border: 1px solid #ccc; color: #475569;">Batal</a>
-                <button type="submit" class="btn btn-primary"
-                    style="padding: 0.75rem 1.5rem; border: none; cursor: pointer;">Simpan Perubahan</button>
+            <div class="admin-controls">
+                <a href="{{ route('owner.admins.index') }}" class="btn btn-outline">Batal</a>
+                <button type="submit" class="btn btn-primary btn-save">Simpan Perubahan</button>
             </div>
         </form>
     </div>

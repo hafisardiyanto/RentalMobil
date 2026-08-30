@@ -1,0 +1,99 @@
+/* public/css/owner/admins.css */
+
+.box.admin-form-box {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.admin-page-title {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+}
+
+.admin-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.admin-header-wrapper h2 {
+    margin: 0;
+    color: #1e293b;
+}
+
+.admin-alerts {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.admin-alerts.success {
+    background: #10B981;
+    color: white;
+}
+
+.admin-alerts.error {
+    background: #FEE2E2;
+    color: #B91C1C;
+}
+
+.form-group-admin {
+    margin-bottom: 1rem;
+}
+
+.form-group-admin label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.input-admin {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.admin-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+/* data table tweaks */
+.admins-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admins-table th {
+    background: #F8FAFC;
+    border-bottom: 2px solid #E2E8F0;
+    text-align: left;
+    padding: 1rem;
+    color: #475569;
+}
+
+.admins-table td {
+    border-bottom: 1px solid #E2E8F0;
+    padding: 1rem;
+}
+
+.admins-table td.admin-name {
+    font-weight: bold;
+}
+
+.admin-role-badge {
+    background: #1e40af;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
