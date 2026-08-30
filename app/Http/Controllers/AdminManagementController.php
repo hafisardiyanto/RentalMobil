@@ -18,7 +18,8 @@ class AdminManagementController extends Controller
 
     public function create()
     {
-        return view('owner.admins.create');
+        $roles = \App\Models\AdminRole::all();
+        return view('owner.admins.create', compact('roles'));
     }
 
     public function store(Request $request)
@@ -27,6 +28,7 @@ class AdminManagementController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'admin_role_id' => ['nullable', 'exists:admin_roles,id']
         ]);
 
         $user = User::create([
@@ -34,6 +36,7 @@ class AdminManagementController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'admin',
+            'admin_role_id' => $request->admin_role_id
         ]);
 
         return redirect()->route('owner.admins.index')->with('success', 'Akun admin berhasil didaftarkan.');
@@ -44,7 +47,8 @@ class AdminManagementController extends Controller
         if ($admin->role !== 'admin') {
             abort(403, 'Hanya bisa mengedit akun Admin.');
         }
-        return view('owner.admins.edit', compact('admin'));
+        $roles = \App\Models\AdminRole::all();
+        return view('owner.admins.edit', compact('admin', 'roles'));
     }
 
     public function update(Request $request, User $admin)
@@ -57,10 +61,12 @@ class AdminManagementController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $admin->id],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'admin_role_id' => ['nullable', 'exists:admin_roles,id']
         ]);
 
         $admin->name = $request->name;
         $admin->email = $request->email;
+        $admin->admin_role_id = $request->admin_role_id;
 
         if ($request->filled('password')) {
             $admin->password = Hash::make($request->password);

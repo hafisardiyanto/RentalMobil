@@ -21,15 +21,30 @@
 
         <div class="nav-group">
             <div class="nav-title">Menu Utama</div>
+
+            @php
+                $isOwner = Auth::user()->role === 'owner';
+                $permissions = Auth::user()->adminRole->permissions ?? [];
+            @endphp
+
             <a href="{{ route('admin.dashboard') }}"
                 class="nav-dashboard {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">📊 Dashboard</a>
-            <a href="{{ route('admin.cars.index') }}"
-                class="nav-cars {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">🚗 Manajemen Mobil</a>
-            <a href="{{ route('admin.bookings.index') }}"
-                class="nav-bookings {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">📂 Manajemen
-                Booking</a>
-            <a href="{{ route('admin.reports.index') }}"
-                class="nav-reports {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">📈 Laporan Keuangan</a>
+
+            @if($isOwner || in_array('manage_cars', $permissions))
+                <a href="{{ route('admin.cars.index') }}"
+                    class="nav-cars {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">🚗 Manajemen Mobil</a>
+            @endif
+
+            @if($isOwner || in_array('manage_bookings', $permissions))
+                <a href="{{ route('admin.bookings.index') }}"
+                    class="nav-bookings {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">📂 Manajemen
+                    Booking</a>
+            @endif
+
+            @if($isOwner || in_array('view_reports', $permissions))
+                <a href="{{ route('admin.reports.index') }}"
+                    class="nav-reports {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">📈 Laporan Keuangan</a>
+            @endif
         </div>
 
         <div class="nav-group">
@@ -39,6 +54,10 @@
                 <a href="{{ route('owner.admins.index') }}"
                     class="{{ request()->routeIs('owner.admins.*') ? 'active' : '' }}">
                     👥 Kelola Pegawai
+                </a>
+                <a href="{{ route('owner.roles.index') }}"
+                    class="{{ request()->routeIs('owner.roles.*') ? 'active' : '' }}">
+                    🛡️ Kelola Jabatan (Roles)
                 </a>
             @endif
             <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display: none;">

@@ -26,7 +26,13 @@
             <tbody>
                 @forelse($admins as $admin)
                     <tr style="border-bottom: 1px solid #E2E8F0;">
-                        <td style="padding: 1rem; font-weight: bold;">{{ $admin->name }}</td>
+                        <td style="padding: 1rem; font-weight: bold;">
+                            {{ $admin->name }}
+                            @if($admin->adminRole)
+                                <br><span
+                                    style="background: #1e40af; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">{{ $admin->adminRole->name }}</span>
+                            @endif
+                        </td>
                         <td style="padding: 1rem; color: #64748B;">{{ $admin->email }}</td>
                         <td style="padding: 1rem; color: #64748B;">{{ $admin->created_at->format('d M Y') }}</td>
                         <td style="padding: 1rem; text-align: right;">

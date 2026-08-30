@@ -29,6 +29,17 @@
             </div>
 
             <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Jabatan (Role Pegawai)</label>
+                <select name="admin_role_id"
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="">-- Tidak Memiliki Jabatan Khusus (Hanya Dashboard) --</option>
+                    @foreach($roles as $role)
+                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
                 <label style="display: block; font-weight: bold; margin-bottom: 5px;">Kata Sandi (Password)</label>
                 <input type="password" name="password" required
                     style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">

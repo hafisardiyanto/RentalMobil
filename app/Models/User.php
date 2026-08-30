@@ -27,6 +27,7 @@ class User extends Authenticatable
         'address',
         'sim_photo',
         'ktp_photo',
+        'admin_role_id',
     ];
 
     /**
@@ -51,5 +52,10 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function adminRole()
+    {
+        return $this->belongsTo(AdminRole::class, 'admin_role_id');
     }
 }
