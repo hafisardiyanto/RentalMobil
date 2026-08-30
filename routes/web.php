@@ -63,8 +63,15 @@ Route::middleware('auth')->group(function () {
         // Reports
         Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports.index');
 
-        Route::delete('/bookings/{booking}', [AdminController::class, 'destroyBooking'])->name('admin.bookings.destroy');
     });
+
+    // ==========================================
+    // OWNER EXCLUSIVE ROUTES
+    // ==========================================
+    Route::middleware([\App\Http\Middleware\IsOwner::class])->prefix('owner')->name('owner.')->group(function () {
+        Route::resource('admins', \App\Http\Controllers\AdminManagementController::class)->except(['show']);
+    });
+    Route::delete('/bookings/{booking}', [AdminController::class, 'destroyBooking'])->name('admin.bookings.destroy');
 
     // User Booking Routes
     Route::get('/my-bookings', [BookingController::class, 'index'])->name('bookings.index');

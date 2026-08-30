@@ -37,6 +37,11 @@
         <div class="nav-group">
             <div class="nav-title">Pengaturan</div>
             <a href="/">🌐 Lihat Web Panel</a>
+            @if(Auth::user()->role === 'owner')
+                <a href="{{ route('owner.admins.index') }}" class="{{ request()->routeIs('owner.admins.*') ? 'active' : '' }}">
+                    👥 Kelola Pegawai
+                </a>
+            @endif
             <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display: none;">
                 @csrf
             </form>
