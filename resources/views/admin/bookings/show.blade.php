@@ -116,23 +116,21 @@
                 <div
                     style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 1rem;">
                     <h4>✓ Verifikasi Pembayaran Customer</h4>
-                    <p style="color: #64748B; margin-bottom: 1rem;">Customer telah mengunggah bukti pembayaran. Harap pastikan
-                        mutasi rekening valid sebelum menekan Lunas.</p>
+                    <p style="color: #64748B; margin-bottom: 1rem;">Customer telah mengunggah bukti pembayaran. Harap pastikan mutasi rekening valid sebelum menekan Lunas.</p>
+                    @can('edit_bookings')
                     <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST"
                         style="display: flex; gap: 1rem; align-items: center;">
                         @csrf
                         @method('PUT')
 
                         <div>
-                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Input Nominal Deposit
-                                (Jaminan)</label>
+                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Input Nominal Deposit (Jaminan)</label>
                             <input type="number" name="deposit" value="{{ $booking->deposit > 0 ? $booking->deposit : '' }}"
                                 placeholder="Rp 0 (Kosongkan bila tidak ada)"
                                 style="padding: 0.6rem; border: 1px solid #ccc; width: 250px; border-radius: 4px;">
                         </div>
 
                         <input type="hidden" name="status_pembayaran" value="Lunas">
-                        <!-- Deposit not yet handled completely by updatePaymentStatus controller directly, but UI is ready. For now we will update Controller shortly. -->
                         <button type="submit" class="btn btn-primary" style="margin-top: 23px;">Lunas & Dikonfirmasi</button>
                         <a href="#" onclick="event.preventDefault(); document.getElementById('reject-form').submit();"
                             style="color: #EF4444; font-weight: bold; margin-top: 23px; margin-left: 1rem;">Tolak & Batalkan</a>
@@ -143,91 +141,78 @@
                         @method('PUT')
                         <input type="hidden" name="status_booking" value="Ditolak">
                     </form>
+                    @else
+                        <p style="color: #EF4444; font-weight:bold;">Hubungi Kasir yang berwenang untuk memverifikasi pesanan ini.</p>
+                    @endcan
                 </div>
 
             @elseif($booking->status_booking === 'Booking Dikonfirmasi')
                 <div
                     style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #F59E0B; margin-bottom: 1rem;">
                     <h4>🚗 Proses Serah Terima (Handover)</h4>
-                    <p style="color: #64748B; margin-bottom: 1rem;">Lengkapi data awal kendaraan sebelum pelanggan membawa mobil
-                        keluar garasi.</p>
-
-                    <form action="{{ route('admin.bookings.process-handover', $booking->id) }}" method="POST"
-                        enctype="multipart/form-data">
+                    <p style="color: #64748B; margin-bottom: 1rem;">Lengkapi data awal kendaraan sebelum pelanggan membawa mobil keluar garasi.</p>
+                    
+                    @can('edit_bookings')
+                    <form action="{{ route('admin.bookings.process-handover', $booking->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                             <div>
-                                <label style="display: block; font-weight:bold; margin-bottom: 5px;">KM Berangkat
-                                    Odometer</label>
-                                <input type="number" name="km_awal" required
-                                    style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <label style="display: block; font-weight:bold; margin-bottom: 5px;">KM Berangkat Odometer</label>
+                                <input type="number" name="km_awal" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                             <div>
-                                <label style="display: block; font-weight:bold; margin-bottom: 5px;">Posisi BBM Awal (Misal:
-                                    3/4)</label>
-                                <input type="text" name="bbm_awal" required
-                                    style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <label style="display: block; font-weight:bold; margin-bottom: 5px;">Posisi BBM Awal (Misal: 3/4)</label>
+                                <input type="text" name="bbm_awal" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                         </div>
                         <div style="margin-bottom: 1rem;">
-                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Cacat / Kondisi Awal Fisik
-                                Mobil</label>
-                            <textarea name="kondisi_awal" required
-                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;"
-                                rows="2"></textarea>
+                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Cacat / Kondisi Awal Fisik Mobil</label>
+                            <textarea name="kondisi_awal" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;" rows="2"></textarea>
                         </div>
                         <div style="margin-bottom: 1rem;">
-                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Foto Aktual Mobil Sebelum
-                                Diserahkan</label>
-                            <input type="file" name="foto_awal" accept="image/*" required
-                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Foto Aktual Mobil Sebelum Diserahkan</label>
+                            <input type="file" name="foto_awal" accept="image/*" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                         </div>
-                        <button type="submit"
-                            style="background: #F59E0B; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-weight:bold; color:white; cursor:pointer;">Mulai
-                            Masa Sewa -> Sedang Disewa</button>
+                        <button type="submit" style="background: #F59E0B; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-weight:bold; color:white; cursor:pointer;">Mulai Masa Sewa -> Sedang Disewa</button>
                     </form>
+                    @else
+                        <p style="color: #EF4444; font-weight:bold;">Hubungi staf operasional untuk melakukan proses Serah Terima.</p>
+                    @endcan
                 </div>
 
             @elseif($booking->status_booking === 'Sedang Disewa')
                 <div
                     style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #10B981; margin-bottom: 1rem;">
                     <h4>🔙 Proses Pengembalian (Return)</h4>
-                    <p style="color: #64748B; margin-bottom: 1rem;">Lengkapi data akhir kedatangan mobil. Setelah ini, Anda
-                        dapat merinci Denda atau Kerusakan jika ada sebelum Finalisasi Invoice.</p>
+                    <p style="color: #64748B; margin-bottom: 1rem;">Lengkapi data akhir kedatangan mobil. Setelah ini, Anda dapat merinci Denda atau Kerusakan jika ada sebelum Finalisasi Invoice.</p>
 
-                    <form action="{{ route('admin.bookings.process-return', $booking->id) }}" method="POST"
-                        enctype="multipart/form-data">
+                    @can('edit_bookings')
+                    <form action="{{ route('admin.bookings.process-return', $booking->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                             <div>
                                 <label style="display: block; font-weight:bold; margin-bottom: 5px;">KM Akhir Odometer</label>
-                                <input type="number" name="km_akhir" required
-                                    style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <input type="number" name="km_akhir" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                             <div>
                                 <label style="display: block; font-weight:bold; margin-bottom: 5px;">Posisi BBM Akhir</label>
-                                <input type="text" name="bbm_akhir" required
-                                    style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <input type="text" name="bbm_akhir" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                         </div>
 
                         <div style="margin-bottom: 1rem;">
-                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Kondisi Awal Saat Kembali
-                                (Umum)</label>
-                            <textarea name="kondisi_akhir" required
-                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;"
-                                rows="2">Mobil kembali dalam keadaan aman.</textarea>
+                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Kondisi Awal Saat Kembali (Umum)</label>
+                            <textarea name="kondisi_akhir" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;" rows="2">Mobil kembali dalam keadaan aman.</textarea>
                         </div>
                         <div style="margin-bottom: 1rem;">
-                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Foto Aktual Mobil Saat
-                                Dikembalikan</label>
-                            <input type="file" name="foto_akhir" accept="image/*" required
-                                style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                            <label style="display: block; font-weight:bold; margin-bottom: 5px;">Foto Aktual Mobil Saat Dikembalikan</label>
+                            <input type="file" name="foto_akhir" accept="image/*" required style="width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
                         </div>
-                        <button type="submit"
-                            style="background: #10B981; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-weight:bold; color:white; cursor:pointer;">Mobil
-                            Diterima (Lanjut Pemeriksaan)</button>
+                        <button type="submit" style="background: #10B981; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-weight:bold; color:white; cursor:pointer;">Mobil Diterima (Lanjut Pemeriksaan)</button>
                     </form>
+                    @else
+                        <p style="color: #EF4444; font-weight:bold;">Hubungi staf operasional untuk melakukan proses Pengembalian Kendaraan.</p>
+                    @endcan
                 </div>
             @elseif($booking->status_booking === 'Pemeriksaan')
                 <div
@@ -237,51 +222,41 @@
                         denda terlambat. Transparansi sangat penting.</p>
 
                     <!-- ADD FINE FORM -->
+                    @can('manage_fines')
                     <form action="{{ route('admin.fines.store', $booking->id) }}" method="POST" enctype="multipart/form-data"
                         style="background: #F8FAFC; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #E2E8F0;">
                         @csrf
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                             <div>
-                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Jenis
-                                    Biaya</label>
-                                <select name="type" required
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Jenis Biaya</label>
+                                <select name="type" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                                     <option value="Kerusakan">Kerusakan</option>
                                     <option value="Denda Terlambat">Denda Terlambat</option>
                                     <option value="Lainnya">Lainnya</option>
                                 </select>
                             </div>
                             <div>
-                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Bagian
-                                    Mobil (Opsional)</label>
-                                <input type="text" name="part_name" placeholder="Misal: Bumper Belakang"
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Bagian Mobil (Opsional)</label>
+                                <input type="text" name="part_name" placeholder="Misal: Bumper Belakang" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                             <div>
-                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Tagihan
-                                    (Rp)</label>
-                                <input type="number" name="amount" required
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Tagihan (Rp)</label>
+                                <input type="number" name="amount" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                         </div>
                         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                             <div>
-                                <label
-                                    style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Deskripsi
-                                    Detail Kerusakan</label>
-                                <input type="text" name="description" required
-                                    placeholder="Misal: Lecet cukup dalam akibat goresan"
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Deskripsi Detail Kerusakan</label>
+                                <input type="text" name="description" required placeholder="Misal: Lecet cukup dalam akibat goresan" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                             <div>
-                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Upload
-                                    Bukti Foto</label>
-                                <input type="file" name="photo" accept="image/*"
-                                    style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                                <label style="display: block; font-weight:bold; margin-bottom: 5px; font-size: 0.85rem;">Upload Bukti Foto</label>
+                                <input type="file" name="photo" accept="image/*" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary" style="padding: 0.4rem 1rem;">+ Tambah Log Biaya</button>
                     </form>
+                    @endcan
 
                     <!-- FINES TABLE -->
                     @if($booking->fines->count() > 0)
@@ -311,6 +286,7 @@
                                         <td style="padding: 8px;">{{ $fine->user->name ?? 'Admin' }}<br><small
                                                 style="color:#64748B;">{{ $fine->created_at->format('d M H:i') }}</small></td>
                                         <td style="padding: 8px;">
+                                            @can('manage_fines')
                                             <form action="{{ route('admin.fines.destroy', $fine->id) }}" method="POST"
                                                 onsubmit="return confirm('Hapus item ini?')">
                                                 @csrf
@@ -319,6 +295,7 @@
                                                     style="background:none; border:none; color:#EF4444; font-weight:bold; cursor:pointer;"
                                                     title="Hapus">X</button>
                                             </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -347,12 +324,16 @@
                         </div>
                     @endif
 
+                    @can('edit_bookings')
                     <form action="{{ route('admin.bookings.finalize', $booking->id) }}" method="POST">
                         @csrf
                         <button type="submit"
                             style="background: #1e40af; padding: 0.8rem 1.5rem; border: none; border-radius: 6px; font-weight:bold; color:white; cursor:pointer; width: 100%;">🏁
                             SIMPAN SEMUA & FINALISASI INVOICE</button>
                     </form>
+                    @else
+                    <p style="color: #F59E0B; text-align: center; border: 1px dashed #F59E0B; padding: 1rem; border-radius: 6px;">Menunggu kasir utama untuk Finalisasi Invoice & Denda.</p>
+                    @endcan
                 </div>
             @elseif($booking->status_booking === 'Menunggu Pelunasan')
                 <div
@@ -361,6 +342,7 @@
                     <p style="color: #64748B; margin-bottom: 1rem;">Pelanggan memiliki Tagihan Susulan sebesar <b>Rp
                             {{ number_format($booking->tagihan_susulan, 0, ',', '.') }}</b> yang melebihi batas Deposit.
                         Transaksi tidak dapat diselesaikan ke tahap Selesai sebelum tunggakan dilunasi.</p>
+                    @can('edit_bookings')
                     <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST"
                         style="margin-top: 1rem;">
                         @csrf
@@ -371,6 +353,7 @@
                             style="background: #10B981; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-weight:bold; color:white; cursor:pointer;">Konfirmasi
                             Pelunasan & Tutup Booking Transaksi (Lunas)</button>
                     </form>
+                    @endcan
                 </div>
             @elseif($booking->status_booking === 'Selesai')
                 <div style="text-align: center; padding: 2rem;">

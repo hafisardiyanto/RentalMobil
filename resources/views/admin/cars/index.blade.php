@@ -7,8 +7,10 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title" style="margin: 0;">Daftar Armada Mobil</h1>
-        <a href="{{ route('admin.cars.create') }}" class="btn btn-primary" style="text-decoration: none;">+ Tambah Mobil
-            Baru</a>
+        @can('create_cars')
+            <a href="{{ route('admin.cars.create') }}" class="btn btn-primary" style="text-decoration: none;">+ Tambah Mobil
+                Baru</a>
+        @endcan
     </div>
 
     <div class="box table-box">
@@ -46,11 +48,11 @@
                             </td>
                             <td>
                                 <span class="status-badge" style="background: 
-                                    {{ $car->status_mobil == 'Sedang Disewa' ? '#DBEAFE' :
+                                                {{ $car->status_mobil == 'Sedang Disewa' ? '#DBEAFE' :
                     ($car->status_mobil == 'Tersedia' ? '#D1FAE5' :
                         ($car->status_mobil == 'Tidak Aktif' ? '#FEE2E2' : '#FEF3C7')) }};
-                                    color: 
-                                    {{ $car->status_mobil == 'Sedang Disewa' ? '#1E40AF' :
+                                                color: 
+                                                {{ $car->status_mobil == 'Sedang Disewa' ? '#1E40AF' :
                     ($car->status_mobil == 'Tersedia' ? '#065F46' :
                         ($car->status_mobil == 'Tidak Aktif' ? '#991B1B' : '#92400E')) }};">
                                     {{ $car->status_mobil }}
@@ -59,15 +61,20 @@
                             <td>
                                 <div class="action-links">
                                     <a href="{{ route('admin.cars.show', $car->id) }}" class="link-detail">Detail</a>
-                                    <span class="action-separator">|</span>
-                                    <a href="{{ route('admin.cars.edit', $car->id) }}" class="link-edit">Edit</a>
-                                    <span class="action-separator">|</span>
-                                    <form action="{{ route('admin.cars.destroy', $car->id) }}" method="POST"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus mobil ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-delete">Hapus</button>
-                                    </form>
+                                    @can('edit_cars')
+                                        <span class="action-separator">|</span>
+                                        <a href="{{ route('admin.cars.edit', $car->id) }}" class="link-edit">Edit</a>
+                                    @endcan
+
+                                    @can('delete_cars')
+                                        <span class="action-separator">|</span>
+                                        <form action="{{ route('admin.cars.destroy', $car->id) }}" method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus mobil ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-delete">Hapus</button>
+                                        </form>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

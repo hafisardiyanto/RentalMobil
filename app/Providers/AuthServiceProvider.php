@@ -24,22 +24,24 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('manage_cars', function (User $user) {
-            if ($user->role === 'owner')
-                return true;
-            return $user->role === 'admin' && in_array('manage_cars', $user->adminRole->permissions ?? []);
-        });
+        $permissions = [
+            'view_cars',
+            'create_cars',
+            'edit_cars',
+            'delete_cars',
+            'view_bookings',
+            'edit_bookings',
+            'manage_fines',
+            'delete_bookings',
+            'view_reports'
+        ];
 
-        Gate::define('manage_bookings', function (User $user) {
-            if ($user->role === 'owner')
-                return true;
-            return $user->role === 'admin' && in_array('manage_bookings', $user->adminRole->permissions ?? []);
-        });
-
-        Gate::define('view_reports', function (User $user) {
-            if ($user->role === 'owner')
-                return true;
-            return $user->role === 'admin' && in_array('view_reports', $user->adminRole->permissions ?? []);
-        });
+        foreach ($permissions as $permission) {
+            Gate::define($permission, function (User $user) use ($permission) {
+                if ($user->role === 'owner')
+                    return true;
+                return $user->role === 'admin' && in_array($permission, $user->adminRole->permissions ?? []);
+            });
+        }
     }
 }

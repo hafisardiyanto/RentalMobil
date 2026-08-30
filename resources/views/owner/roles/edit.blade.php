@@ -24,27 +24,50 @@
                     style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
             </div>
 
-            <div
-                style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 1.25rem; border-radius: 8px; margin-bottom: 2rem;">
-                <h4 style="margin-top: 0; margin-bottom: 1rem; color: #334155;">Pilih Modul / Hak Akses (Permissions)</h4>
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 1.25rem; border-radius: 8px; margin-bottom: 2rem;">
+            <h4 style="margin-top: 0; margin-bottom: 1rem; color: #334155;">Detail Hak Akses (Permissions)</h4>
+            
+            @php $perms = $role->permissions ?? []; @endphp
 
-                @php $perms = $role->permissions ?? []; @endphp
-
-                <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                    <input type="checkbox" name="permissions[]" value="manage_cars" {{ in_array('manage_cars', $perms) ? 'checked' : '' }} style="margin-right: 10px; width: 1.2rem; height: 1.2rem;">
-                    <span style="font-weight: 500;">🚗 Manajemen Mobil Armada (CRUD Kendaraan)</span>
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="display:block; margin-bottom: 0.5rem; color:#475569;">🚗 Modul Armada (Mobil)</strong>
+                <label style="display: inline-flex; align-items: center; margin-right: 15px; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="view_cars" {{ in_array('view_cars', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Lihat Data (Read)
                 </label>
-
-                <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                    <input type="checkbox" name="permissions[]" value="manage_bookings" {{ in_array('manage_bookings', $perms) ? 'checked' : '' }} style="margin-right: 10px; width: 1.2rem; height: 1.2rem;">
-                    <span style="font-weight: 500;">📂 Manajemen Booking & Denda (Check-in/Return)</span>
+                <label style="display: inline-flex; align-items: center; margin-right: 15px; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="create_cars" {{ in_array('create_cars', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Tambah (Create)
                 </label>
-
-                <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                    <input type="checkbox" name="permissions[]" value="view_reports" {{ in_array('view_reports', $perms) ? 'checked' : '' }} style="margin-right: 10px; width: 1.2rem; height: 1.2rem;">
-                    <span style="font-weight: 500;">📈 Laporan Keuangan (View & Export Income)</span>
+                <label style="display: inline-flex; align-items: center; margin-right: 15px; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="edit_cars" {{ in_array('edit_cars', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Edit (Update)
+                </label>
+                <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="delete_cars" {{ in_array('delete_cars', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Hapus (Delete)
                 </label>
             </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="display:block; margin-bottom: 0.5rem; color:#475569;">📂 Modul Booking & Denda</strong>
+                <label style="display: inline-flex; align-items: center; margin-right: 15px; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="view_bookings" {{ in_array('view_bookings', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Lihat Data Booking
+                </label>
+                <label style="display: inline-flex; align-items: center; margin-right: 15px; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="edit_bookings" {{ in_array('edit_bookings', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Proses Status & Invoice
+                </label>
+                <label style="display: inline-flex; align-items: center; margin-right: 15px; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="manage_fines" {{ in_array('manage_fines', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Input Denda/Kerusakan
+                </label>
+                <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="delete_bookings" {{ in_array('delete_bookings', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Hapus Booking
+                </label>
+            </div>
+
+            <div>
+                <strong style="display:block; margin-bottom: 0.5rem; color:#475569;">📈 Modul Laporan</strong>
+                <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" name="permissions[]" value="view_reports" {{ in_array('view_reports', $perms) ? 'checked' : '' }} style="margin-right: 5px;"> Lihat & Export Laporan
+                </label>
+            </div>
+        </div>
 
             <div style="display: flex; gap: 1rem; justify-content: flex-end;">
                 <a href="{{ route('owner.roles.index') }}" class="btn btn-outline"

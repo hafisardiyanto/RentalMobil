@@ -30,12 +30,12 @@
             <a href="{{ route('admin.dashboard') }}"
                 class="nav-dashboard {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">📊 Dashboard</a>
 
-            @if($isOwner || in_array('manage_cars', $permissions))
+            @if($isOwner || in_array('view_cars', $permissions))
                 <a href="{{ route('admin.cars.index') }}"
                     class="nav-cars {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">🚗 Manajemen Mobil</a>
             @endif
 
-            @if($isOwner || in_array('manage_bookings', $permissions))
+            @if($isOwner || in_array('view_bookings', $permissions))
                 <a href="{{ route('admin.bookings.index') }}"
                     class="nav-bookings {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">📂 Manajemen
                     Booking</a>

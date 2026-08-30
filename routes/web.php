@@ -36,29 +36,41 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
         // Cars CRUD
-        Route::middleware('can:manage_cars')->group(function () {
+        Route::middleware('can:view_cars')->group(function () {
             Route::get('/cars', [AdminController::class, 'index'])->name('admin.cars.index');
-            Route::get('/cars/create', [AdminController::class, 'create'])->name('admin.cars.create');
             Route::get('/cars/{car}', [AdminController::class, 'show'])->name('admin.cars.show');
+        });
+        Route::middleware('can:create_cars')->group(function () {
+            Route::get('/cars/create', [AdminController::class, 'create'])->name('admin.cars.create');
             Route::post('/cars', [AdminController::class, 'store'])->name('admin.cars.store');
+        });
+        Route::middleware('can:edit_cars')->group(function () {
             Route::get('/cars/{car}/edit', [AdminController::class, 'edit'])->name('admin.cars.edit');
             Route::put('/cars/{car}', [AdminController::class, 'update'])->name('admin.cars.update');
+        });
+        Route::middleware('can:delete_cars')->group(function () {
             Route::delete('/cars/{car}', [AdminController::class, 'destroy'])->name('admin.cars.destroy');
         });
 
         // Bookings Management
-        Route::middleware('can:manage_bookings')->group(function () {
+        Route::middleware('can:view_bookings')->group(function () {
             Route::get('/bookings', [AdminController::class, 'bookingsIndex'])->name('admin.bookings.index');
             Route::get('/bookings/{booking}/detail', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
+        });
+
+        Route::middleware('can:delete_bookings')->group(function () {
+            Route::delete('/bookings/{booking}', [AdminController::class, 'destroyBooking'])->name('admin.bookings.destroy');
+        });
+
+        Route::middleware('can:edit_bookings')->group(function () {
             Route::put('/bookings/{booking}/status', [AdminController::class, 'updateBookingStatus'])->name('admin.bookings.update-status');
             Route::put('/bookings/{booking}/payment-status', [AdminController::class, 'updatePaymentStatus'])->name('admin.bookings.update-payment-status');
-
-            // Handover & Return POST processing
             Route::post('/bookings/{booking}/handover', [AdminController::class, 'processHandover'])->name('admin.bookings.process-handover');
             Route::post('/bookings/{booking}/return', [AdminController::class, 'processReturn'])->name('admin.bookings.process-return');
             Route::post('/bookings/{booking}/finalize', [AdminController::class, 'finalizeInvoice'])->name('admin.bookings.finalize');
+        });
 
-            // Fines & Audit Logs
+        Route::middleware('can:manage_fines')->group(function () {
             Route::post('/bookings/{booking}/fines', [BookingFineController::class, 'store'])->name('admin.fines.store');
             Route::put('/fines/{fine}', [BookingFineController::class, 'update'])->name('admin.fines.update');
             Route::delete('/fines/{fine}', [BookingFineController::class, 'destroy'])->name('admin.fines.destroy');
@@ -78,7 +90,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('admins', \App\Http\Controllers\AdminManagementController::class)->except(['show']);
         Route::resource('roles', \App\Http\Controllers\AdminRoleController::class)->except(['show']);
     });
-    Route::delete('/bookings/{booking}', [AdminController::class, 'destroyBooking'])->name('admin.bookings.destroy');
 
     // User Booking Routes
     Route::get('/my-bookings', [BookingController::class, 'index'])->name('bookings.index');

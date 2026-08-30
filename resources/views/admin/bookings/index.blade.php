@@ -71,33 +71,39 @@
                         </td>
                         <td>
                             <div class="action-container">
-                                <form action="{{ route('admin.bookings.update-status', $booking->id) }}" method="POST"
-                                    class="status-form">
-                                    @csrf
-                                    @method('PUT')
-                                    <select name="status_booking" class="status-select" onchange="this.form.submit()">
-                                        <option value="Menunggu Konfirmasi" {{ $booking->status_booking == 'Menunggu Konfirmasi' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
-                                        <option value="Menunggu Pembayaran" {{ $booking->status_booking == 'Menunggu Pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
-                                        <option value="Pembayaran Diverifikasi" {{ $booking->status_booking == 'Pembayaran Diverifikasi' ? 'selected' : '' }}>Pembayaran Diverifikasi</option>
-                                        <option value="Booking Dikonfirmasi" {{ $booking->status_booking == 'Booking Dikonfirmasi' ? 'selected' : '' }}>Booking Dikonfirmasi</option>
-                                        <option value="Sedang Disewa" {{ $booking->status_booking == 'Sedang Disewa' ? 'selected' : '' }}>Sedang Disewa</option>
-                                        <option value="Menunggu Pengembalian" {{ $booking->status_booking == 'Menunggu Pengembalian' ? 'selected' : '' }}>Menunggu Pengembalian</option>
-                                        <option value="Selesai" {{ $booking->status_booking == 'Selesai' ? 'selected' : '' }}>
-                                            Selesai</option>
-                                        <option value="Ditolak" {{ $booking->status_booking == 'Ditolak' ? 'selected' : '' }}>
-                                            Ditolak</option>
-                                        <option value="Dibatalkan" {{ $booking->status_booking == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-                                    </select>
-                                </form>
+                                @can('edit_bookings')
+                                    <form action="{{ route('admin.bookings.update-status', $booking->id) }}" method="POST"
+                                        class="status-form">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="status_booking" class="status-select" onchange="this.form.submit()">
+                                            <option value="Menunggu Konfirmasi" {{ $booking->status_booking == 'Menunggu Konfirmasi' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
+                                            <option value="Menunggu Pembayaran" {{ $booking->status_booking == 'Menunggu Pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
+                                            <option value="Pembayaran Diverifikasi" {{ $booking->status_booking == 'Pembayaran Diverifikasi' ? 'selected' : '' }}>Pembayaran Diverifikasi</option>
+                                            <option value="Booking Dikonfirmasi" {{ $booking->status_booking == 'Booking Dikonfirmasi' ? 'selected' : '' }}>Booking Dikonfirmasi</option>
+                                            <option value="Sedang Disewa" {{ $booking->status_booking == 'Sedang Disewa' ? 'selected' : '' }}>Sedang Disewa</option>
+                                            <option value="Menunggu Pengembalian" {{ $booking->status_booking == 'Menunggu Pengembalian' ? 'selected' : '' }}>Menunggu Pengembalian</option>
+                                            <option value="Selesai" {{ $booking->status_booking == 'Selesai' ? 'selected' : '' }}>
+                                                Selesai</option>
+                                            <option value="Ditolak" {{ $booking->status_booking == 'Ditolak' ? 'selected' : '' }}>
+                                                Ditolak</option>
+                                            <option value="Dibatalkan" {{ $booking->status_booking == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                                        </select>
+                                    </form>
+                                @endcan
                                 <a href="{{ route('admin.bookings.show', $booking->id) }}"
                                     style="display: block; margin-top: 0.5rem; background: var(--primary); color: white; padding: 0.4rem; text-align: center; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">➡️
                                     Detail & Proses</a>
-                                <form action="{{ route('admin.bookings.destroy', $booking->id) }}" method="POST"
-                                    onsubmit="return confirm('Hapus data pesanan ini?')" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-delete">Hapus</button>
-                                </form>
+
+                                @can('delete_bookings')
+                                    <form action="{{ route('admin.bookings.destroy', $booking->id) }}" method="POST"
+                                        onsubmit="return confirm('Hapus data pesanan ini?')"
+                                        style="display: block; margin-top: 0.5rem;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete" style="width: 100%;">Hapus</button>
+                                    </form>
+                                @endcan
                             </div>
                         </td>
                     </tr>
