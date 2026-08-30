@@ -24,7 +24,7 @@
                     <th>Nama Lengkap</th>
                     <th>Email</th>
                     <th>Terdaftar Sejak</th>
-                    <th style="text-align: right;">Aksi</th>
+                    <th class="text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,9 +36,9 @@
                                 <br><span class="admin-role-badge">{{ $admin->adminRole->name }}</span>
                             @endif
                         </td>
-                        <td style="color: #64748B;">{{ $admin->email }}</td>
-                        <td style="color: #64748B;">{{ $admin->created_at->format('d M Y') }}</td>
-                        <td style="text-align: right;">
+                        <td class="text-muted">{{ $admin->email }}</td>
+                        <td class="text-muted">{{ $admin->created_at->format('d M Y') }}</td>
+                        <td class="text-right">
                             <a href="{{ route('owner.admins.edit', $admin->id) }}" class="action-edit">Edit</a>
                             <form action="{{ route('owner.admins.destroy', $admin->id) }}" method="POST" style="display:inline;"
                                 onsubmit="return confirm('Apakah Anda yakin ingin memberhentikan admin ini? Akses mereka akan dicabut.');">

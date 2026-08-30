@@ -1,0 +1,485 @@
+/* Customer Bookings General Styles */
+
+/* create.blade.php */
+.booking-container-cs {
+    padding: 5rem 5%;
+    background: var(--background);
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.booking-card-cs {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 500px;
+}
+
+.car-summary-cs {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px;
+    height: fit-content;
+}
+
+.form-group-cs {
+    margin-bottom: 1.5rem;
+}
+
+.form-group-cs label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.form-control-cs {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control-cs:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.price-total-cs {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px dashed #E2E8F0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-amount-cs {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+.cs-margin-bottom {
+    margin-bottom: 1.5rem;
+}
+
+.cs-margin-bottom-lg {
+    margin-bottom: 2rem;
+}
+
+.cs-car-img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.cs-text-muted {
+    color: var(--text-muted);
+}
+
+.cs-price-text {
+    color: var(--primary);
+    font-weight: 700;
+    margin-top: 0.5rem;
+}
+
+.cs-btn-submit {
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1.2rem;
+}
+
+.cs-info-text {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #64748B;
+    line-height: 1.5;
+}
+
+.cs-emoji {
+    font-size: 1rem;
+}
+
+.cs-tag {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* index.blade.php */
+.history-container {
+    padding: 5rem 5%;
+    background: var(--background);
+    min-height: calc(100vh - 80px);
+}
+
+.table-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+}
+
+.history-table th {
+    text-align: left;
+    padding: 1.2rem;
+    border-bottom: 2px solid #F1F5F9;
+    font-weight: 700;
+    color: var(--secondary);
+}
+
+.history-table td {
+    padding: 1.2rem;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.status-badge-cs {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.status-approved {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.status-completed {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.status-cancelled {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.cs-title {
+    margin-bottom: 1rem;
+}
+
+.cs-tr-hover {
+    transition: background 0.3s ease;
+}
+
+.cs-tr-hover:hover {
+    background: #F8FAFC !important;
+}
+
+.cs-fw-700 {
+    font-weight: 700;
+}
+
+.cs-sub-text {
+    font-size: 0.85rem;
+    color: #94A3B8;
+    margin-top: 5px;
+}
+
+.cs-date-text {
+    font-size: 0.95rem;
+}
+
+.cs-accent {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.cs-btn-pay {
+    color: white;
+    background: var(--primary);
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.cs-btn-cancel {
+    background: none;
+    border: none;
+    color: #EF4444;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.cs-form-inline {
+    display: inline-block;
+}
+
+.cs-text-bold-muted {
+    color: #64748B;
+    font-weight: bold;
+}
+
+.cs-btn-invoice {
+    color: #047857;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-decoration: underline;
+    display: block;
+    margin-top: 5px;
+}
+
+.cs-empty {
+    text-align: center;
+    padding: 4rem;
+    color: #94A3B8;
+}
+
+/* payment.blade.php */
+.payment-container {
+    padding: 5rem 5%;
+    background: var(--background);
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    width: 100%;
+}
+
+.info-summary-cs {
+    background: #F8FAFC;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.info-row-cs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+}
+
+.info-label-cs {
+    color: #64748B;
+    font-weight: 500;
+}
+
+.info-value-cs {
+    color: var(--secondary);
+    font-weight: 700;
+}
+
+.file-upload-box {
+    border: 2px dashed #CBD5E1;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 12px;
+    background: #F8FAFC;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.file-upload-box:hover {
+    border-color: var(--primary);
+}
+
+.preview-image {
+    max-width: 100%;
+    margin-top: 1rem;
+    border-radius: 8px;
+    display: none;
+}
+
+.submit-btn-cs {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 2rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn-cs:hover {
+    background: #3b4be0;
+}
+
+.pt-title {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.pt-accent {
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+
+.pt-desc {
+    font-size: 0.85rem;
+    color: #94A3B8;
+    margin-top: 1rem;
+    line-height: 1.4;
+}
+
+.pt-subtitle {
+    margin-bottom: 1rem;
+    color: var(--secondary);
+}
+
+.pt-emoji {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.pt-hint {
+    font-weight: 600;
+    color: #64748B;
+}
+
+.pt-d-none {
+    display: none;
+}
+
+.pt-error {
+    color: #EF4444;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+/* success.blade.php */
+.success-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #F8FAFC;
+}
+
+.success-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    border: 1px solid #E2E8F0;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: #D1FAE5;
+    color: #10B981;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1E293B;
+    margin-bottom: 1rem;
+}
+
+.success-msg {
+    color: #64748B;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.timer-container {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #F1F5F9;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #F1F5F9;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    transition: width 3s linear;
+}
+
+.wa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #25D366;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+    box-shadow: 0 10px 15px -3px rgba(37, 211, 102, 0.3);
+}
+
+.wa-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(37, 211, 102, 0.4);
+}
+
+.s-text {
+    font-size: 0.9rem;
+    color: #94A3B8;
+}

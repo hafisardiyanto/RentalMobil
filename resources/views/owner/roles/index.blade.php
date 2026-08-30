@@ -27,8 +27,8 @@
                 <tr>
                     <th>Jabatan (Role)</th>
                     <th>Hak Akses Terdaftar</th>
-                    <th style="text-align: center;">Jumlah Admin</th>
-                    <th style="text-align: right;">Aksi</th>
+                    <th class="text-center">Jumlah Admin</th>
+                    <th class="text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,13 +46,12 @@
                                 <span class="perm-tag reports">📈 Laporan</span>
                             @endif
                         </td>
-                        <td style="text-align: center; color: #64748B;">
+                        <td class="text-center text-muted">
                             {{ $role->users()->count() }} Pegawai
                         </td>
-                        <td style="text-align: right;">
-                            <a href="{{ route('owner.roles.edit', $role->id) }}"
-                                class="action-edit">Edit Akses</a>
-                            <form action="{{ route('owner.roles.destroy', $role->id) }}" method="POST" style="display:inline;"
+                        <td class="text-right">
+                            <a href="{{ route('owner.roles.edit', $role->id) }}" class="action-edit">Edit Akses</a>
+                            <form action="{{ route('owner.roles.destroy', $role->id) }}" method="POST" class="inline-form"
                                 onsubmit="return confirm('Hapus Jabatan ini secara permanen?');">
                                 @csrf
                                 @method('DELETE')
@@ -62,7 +61,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" style="padding: 2rem; text-align: center; color: #64748B;">Belum ada jabatan khusus yang dibuat.</td>
+                        <td colspan="4" class="owner-empty">Belum ada jabatan khusus yang dibuat.</td>
                     </tr>
                 @endforelse
             </tbody>

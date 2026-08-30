@@ -11,7 +11,7 @@
 
         @if ($errors->any())
             <div class="admin-alerts error">
-                <ul style="margin: 0; padding-left: 20px;">
+                <ul class="list-unstyled">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -51,7 +51,7 @@
                     class="input-admin">
             </div>
 
-            <div class="form-group-admin" style="margin-bottom: 1.5rem;">
+            <div class="form-group-admin mb-lg">
                 <label>Konfirmasi Kata Sandi Baru</label>
                 <input type="password" name="password_confirmation" placeholder="Ulangi password baru (jika diisi)"
                     class="input-admin">

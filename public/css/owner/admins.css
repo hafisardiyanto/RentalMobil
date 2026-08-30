@@ -97,3 +97,34 @@
     border-radius: 4px;
     font-size: 0.75rem;
 }
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-muted {
+    color: #64748B !important;
+}
+
+.inline-form {
+    display: inline !important;
+}
+
+.owner-empty {
+    padding: 2rem;
+    text-align: center;
+    color: #64748B;
+}
+
+.mb-lg {
+    margin-bottom: 1.5rem !important;
+}
+
+.list-unstyled {
+    margin: 0;
+    padding-left: 20px;
+}

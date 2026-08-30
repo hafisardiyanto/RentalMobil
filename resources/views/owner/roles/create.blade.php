@@ -10,7 +10,7 @@
 
         @if ($errors->any())
             <div class="role-alerts error">
-                <ul style="margin: 0; padding-left: 20px;">
+                <ul class="list-unstyled">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -24,8 +24,7 @@
             <div class="form-group-role">
                 <label>Nama Jabatan (Role Name)</label>
                 <input type="text" name="name" value="{{ old('name') }}" required
-                    placeholder="Contoh: Manajer Operasional, Kasir, Admin Kendaraan"
-                    class="input-role">
+                    placeholder="Contoh: Manajer Operasional, Kasir, Admin Kendaraan" class="input-role">
             </div>
 
             <div class="permission-container">
@@ -69,7 +68,7 @@
                         <input type="checkbox" name="permissions[]" value="view_reports"> Lihat & Export Laporan
                     </label>
                 </div>
-                
+
                 <p style="margin-top: 1rem; margin-bottom: 0; font-size: 0.85rem; color: #64748B;">Catatan: Jabatan tanpa
                     ceklis hanya bisa melihat halaman Dashboard.</p>
             </div>

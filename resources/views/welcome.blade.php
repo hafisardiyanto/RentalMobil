@@ -22,15 +22,17 @@
         <h2>Armada Unggulan Kami</h2>
         <div class="grid">
             @forelse($featuredCars ?? [] as $car)
-                <div class="card">
-                    <img src="{{ $car->image_path ?? 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600' }}"
-                        alt="{{ $car->name }}">
-                    <h3>{{ $car->brand }} {{ $car->name }}</h3>
-                    <p class="car-meta-text">Tahun {{ $car->year }} &bull; Plat: {{ $car->license_plate }}</p>
-                    <div class="price">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}<span
-                            class="price-suffix">/hari</span></div>
-                    <a href="{{ route('bookings.create', $car->id) }}" class="btn btn-primary btn-full-width">Sewa Sekarang</a>
-                </div>
+                @if(is_object($car))
+                    <div class="card">
+                        <img src="{{ $car->image_path ?? 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600' }}"
+                            alt="{{ $car->name }}">
+                        <h3>{{ $car->brand }} {{ $car->name }}</h3>
+                        <p class="car-meta-text">Tahun {{ $car->year }} &bull; Plat: {{ $car->license_plate }}</p>
+                        <div class="price">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}<span
+                                class="price-suffix">/hari</span></div>
+                        <a href="{{ route('bookings.create', $car->id) }}" class="btn btn-primary btn-full-width">Sewa Sekarang</a>
+                    </div>
+                @endif
             @empty
                 <div class="card empty-car-card">
                     <p class="empty-car-text">Belum ada mobil yang ditambahkan di database. Gunakan seeder untuk menambah data.
