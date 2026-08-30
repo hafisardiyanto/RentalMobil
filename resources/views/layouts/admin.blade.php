@@ -23,13 +23,11 @@
             <div class="nav-title">Menu Utama</div>
             <a href="{{ route('admin.dashboard') }}"
                 class="nav-dashboard {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">📊 Dashboard</a>
-            @if(Auth::user()->role === 'admin')
-                <a href="{{ route('admin.cars.index') }}"
-                    class="nav-cars {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">🚗 Manajemen Mobil</a>
-                <a href="{{ route('admin.bookings.index') }}"
-                    class="nav-bookings {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">📂 Manajemen
-                    Booking</a>
-            @endif
+            <a href="{{ route('admin.cars.index') }}"
+                class="nav-cars {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">🚗 Manajemen Mobil</a>
+            <a href="{{ route('admin.bookings.index') }}"
+                class="nav-bookings {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">📂 Manajemen
+                Booking</a>
             <a href="{{ route('admin.reports.index') }}"
                 class="nav-reports {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">📈 Laporan Keuangan</a>
         </div>
@@ -38,7 +36,8 @@
             <div class="nav-title">Pengaturan</div>
             <a href="/">🌐 Lihat Web Panel</a>
             @if(Auth::user()->role === 'owner')
-                <a href="{{ route('owner.admins.index') }}" class="{{ request()->routeIs('owner.admins.*') ? 'active' : '' }}">
+                <a href="{{ route('owner.admins.index') }}"
+                    class="{{ request()->routeIs('owner.admins.*') ? 'active' : '' }}">
                     👥 Kelola Pegawai
                 </a>
             @endif
