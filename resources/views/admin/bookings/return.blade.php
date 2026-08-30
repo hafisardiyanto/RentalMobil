@@ -1,10 +1,14 @@
 @extends('layouts.admin')
 
+@push('admin_styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/bookings.css') }}">
+@endpush
+
 @section('content')
-    <div class="box" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+    <div class="box return-container">
         <h2>Form Pengembalian Kendaraan (Return)</h2>
         <p>Booking ID: {{ $booking->nomor_booking }} | Mobil: {{ $booking->car->brand }} {{ $booking->car->name }}</p>
-        <div style="background: #F1F5F9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <div class="return-info-box">
             <strong>Data Saat Berangkat:</strong><br>
             KM Awal: {{ $booking->km_awal ?? '-' }} | BBM Awal: {{ $booking->bbm_awal ?? '-' }}<br>
             Kondisi Berangkat: {{ $booking->kondisi_awal ?: 'Tidak ada catatan' }}
@@ -14,19 +18,16 @@
             enctype="multipart/form-data">
             @csrf
 
-            <div style="display: flex; gap: 1rem;">
-                <div class="form-group" style="flex: 1; margin-bottom: 1rem;">
-                    <label for="km_akhir" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">KM Akhir (Saat
+            <div class="return-form-flex">
+                <div class="return-form-group">
+                    <label for="km_akhir" class="b-label">KM Akhir (Saat
                         PK)</label>
-                    <input type="number" name="km_akhir" id="km_akhir"
-                        style="width: 100%; padding: 0.8rem; border: 1px solid #CBD5E1; border-radius: 8px;" required>
+                    <input type="number" name="km_akhir" id="km_akhir" class="return-input" required>
                 </div>
 
-                <div class="form-group" style="flex: 1; margin-bottom: 1rem;">
-                    <label for="bbm_akhir" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Kondisi BBM
-                        Akhir</label>
-                    <select name="bbm_akhir" id="bbm_akhir"
-                        style="width: 100%; padding: 0.8rem; border: 1px solid #CBD5E1; border-radius: 8px;" required>
+                <div class="return-form-group">
+                    <label for="bbm_akhir" class="b-label">Kondisi BBM Akhir</label>
+                    <select name="bbm_akhir" id="bbm_akhir" class="return-input" required>
                         <option value="Full">Full</option>
                         <option value="3/4">3/4</option>
                         <option value="1/2">1/2</option>
@@ -36,42 +37,29 @@
                 </div>
             </div>
 
-            <div class="form-group" style="margin-bottom: 1rem;">
-                <label for="kondisi_akhir" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Catatan Kondisi
-                    Akhir (Lecet/Minus Baru)</label>
-                <textarea name="kondisi_akhir" id="kondisi_akhir" rows="3"
-                    style="width: 100%; padding: 0.8rem; border: 1px solid #CBD5E1; border-radius: 8px;"></textarea>
+            <div class="b-form-group">
+                <label for="kondisi_akhir" class="b-label">Catatan Kondisi Akhir (Lecet/Minus Baru)</label>
+                <textarea name="kondisi_akhir" id="kondisi_akhir" rows="3" class="return-input"></textarea>
             </div>
 
-            <div
-                style="display: flex; gap: 1rem; background: #FEF2F2; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <div class="return-penalty-box">
                 <div class="form-group" style="flex: 1;">
-                    <label for="denda_terlambat"
-                        style="display: block; font-weight: bold; color: #991B1B; margin-bottom: 0.5rem;">Denda
-                        Keterlambatan (Rp)</label>
-                    <input type="number" name="denda_terlambat" id="denda_terlambat" value="0"
-                        style="width: 100%; padding: 0.8rem; border: 1px solid #FCA5A5; border-radius: 8px;">
+                    <label for="denda_terlambat" class="return-danger-label">Denda Keterlambatan (Rp)</label>
+                    <input type="number" name="denda_terlambat" id="denda_terlambat" value="0" class="return-danger-input">
                 </div>
 
                 <div class="form-group" style="flex: 1;">
-                    <label for="biaya_kerusakan"
-                        style="display: block; font-weight: bold; color: #991B1B; margin-bottom: 0.5rem;">Biaya Kerusakan
-                        (Rp)</label>
-                    <input type="number" name="biaya_kerusakan" id="biaya_kerusakan" value="0"
-                        style="width: 100%; padding: 0.8rem; border: 1px solid #FCA5A5; border-radius: 8px;">
+                    <label for="biaya_kerusakan" class="return-danger-label">Biaya Kerusakan (Rp)</label>
+                    <input type="number" name="biaya_kerusakan" id="biaya_kerusakan" value="0" class="return-danger-input">
                 </div>
             </div>
 
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label for="foto_akhir" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Foto Bukti
-                    Kendaraan Kembali (Optional)</label>
-                <input type="file" name="foto_akhir" id="foto_akhir" accept="image/*"
-                    style="width: 100%; padding: 0.8rem; border: 1px dashed #CBD5E1; border-radius: 8px; background: #F8FAFC;">
+            <div class="return-form-group">
+                <label for="foto_akhir" class="b-label">Foto Bukti Kendaraan Kembali (Optional)</label>
+                <input type="file" name="foto_akhir" id="foto_akhir" accept="image/*" class="return-dashed-input">
             </div>
 
-            <button type="submit"
-                style="background: #059669; color: white; padding: 1rem; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Selesaikan
-                Rental (Status Selesai)</button>
+            <button type="submit" class="btn-return-lg">Selesaikan Rental (Status Selesai)</button>
         </form>
     </div>
 @endsection

@@ -12,7 +12,7 @@
                 <p class="booking-date">Dipesan pada {{ $booking->created_at->format('d M Y, H:i') }}
                 </p>
             </div>
-            <div style="text-align: right;">
+            <div class="status-box">
                 <div class="status-row">
                     <span class="status-pill">Status:
                         {{ $booking->status_booking }}</span>
@@ -50,12 +50,12 @@
                 @if($booking->user->ktp_photo || $booking->user->sim_photo)
                     <div class="doc-thumbnails">
                         @if($booking->user->ktp_photo)
-                            <div><small>KTP:</small><br><img src="{{ $booking->user->ktp_photo }}"
-                                    onclick="window.open(this.src)"></div>
+                            <div><small>KTP:</small><br><img src="{{ $booking->user->ktp_photo }}" onclick="window.open(this.src)">
+                            </div>
                         @endif
                         @if($booking->user->sim_photo)
-                            <div><small>SIM:</small><br><img src="{{ $booking->user->sim_photo }}"
-                                    onclick="window.open(this.src)"></div>
+                            <div><small>SIM:</small><br><img src="{{ $booking->user->sim_photo }}" onclick="window.open(this.src)">
+                            </div>
                         @endif
                     </div>
                 @endif
@@ -97,7 +97,7 @@
                 </table>
 
                 @if($booking->payment_proof)
-                    <div style="margin-top: 1rem;">
+                    <div class="proof-box">
                         <small>Bukti Transfer (Customer):</small><br>
                         <img src="{{ $booking->payment_proof }}" class="proof-img" onclick="window.open(this.src)">
                     </div>
@@ -112,24 +112,24 @@
             @if($booking->status_pembayaran === 'Menunggu Verifikasi')
                 <div class="action-panel panel-primary">
                     <h4>✓ Verifikasi Pembayaran Customer</h4>
-                    <p class="panel-desc">Customer telah mengunggah bukti pembayaran. Harap pastikan mutasi rekening valid sebelum menekan Lunas.</p>
+                    <p class="panel-desc">Customer telah mengunggah bukti pembayaran. Harap pastikan mutasi rekening valid
+                        sebelum menekan Lunas.</p>
                     @can('edit_bookings')
                         <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST"
-                            style="display: flex; gap: 1rem; align-items: center;">
+                            class="form-inline">
                             @csrf
                             @method('PUT')
 
                             <div>
                                 <label class="b-label">Input Nominal Deposit (Jaminan)</label>
                                 <input type="number" name="deposit" value="{{ $booking->deposit > 0 ? $booking->deposit : '' }}"
-                                    placeholder="Rp 0 (Kosongkan bila tidak ada)"
-                                    class="b-input" style="width: 250px;">
+                                    placeholder="Rp 0 (Kosongkan bila tidak ada)" class="b-input b-input-inline">
                             </div>
 
                             <input type="hidden" name="status_pembayaran" value="Lunas">
-                            <button type="submit" class="btn btn-primary" style="margin-top: 23px;">Lunas & Dikonfirmasi</button>
+                            <button type="submit" class="btn btn-primary btn-action-primary">Lunas & Dikonfirmasi</button>
                             <a href="#" onclick="event.preventDefault(); document.getElementById('reject-form').submit();"
-                                style="color: #EF4444; font-weight: bold; margin-top: 23px; margin-left: 1rem;">Tolak & Batalkan</a>
+                                class="btn-action-danger">Tolak & Batalkan</a>
                         </form>
                         <form id="reject-form" action="{{ route('admin.bookings.update-status', $booking->id) }}" method="POST"
                             style="display: none;">
@@ -138,7 +138,7 @@
                             <input type="hidden" name="status_booking" value="Ditolak">
                         </form>
                     @else
-                        <p style="color: #EF4444; font-weight:bold;">Hubungi Kasir yang berwenang untuk memverifikasi pesanan ini.</p>
+                        <p class="text-danger-bold">Hubungi Kasir yang berwenang untuk memverifikasi pesanan ini.</p>
                     @endcan
                 </div>
 
@@ -148,7 +148,8 @@
                     <p class="panel-desc">Lengkapi data awal kendaraan sebelum pelanggan membawa mobil keluar garasi.</p>
 
                     @can('edit_bookings')
-                        <form action="{{ route('admin.bookings.process-handover', $booking->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.bookings.process-handover', $booking->id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="form-grid-2">
                                 <div>
@@ -171,17 +172,19 @@
                             <button type="submit" class="btn-start">Mulai Masa Sewa -> Sedang Disewa</button>
                         </form>
                     @else
-                        <p style="color: #EF4444; font-weight:bold;">Hubungi staf operasional untuk melakukan proses Serah Terima.</p>
+                        <p class="text-danger-bold">Hubungi staf operasional untuk melakukan proses Serah Terima.</p>
                     @endcan
                 </div>
 
             @elseif($booking->status_booking === 'Sedang Disewa')
                 <div class="action-panel panel-success">
                     <h4>🔙 Proses Pengembalian (Return)</h4>
-                    <p class="panel-desc">Lengkapi data akhir kedatangan mobil. Setelah ini, Anda dapat merinci Denda atau Kerusakan jika ada sebelum Finalisasi Invoice.</p>
+                    <p class="panel-desc">Lengkapi data akhir kedatangan mobil. Setelah ini, Anda dapat merinci Denda atau
+                        Kerusakan jika ada sebelum Finalisasi Invoice.</p>
 
                     @can('edit_bookings')
-                        <form action="{{ route('admin.bookings.process-return', $booking->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.bookings.process-return', $booking->id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="form-grid-2">
                                 <div>
@@ -196,7 +199,8 @@
 
                             <div class="b-form-group">
                                 <label class="b-label">Kondisi Awal Saat Kembali (Umum)</label>
-                                <textarea name="kondisi_akhir" required class="b-input" rows="2">Mobil kembali dalam keadaan aman.</textarea>
+                                <textarea name="kondisi_akhir" required class="b-input"
+                                    rows="2">Mobil kembali dalam keadaan aman.</textarea>
                             </div>
                             <div class="b-form-group">
                                 <label class="b-label">Foto Aktual Mobil Saat Dikembalikan</label>
@@ -205,18 +209,19 @@
                             <button type="submit" class="btn-return">Mobil Diterima (Lanjut Pemeriksaan)</button>
                         </form>
                     @else
-                        <p style="color: #EF4444; font-weight:bold;">Hubungi staf operasional untuk melakukan proses Pengembalian Kendaraan.</p>
+                        <p class="text-danger-bold">Hubungi staf operasional untuk melakukan proses Pengembalian Kendaraan.</p>
                     @endcan
                 </div>
             @elseif($booking->status_booking === 'Pemeriksaan')
                 <div class="action-panel panel-warning">
                     <h4>🔍 Pemeriksaan Rincian Denda & Kerusakan</h4>
-                    <p class="panel-desc">Tambahkan log/rincian satu per satu jika ada kerusakan atau
-                        denda terlambat. Transparansi sangat penting.</p>
+                    <p class="panel-desc">Tambahkan log/rincian satu per satu jika ada kerusakan atau denda terlambat.
+                        Transparansi sangat penting.</p>
 
                     <!-- ADD FINE FORM -->
                     @can('manage_fines')
-                        <form action="{{ route('admin.fines.store', $booking->id) }}" method="POST" enctype="multipart/form-data" class="fines-form-box">
+                        <form action="{{ route('admin.fines.store', $booking->id) }}" method="POST" enctype="multipart/form-data"
+                            class="fines-form-box">
                             @csrf
                             <div class="form-grid-3">
                                 <div>
@@ -229,7 +234,8 @@
                                 </div>
                                 <div>
                                     <label class="b-label b-label-sm">Bagian Mobil (Opsional)</label>
-                                    <input type="text" name="part_name" placeholder="Misal: Bumper Belakang" class="b-input b-input-sm">
+                                    <input type="text" name="part_name" placeholder="Misal: Bumper Belakang"
+                                        class="b-input b-input-sm">
                                 </div>
                                 <div>
                                     <label class="b-label b-label-sm">Tagihan (Rp)</label>
@@ -239,14 +245,15 @@
                             <div class="form-grid-2-1">
                                 <div>
                                     <label class="b-label b-label-sm">Deskripsi Detail Kerusakan</label>
-                                    <input type="text" name="description" required placeholder="Misal: Lecet cukup dalam akibat goresan" class="b-input b-input-sm">
+                                    <input type="text" name="description" required
+                                        placeholder="Misal: Lecet cukup dalam akibat goresan" class="b-input b-input-sm">
                                 </div>
                                 <div>
                                     <label class="b-label b-label-sm">Upload Bukti Foto</label>
                                     <input type="file" name="photo" accept="image/*" class="b-input b-input-sm">
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="padding: 0.4rem 1rem;">+ Tambah Log Biaya</button>
+                            <button type="submit" class="btn btn-primary btn-sm-primary">+ Tambah Log Biaya</button>
                         </form>
                     @endcan
 
@@ -257,7 +264,7 @@
                                 <tr>
                                     <th>Daftar Biaya</th>
                                     <th>Bagian / Deskripsi</th>
-                                    <th style="text-align: right;">Nominal (Rp)</th>
+                                    <th class="th-right">Nominal (Rp)</th>
                                     <th>Dicatat Oleh</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -272,9 +279,11 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $fine->part_name ? $fine->part_name . ' - ' : '' }}{{ $fine->description }}</td>
+                                            {{ $fine->part_name ? $fine->part_name . ' - ' : '' }}{{ $fine->description }}
+                                        </td>
                                         <td class="fine-amount">
-                                            {{ number_format($fine->amount, 0, ',', '.') }}</td>
+                                            {{ number_format($fine->amount, 0, ',', '.') }}
+                                        </td>
                                         <td>{{ $fine->user->name ?? 'Admin' }}<br><small
                                                 class="fine-date">{{ $fine->created_at->format('d M H:i') }}</small></td>
                                         <td>
@@ -283,9 +292,7 @@
                                                     onsubmit="return confirm('Hapus item ini?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit"
-                                                        style="background:none; border:none; color:#EF4444; font-weight:bold; cursor:pointer;"
-                                                        title="Hapus">X</button>
+                                                    <button type="submit" class="btn-delete-icon" title="Hapus">X</button>
                                                 </form>
                                             @endcan
                                         </td>
@@ -303,9 +310,9 @@
                                 @foreach($booking->fineAuditLogs()->orderBy('created_at', 'desc')->get() as $log)
                                     <li>
                                         <b>{{ $log->user->name ?? 'User' }}</b> ({{ $log->created_at->format('d M Y, H:i:s') }}):
-                                        @if($log->action == 'Added') <span style="color:#10B981;">[Menambah]</span>
-                                        @elseif($log->action == 'Deleted') <span style="color:#EF4444;">[Menghapus]</span>
-                                        @else <span style="color:#F59E0B;">[Ubah]</span> @endif
+                                        @if($log->action == 'Added') <span class="log-added">[Menambah]</span>
+                                        @elseif($log->action == 'Deleted') <span class="log-deleted">[Menghapus]</span>
+                                        @else <span class="log-updated">[Ubah]</span> @endif
                                         {{ $log->details }}
                                         (Rp {{ number_format($log->old_amount, 0, ',', '.') }} &rarr; Rp
                                         {{ number_format($log->new_amount, 0, ',', '.') }})
@@ -332,7 +339,7 @@
                         Transaksi tidak dapat diselesaikan ke tahap Selesai sebelum tunggakan dilunasi.</p>
                     @can('edit_bookings')
                         <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST"
-                            style="margin-top: 1rem;">
+                            class="btn-mt">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="status_pembayaran" value="Lunas">
@@ -345,13 +352,13 @@
                 <div class="completed-box">
                     <h3>✅ Transaksi Selesai</h3>
                     <p>Mobil telah dikembalikan dan Invoice telah resmi diterbitkan.</p>
-                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-primary" style="margin-top: 1rem;">Kembali ke
-                        Riwayat</a>
-                    <a href="{{ route('bookings.invoice', $booking->id) }}" class="btn-print" target="_blank">Cetak Invoice Final</a>
+                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-primary btn-mt">Kembali ke Riwayat</a>
+                    <a href="{{ route('bookings.invoice', $booking->id) }}" class="btn-print" target="_blank">Cetak Invoice
+                        Final</a>
                 </div>
             @else
-                <div style="text-align: center; padding: 2rem;">
-                    <p style="color: #64748b;">Menunggu aksi dari Pelanggan. (Status: {{ $booking->status_booking }})</p>
+                <div class="empty-msg">
+                    <p>Menunggu aksi dari Pelanggan. (Status: {{ $booking->status_booking }})</p>
                 </div>
             @endif
         </div>

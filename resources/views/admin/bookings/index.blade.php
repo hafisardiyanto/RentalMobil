@@ -25,9 +25,7 @@
                         <td>
                             <div class="customer-name">{{ $booking->user->name }}</div>
                             <div class="customer-email">{{ $booking->user->email }}</div>
-                            <div style="font-size: 0.85rem; color: #059669; font-weight: 600;">📞
-                                {{ $booking->user->phone ?? '-' }}
-                            </div>
+                            <div class="customer-phone">📞 {{ $booking->user->phone ?? '-' }}</div>
                         </td>
                         <td>
                             <div class="car-info">{{ $booking->car->brand }} {{ $booking->car->name }}</div>
@@ -40,32 +38,29 @@
                             </div>
                         </td>
                         <td>
-                            <span class="price-text" style="display: block; margin-bottom: 0.5rem;">Rp
-                                {{ number_format($booking->total, 0, ',', '.') }}</span>
+                            <span class="price-text price-block">Rp {{ number_format($booking->total, 0, ',', '.') }}</span>
                             @if($booking->payment_proof)
-                                <a href="{{ $booking->payment_proof }}" target="_blank"
-                                    style="font-size: 0.85rem; color: var(--primary); font-weight: bold; text-decoration: none;">🔍
-                                    Lihat Bukti TF</a>
+                                <a href="{{ $booking->payment_proof }}" target="_blank" class="link-detail">🔍 Lihat Bukti TF</a>
                             @else
-                                <span style="font-size: 0.85rem; color: #94A3B8;">Belum bayar</span>
+                                <span class="unpaid-text">Belum bayar</span>
                             @endif
                         </td>
                         <td>
                             @php
                                 $statusColors = [
-                                    'Menunggu Konfirmasi' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
-                                    'Menunggu Pembayaran' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
-                                    'Pembayaran Diverifikasi' => ['bg' => '#DBEAFE', 'text' => '#1E40AF'],
-                                    'Booking Dikonfirmasi' => ['bg' => '#DBEAFE', 'text' => '#1E40AF'],
-                                    'Sedang Disewa' => ['bg' => '#DBEAFE', 'text' => '#1E40AF'],
-                                    'Menunggu Pengembalian' => ['bg' => '#FEF3C7', 'text' => '#92400E'],
-                                    'Selesai' => ['bg' => '#D1FAE5', 'text' => '#065F46'],
-                                    'Dibatalkan' => ['bg' => '#FEE2E2', 'text' => '#991B1B'],
-                                    'Ditolak' => ['bg' => '#FEE2E2', 'text' => '#991B1B'],
+                                    'Menunggu Konfirmasi' => 'background: #FEF3C7; color: #92400E;',
+                                    'Menunggu Pembayaran' => 'background: #FEF3C7; color: #92400E;',
+                                    'Pembayaran Diverifikasi' => 'background: #DBEAFE; color: #1E40AF;',
+                                    'Booking Dikonfirmasi' => 'background: #DBEAFE; color: #1E40AF;',
+                                    'Sedang Disewa' => 'background: #DBEAFE; color: #1E40AF;',
+                                    'Menunggu Pengembalian' => 'background: #FEF3C7; color: #92400E;',
+                                    'Selesai' => 'background: #D1FAE5; color: #065F46;',
+                                    'Dibatalkan' => 'background: #FEE2E2; color: #991B1B;',
+                                    'Ditolak' => 'background: #FEE2E2; color: #991B1B;',
                                 ];
-                                $colors = $statusColors[$booking->status_booking] ?? ['bg' => '#F3F4F6', 'text' => '#374151'];
+                                $colorStyle = $statusColors[$booking->status_booking] ?? 'background: #F3F4F6; color: #374151;';
                             @endphp
-                            <span class="status-badge" style="background: {{ $colors['bg'] }}; color: {{ $colors['text'] }};">
+                            <span class="status-badge" style="{{ $colorStyle }}">
                                 {{ $booking->status_booking }}
                             </span>
                         </td>
@@ -91,17 +86,15 @@
                                         </select>
                                     </form>
                                 @endcan
-                                <a href="{{ route('admin.bookings.show', $booking->id) }}"
-                                    style="display: block; margin-top: 0.5rem; background: var(--primary); color: white; padding: 0.4rem; text-align: center; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">➡️
-                                    Detail & Proses</a>
+                                <a href="{{ route('admin.bookings.show', $booking->id) }}" class="btn-detail">➡️ Detail &
+                                    Proses</a>
 
                                 @can('delete_bookings')
                                     <form action="{{ route('admin.bookings.destroy', $booking->id) }}" method="POST"
-                                        onsubmit="return confirm('Hapus data pesanan ini?')"
-                                        style="display: block; margin-top: 0.5rem;">
+                                        onsubmit="return confirm('Hapus data pesanan ini?')" class="form-delete-block">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-delete" style="width: 100%;">Hapus</button>
+                                        <button type="submit" class="btn-delete">Hapus</button>
                                     </form>
                                 @endcan
                             </div>
