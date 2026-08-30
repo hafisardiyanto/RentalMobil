@@ -23,24 +23,20 @@
             <a href="/#tentang">Tentang</a>
             @auth
                 @if(in_array(Auth::user()->role, ['admin', 'owner']))
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-primary" style="padding: 0.4rem 1rem;">Dashboard
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-sm">Dashboard
                         {{ Auth::user()->role === 'owner' ? 'Owner' : 'Admin' }}</a>
                 @else
-                    <a href="{{ route('bookings.index') }}"
-                        style="color: var(--primary); font-weight: 600; margin-right: 1.5rem; text-decoration: none;">Riwayat
-                        Sewa</a>
-                    <a href="{{ route('profile.index') }}"
-                        style="color: var(--primary); font-weight: 600; margin-right: 1.5rem; text-decoration: none;">Profil
-                        Saya</a>
+                    <a href="{{ route('bookings.index') }}" class="nav-link-special">Riwayat Sewa</a>
+                    <a href="{{ route('profile.index') }}" class="nav-link-special">Profil Saya</a>
                 @endif
-                <span style="color: var(--secondary); font-weight: 600;">Halo, {{ Auth::user()->name }}</span>
-                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                <span class="nav-greeting">Halo, {{ Auth::user()->name }}</span>
+                <form method="POST" action="{{ route('logout') }}" class="nav-form">
                     @csrf
-                    <button type="submit" class="btn btn-outline" style="padding: 0.4rem 1rem;">Logout</button>
+                    <button type="submit" class="btn btn-outline btn-sm">Logout</button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="btn btn-outline" style="padding: 0.4rem 1rem;">Masuk</a>
-                <a href="{{ route('register') }}" class="btn btn-primary" style="padding: 0.4rem 1rem;">Daftar</a>
+                <a href="{{ route('login') }}" class="btn btn-outline btn-sm">Masuk</a>
+                <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Daftar</a>
             @endauth
         </div>
     </nav>
