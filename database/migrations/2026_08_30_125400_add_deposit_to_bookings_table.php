@@ -11,8 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->integer('deposit')->default(0)->after('status_pembayaran');
-            $table->integer('tagihan_susulan')->default(0)->after('deposit');
+            if (!Schema::hasColumn('bookings', 'deposit')) {
+                $table->integer('deposit')->default(0)->after('status_pembayaran');
+            }
+            if (!Schema::hasColumn('bookings', 'tagihan_susulan')) {
+                $table->integer('tagihan_susulan')->default(0)->after('status_pembayaran');
+            }
         });
     }
 
