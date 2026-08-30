@@ -244,55 +244,72 @@ class AdminController extends Controller
     public function processReturn(Request $request, Booking $booking)
     {
         $validated = $request->validate([
-            'km_akhir' => 'nullable|integer',
-            'bbm_akhir' => 'nullable|string',
-            'kondisi_akhir' => 'nullable|string',
-            'foto_akhir' => 'nullable|image',
-            'denda_terlambat' => 'nullable|integer',
-            'biaya_kerusakan' => 'nullable|integer',
+            'km_akhir' => 'required|integer',
+            'bbm_akhir' => 'required|string',
+            'kondisi_akhir' => 'required|string',
+            'foto_akhir' => 'required|image|max:5120',
         ]);
 
-        if ($request->hasFile('foto_akhir')) {
-            $path = $request->file('foto_akhir')->store('operational', 'public');
-            $validated['foto_akhir'] = Storage::url($path);
-        }
-
-        $validated['denda_terlambat'] = $validated['denda_terlambat'] ?? 0;
-        $validated['biaya_kerusakan'] = $validated['biaya_kerusakan'] ?? 0;
-
+        $validated['foto_akhir'] = $request->file('foto_akhir')->store('cars/returns', 'public');
         $validated['waktu_pengembalian'] = now();
-        $validated['status_booking'] = 'Selesai'; // Default jika tidak ada tunggakan
-
-        $additional = $validated['denda_terlambat'] + $validated['biaya_kerusakan'];
-        
-        // Logika Deposit
-        if ($additional > 0) {
-            $booking->total += $additional;
-            $booking->biaya_tambahan += $additional;
-            
-            if ($booking->deposit > 0) {
-                if ($additional > $booking->deposit) {
-                    $booking->tagihan_susulan = $additional - $booking->deposit;
-                    $booking->status_pembayaran = 'Belum Lunas';
-                    $validated['status_booking'] = 'Menunggu Pelunasan';
-                }
-            } else {
-                $booking->tagihan_susulan = $additional;
-                $booking->status_pembayaran = 'Belum Lunas';
-                $validated['status_booking'] = 'Menunggu Pelunasan';
-            }
-            $booking->save();
-        }
+        $validated['status_booking'] = 'Pemeriksaan'; // Masuk kusta audit
 
         $booking->update($validated);
-        
-        // Update Status Mobil kembali
+
+        // Update Status Mobil
         if ($booking->car) {
-            $statusMobil = ($validated['biaya_kerusakan'] > 0) ? 'Maintenance' : 'Tersedia';
-            $booking->car->update(['status_mobil' => $statusMobil]);
+            $booking->car->update(['status_mobil' => 'Pemeriksaan']);
         }
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil dikembalikan & Kalkulasi Tagihan Selesai.');
+        return redirect()->route('admin.bookings.show', $booking->id)->with('success', 'Mobil dikembalikan ke garasi. Silakan catat Denda/Kerusakan jika ada, lalu Finalisasi Invoice.');
+    }
+
+    public function finalizeInvoice(Booking $booking)
+    {
+        // Panggil helper/sync yang biasa ada di BookingFineController
+        // Karena logic deposit udah ada di syncBookingTotals tapi kita tulis ulang simpel disini
+        $dendaTelat = $booking->fines()->where('type', 'Denda Terlambat')->sum('amount');
+        $biayaRusak = $booking->fines()->whereIn('type', ['Kerusakan', 'Lainnya'])->sum('amount');
+
+        $additional = $dendaTelat + $biayaRusak;
+        $total = $booking->subtotal + $additional;
+
+        $tagihanSusulan = 0;
+        $status_pembayaran = $booking->status_pembayaran;
+        $status_booking = 'Selesai';
+
+        if ($additional > 0) {
+            if ($booking->deposit > 0) {
+                if ($additional > $booking->deposit) {
+                    $tagihanSusulan = $additional - $booking->deposit;
+                    $status_pembayaran = 'Belum Lunas';
+                    $status_booking = 'Menunggu Pelunasan';
+                }
+            } else {
+                $tagihanSusulan = $additional;
+                $status_pembayaran = 'Belum Lunas';
+                $status_booking = 'Menunggu Pelunasan';
+            }
+        } else {
+            $status_pembayaran = 'Lunas';
+        }
+
+        $booking->update([
+            'denda_terlambat' => $dendaTelat,
+            'biaya_kerusakan' => $biayaRusak,
+            'total' => $total,
+            'tagihan_susulan' => $tagihanSusulan,
+            'status_pembayaran' => $status_pembayaran,
+            'status_booking' => $status_booking,
+        ]);
+
+        // Update car status
+        if ($booking->car) {
+            $carStatus = ($biayaRusak > 0) ? 'Maintenance' : 'Tersedia';
+            $booking->car->update(['status_mobil' => $carStatus]);
+        }
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Finalisasi Invoice Selesai.');
     }
 
     public function reports(Request $request)

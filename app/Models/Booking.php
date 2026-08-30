@@ -48,4 +48,14 @@ class Booking extends Model
     {
         return $this->belongsTo(Car::class);
     }
+
+    public function fines()
+    {
+        return $this->hasMany(BookingFine::class);
+    }
+
+    public function fineAuditLogs()
+    {
+        return $this->hasMany(FineAuditLog::class);
+    }
 }

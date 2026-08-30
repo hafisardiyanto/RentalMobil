@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\BookingFineController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -52,6 +53,12 @@ Route::middleware('auth')->group(function () {
         // Handover & Return POST processing
         Route::post('/bookings/{booking}/handover', [AdminController::class, 'processHandover'])->name('admin.bookings.process-handover');
         Route::post('/bookings/{booking}/return', [AdminController::class, 'processReturn'])->name('admin.bookings.process-return');
+        Route::post('/bookings/{booking}/finalize', [AdminController::class, 'finalizeInvoice'])->name('admin.bookings.finalize');
+
+        // Fines & Audit Logs
+        Route::post('/bookings/{booking}/fines', [BookingFineController::class, 'store'])->name('admin.fines.store');
+        Route::put('/fines/{fine}', [BookingFineController::class, 'update'])->name('admin.fines.update');
+        Route::delete('/fines/{fine}', [BookingFineController::class, 'destroy'])->name('admin.fines.destroy');
 
         // Reports
         Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports.index');
