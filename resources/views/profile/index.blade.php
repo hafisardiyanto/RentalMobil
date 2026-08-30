@@ -1,17 +1,18 @@
 @extends('layouts.app')
 
-@section('content')
-    <div style="background: var(--background); min-height: calc(100vh - 80px); padding: 3rem 5%;">
-        <div style="max-width: 800px; margin: 0 auto;">
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+@endpush
 
-            <div style="background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <h2 style="margin-bottom: 0.5rem; color: var(--secondary);">Profil Pengguna & Identitas</h2>
-                <p style="color: #64748B; margin-bottom: 2rem;">Lengkapi data diri Anda untuk keperluan syarat penyewaan
-                    mobil.</p>
+@section('content')
+    <div class="profile-container">
+        <div class="profile-wrapper">
+            <div class="profile-card">
+                <h2 class="profile-title">Profil Pengguna & Identitas</h2>
+                <p class="profile-subtitle">Lengkapi data diri Anda untuk keperluan syarat penyewaan mobil.</p>
 
                 @if(session('success'))
-                    <div
-                        style="padding: 1rem; background: #D1FAE5; color: #065F46; border-radius: 8px; margin-bottom: 1.5rem; font-weight: bold;">
+                    <div class="alert-success">
                         ✅ {{ session('success') }}
                     </div>
                 @endif
@@ -20,73 +21,53 @@
                     @csrf
                     @method('PUT')
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-grid-2">
                         <div>
-                            <label
-                                style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: var(--secondary);">Nama
-                                Lengkap</label>
-                            <input type="text" name="name" value="{{ old('name', $user->name) }}" required
-                                style="width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 8px;">
+                            <label class="p-label">Nama Lengkap</label>
+                            <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="p-input">
                         </div>
                         <div>
-                            <label
-                                style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: var(--secondary);">Email
-                                (Read-only)</label>
-                            <input type="email" value="{{ $user->email }}" disabled
-                                style="width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 8px; background: #F1F5F9;">
+                            <label class="p-label">Email (Read-only)</label>
+                            <input type="email" value="{{ $user->email }}" disabled class="p-input p-input-readonly">
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-grid-2">
                         <div>
-                            <label
-                                style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: var(--secondary);">Nomor
-                                HP (WhatsApp)</label>
-                            <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
-                                style="width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 8px;">
+                            <label class="p-label">Nomor HP (WhatsApp)</label>
+                            <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="p-input">
                         </div>
                         <div>
-                            <label
-                                style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: var(--secondary);">NIK
-                                KTP</label>
-                            <input type="text" name="nik" value="{{ old('nik', $user->nik) }}"
-                                style="width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 8px;">
+                            <label class="p-label">NIK KTP</label>
+                            <input type="text" name="nik" value="{{ old('nik', $user->nik) }}" class="p-input">
                         </div>
                     </div>
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label
-                            style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: var(--secondary);">Alamat
-                            Lengkap Sesuai KTP</label>
-                        <textarea name="address" rows="3"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 8px;">{{ old('address', $user->address) }}</textarea>
+                    <div class="form-group-margin">
+                        <label class="p-label">Alamat Lengkap Sesuai KTP</label>
+                        <textarea name="address" rows="3" class="p-input">{{ old('address', $user->address) }}</textarea>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div
-                            style="border: 2px dashed #CBD5E1; padding: 1.5rem; text-align: center; border-radius: 12px; position: relative;">
-                            <h4 style="margin-bottom: 1rem;">Foto KTP Asli</h4>
+                    <div class="doc-upload-grid">
+                        <div class="doc-upload-box">
+                            <h4 class="doc-upload-title">Foto KTP Asli</h4>
                             @if($user->ktp_photo)
-                                <img src="{{ $user->ktp_photo }}"
-                                    style="max-height: 150px; border-radius: 8px; margin-bottom: 1rem;">
+                                <img src="{{ $user->ktp_photo }}" class="doc-preview-img">
                             @endif
-                            <input type="file" name="ktp_photo" accept="image/*" style="width: 100%; font-size: 0.85rem;">
+                            <input type="file" name="ktp_photo" accept="image/*" class="doc-file-input">
                         </div>
-                        <div
-                            style="border: 2px dashed #CBD5E1; padding: 1.5rem; text-align: center; border-radius: 12px; position: relative;">
-                            <h4 style="margin-bottom: 1rem;">Foto SIM A</h4>
+                        <div class="doc-upload-box">
+                            <h4 class="doc-upload-title">Foto SIM A</h4>
                             @if($user->sim_photo)
-                                <img src="{{ $user->sim_photo }}"
-                                    style="max-height: 150px; border-radius: 8px; margin-bottom: 1rem;">
+                                <img src="{{ $user->sim_photo }}" class="doc-preview-img">
                             @endif
-                            <input type="file" name="sim_photo" accept="image/*" style="width: 100%; font-size: 0.85rem;">
+                            <input type="file" name="sim_photo" accept="image/*" class="doc-file-input">
                         </div>
                     </div>
 
                     @if ($errors->any())
-                        <div
-                            style="background: #FEE2E2; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                            <ul style="margin: 0; padding-left: 1.5rem;">
+                        <div class="alert-error">
+                            <ul class="error-list">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -94,9 +75,8 @@
                         </div>
                     @endif
 
-                    <div style="text-align: right;">
-                        <button type="submit"
-                            style="background: var(--primary); color: white; padding: 0.8rem 2rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save-profile">
                             Simpan Perubahan
                         </button>
                     </div>
