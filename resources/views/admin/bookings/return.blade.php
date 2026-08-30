@@ -43,12 +43,12 @@
             </div>
 
             <div class="return-penalty-box">
-                <div class="form-group" style="flex: 1;">
+                <div class="form-group flex-1">
                     <label for="denda_terlambat" class="return-danger-label">Denda Keterlambatan (Rp)</label>
                     <input type="number" name="denda_terlambat" id="denda_terlambat" value="0" class="return-danger-input">
                 </div>
 
-                <div class="form-group" style="flex: 1;">
+                <div class="form-group flex-1">
                     <label for="biaya_kerusakan" class="return-danger-label">Biaya Kerusakan (Rp)</label>
                     <input type="number" name="biaya_kerusakan" id="biaya_kerusakan" value="0" class="return-danger-input">
                 </div>

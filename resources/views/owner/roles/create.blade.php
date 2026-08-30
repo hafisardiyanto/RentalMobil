@@ -69,7 +69,7 @@
                     </label>
                 </div>
 
-                <p style="margin-top: 1rem; margin-bottom: 0; font-size: 0.85rem; color: #64748B;">Catatan: Jabatan tanpa
+                <p class="form-note">Catatan: Jabatan tanpa
                     ceklis hanya bisa melihat halaman Dashboard.</p>
             </div>
 

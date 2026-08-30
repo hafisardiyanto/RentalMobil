@@ -47,20 +47,20 @@
                         </td>
                         <td>
                             @php
-                                $statusColors = [
-                                    'Menunggu Konfirmasi' => 'background: #FEF3C7; color: #92400E;',
-                                    'Menunggu Pembayaran' => 'background: #FEF3C7; color: #92400E;',
-                                    'Pembayaran Diverifikasi' => 'background: #DBEAFE; color: #1E40AF;',
-                                    'Booking Dikonfirmasi' => 'background: #DBEAFE; color: #1E40AF;',
-                                    'Sedang Disewa' => 'background: #DBEAFE; color: #1E40AF;',
-                                    'Menunggu Pengembalian' => 'background: #FEF3C7; color: #92400E;',
-                                    'Selesai' => 'background: #D1FAE5; color: #065F46;',
-                                    'Dibatalkan' => 'background: #FEE2E2; color: #991B1B;',
-                                    'Ditolak' => 'background: #FEE2E2; color: #991B1B;',
+                                $statusClasses = [
+                                    'Menunggu Konfirmasi' => 'bg-pending',
+                                    'Menunggu Pembayaran' => 'bg-pending',
+                                    'Pembayaran Diverifikasi' => 'bg-rented',
+                                    'Booking Dikonfirmasi' => 'bg-rented',
+                                    'Sedang Disewa' => 'bg-rented',
+                                    'Menunggu Pengembalian' => 'bg-pending',
+                                    'Selesai' => 'bg-available',
+                                    'Dibatalkan' => 'bg-inactive',
+                                    'Ditolak' => 'bg-inactive',
                                 ];
-                                $colorStyle = $statusColors[$booking->status_booking] ?? 'background: #F3F4F6; color: #374151;';
+                                $badgeClass = $statusClasses[$booking->status_booking] ?? 'bg-default';
                             @endphp
-                            <span class="status-badge" style="{{ $colorStyle }}">
+                            <span class="status-badge {{ $badgeClass }}">
                                 {{ $booking->status_booking }}
                             </span>
                         </td>

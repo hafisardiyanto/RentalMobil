@@ -6,9 +6,9 @@
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title" style="margin: 0;">Daftar Armada Mobil</h1>
+        <h1 class="page-title m-0">Daftar Armada Mobil</h1>
         @can('create_cars')
-            <a href="{{ route('admin.cars.create') }}" class="btn btn-primary" style="text-decoration: none;">+ Tambah Mobil
+            <a href="{{ route('admin.cars.create') }}" class="btn btn-primary text-decoration-none">+ Tambah Mobil
                 Baru</a>
         @endcan
     </div>
@@ -27,57 +27,58 @@
             </thead>
             <tbody>
                 @forelse($cars as $car)
-                        <tr>
-                            <td>
-                                @if($car->image_path)
-                                    <img src="{{ $car->image_path }}" alt="Foto Mobil" class="img-thumbnail">
-                                @else
-                                    <div class="no-img">No Img</div>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="car-name">{{ $car->name }}</div>
-                                <div class="car-brand">{{ $car->brand }}</div>
-                            </td>
-                            <td>
-                                <div class="plate-badge">{{ $car->license_plate }}</div>
-                                <div class="car-brand">Tahun: {{ $car->year }}</div>
-                            </td>
-                            <td>
-                                <span class="price-text">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}</span>
-                            </td>
-                            <td>
-                                <span class="status-badge" style="background: 
-                                                {{ $car->status_mobil == 'Sedang Disewa' ? '#DBEAFE' :
-                    ($car->status_mobil == 'Tersedia' ? '#D1FAE5' :
-                        ($car->status_mobil == 'Tidak Aktif' ? '#FEE2E2' : '#FEF3C7')) }};
-                                                color: 
-                                                {{ $car->status_mobil == 'Sedang Disewa' ? '#1E40AF' :
-                    ($car->status_mobil == 'Tersedia' ? '#065F46' :
-                        ($car->status_mobil == 'Tidak Aktif' ? '#991B1B' : '#92400E')) }};">
-                                    {{ $car->status_mobil }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-links">
-                                    <a href="{{ route('admin.cars.show', $car->id) }}" class="link-detail">Detail</a>
-                                    @can('edit_cars')
-                                        <span class="action-separator">|</span>
-                                        <a href="{{ route('admin.cars.edit', $car->id) }}" class="link-edit">Edit</a>
-                                    @endcan
+                    <tr>
+                        <td>
+                            @if($car->image_path)
+                                <img src="{{ $car->image_path }}" alt="Foto Mobil" class="img-thumbnail">
+                            @else
+                                <div class="no-img">No Img</div>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="car-name">{{ $car->name }}</div>
+                            <div class="car-brand">{{ $car->brand }}</div>
+                        </td>
+                        <td>
+                            <div class="plate-badge">{{ $car->license_plate }}</div>
+                            <div class="car-brand">Tahun: {{ $car->year }}</div>
+                        </td>
+                        <td>
+                            <span class="price-text">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}</span>
+                        </td>
+                        <td>
+                            @php
+                                $bgClass = match ($car->status_mobil) {
+                                    'Sedang Disewa' => 'bg-rented',
+                                    'Tersedia' => 'bg-available',
+                                    'Tidak Aktif' => 'bg-inactive',
+                                    default => 'bg-pending'
+                                };
+                            @endphp
+                            <span class="status-badge {{ $bgClass }}">
+                                {{ $car->status_mobil }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-links">
+                                <a href="{{ route('admin.cars.show', $car->id) }}" class="link-detail">Detail</a>
+                                @can('edit_cars')
+                                    <span class="action-separator">|</span>
+                                    <a href="{{ route('admin.cars.edit', $car->id) }}" class="link-edit">Edit</a>
+                                @endcan
 
-                                    @can('delete_cars')
-                                        <span class="action-separator">|</span>
-                                        <form action="{{ route('admin.cars.destroy', $car->id) }}" method="POST"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus mobil ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-delete">Hapus</button>
-                                        </form>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
+                                @can('delete_cars')
+                                    <span class="action-separator">|</span>
+                                    <form action="{{ route('admin.cars.destroy', $car->id) }}" method="POST" class="d-inline"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus mobil ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete">Hapus</button>
+                                    </form>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
                 @empty
                     <tr>
                         <td colspan="6" class="empty-state">

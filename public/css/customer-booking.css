@@ -483,3 +483,23 @@
     font-size: 0.9rem;
     color: #94A3B8;
 }
+
+.bg-rented {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.bg-available {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.bg-inactive {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.bg-pending {
+    background: #FEF3C7;
+    color: #92400E;
+}

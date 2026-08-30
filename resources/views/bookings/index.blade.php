@@ -60,14 +60,14 @@
                             </td>
                             <td>
                                 @php
-                                    $colors = match ($booking->status_booking) {
-                                        'Selesai' => 'background: #D1FAE5; color: #065F46;',
-                                        'Ditolak', 'Dibatalkan' => 'background: #FEE2E2; color: #991B1B;',
-                                        'Menunggu Konfirmasi', 'Menunggu Pembayaran', 'Menunggu Pengembalian' => 'background: #FEF3C7; color: #92400E;',
-                                        default => 'background: #DBEAFE; color: #1E40AF;'
+                                    $badgeClass = match ($booking->status_booking) {
+                                        'Selesai' => 'bg-available',
+                                        'Ditolak', 'Dibatalkan' => 'bg-inactive',
+                                        'Menunggu Konfirmasi', 'Menunggu Pembayaran', 'Menunggu Pengembalian' => 'bg-pending',
+                                        default => 'bg-rented'
                                     };
                                 @endphp
-                                <span class="status-badge-cs" style="{{ $colors }}">
+                                <span class="status-badge-cs {{ $badgeClass }}">
                                     {{ $booking->status_booking }}
                                 </span>
                             </td>

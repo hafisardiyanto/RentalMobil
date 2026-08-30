@@ -132,7 +132,7 @@
                                 class="btn-action-danger">Tolak & Batalkan</a>
                         </form>
                         <form id="reject-form" action="{{ route('admin.bookings.update-status', $booking->id) }}" method="POST"
-                            style="display: none;">
+                            class="d-none">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="status_booking" value="Ditolak">

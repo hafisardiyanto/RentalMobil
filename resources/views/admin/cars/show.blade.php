@@ -7,16 +7,16 @@
 @section('content')
 <div class="page-header">
     <div>
-        <h1 class="page-title" style="margin: 0;">Detail Mobil</h1>
+        <h1 class="page-title m-0">Detail Mobil</h1>
         <p>Informasi lengkap untuk armada: {{ $car->name }}</p>
     </div>
     <div class="header-actions">
-        <a href="{{ route('admin.cars.edit', $car->id) }}" class="btn btn-primary" style="text-decoration: none;">Edit Mobil</a>
+        <a href="{{ route('admin.cars.edit', $car->id) }}" class="btn btn-primary text-decoration-none">Edit Mobil</a>
         <a href="{{ route('admin.cars.index') }}" class="btn btn-cancel">Kembali</a>
     </div>
 </div>
 
-<div class="box form-container" style="margin-bottom: 2rem;">
+<div class="box form-container mb-2">
     <h3 class="section-title">Informasi Utama</h3>
     <div class="detail-grid">
         <div>

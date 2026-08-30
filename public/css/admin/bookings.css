@@ -614,3 +614,36 @@
     font-weight: bold;
     cursor: pointer;
 }
+
+.d-none {
+    display: none !important;
+}
+
+.flex-1 {
+    flex: 1 !important;
+}
+
+.bg-rented {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.bg-available {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.bg-inactive {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.bg-pending {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.bg-default {
+    background: #F3F4F6;
+    color: #374151;
+}
