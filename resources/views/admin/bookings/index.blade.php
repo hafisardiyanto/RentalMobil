@@ -26,7 +26,8 @@
                             <div class="customer-name">{{ $booking->user->name }}</div>
                             <div class="customer-email">{{ $booking->user->email }}</div>
                             <div style="font-size: 0.85rem; color: #059669; font-weight: 600;">📞
-                                {{ $booking->user->phone ?? '-' }}</div>
+                                {{ $booking->user->phone ?? '-' }}
+                            </div>
                         </td>
                         <td>
                             <div class="car-info">{{ $booking->car->brand }} {{ $booking->car->name }}</div>
@@ -39,9 +40,12 @@
                             </div>
                         </td>
                         <td>
-                            <span class="price-text" style="display: block; margin-bottom: 0.5rem;">Rp {{ number_format($booking->total, 0, ',', '.') }}</span>
+                            <span class="price-text" style="display: block; margin-bottom: 0.5rem;">Rp
+                                {{ number_format($booking->total, 0, ',', '.') }}</span>
                             @if($booking->payment_proof)
-                                <a href="{{ $booking->payment_proof }}" target="_blank" style="font-size: 0.85rem; color: var(--primary); font-weight: bold; text-decoration: none;">🔍 Lihat Bukti TF</a>
+                                <a href="{{ $booking->payment_proof }}" target="_blank"
+                                    style="font-size: 0.85rem; color: var(--primary); font-weight: bold; text-decoration: none;">🔍
+                                    Lihat Bukti TF</a>
                             @else
                                 <span style="font-size: 0.85rem; color: #94A3B8;">Belum bayar</span>
                             @endif
@@ -85,24 +89,9 @@
                                         <option value="Dibatalkan" {{ $booking->status_booking == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                                     </select>
                                 </form>
-                                @if(in_array($booking->status_booking, ['Booking Dikonfirmasi']))
-                                    <a href="{{ route('admin.bookings.handover', $booking->id) }}" style="display: block; margin-top: 0.5rem; background: var(--primary); color: white; padding: 0.4rem; text-align: center; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">🔑 Serah Terima</a>
-                                @endif
-                                
-                                @if(in_array($booking->status_booking, ['Sedang Disewa']))
-                                    <a href="{{ route('admin.bookings.return', $booking->id) }}" style="display: block; margin-top: 0.5rem; background: #059669; color: white; padding: 0.4rem; text-align: center; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">🔙 Pengembalian</a>
-                                @endif
-
-                                <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST" class="status-form" style="margin-top: 0.5rem;">
-                                    @csrf
-                                    @method('PUT')
-                                    <select name="status_pembayaran" class="status-select" style="background: #F8FAFC;" onchange="this.form.submit()">
-                                        <option value="Belum Bayar" {{ $booking->status_pembayaran == 'Belum Bayar' ? 'selected' : '' }}>Belum Bayar</option>
-                                        <option value="Menunggu Verifikasi" {{ $booking->status_pembayaran == 'Menunggu Verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
-                                        <option value="Dibayar Sebagian" {{ $booking->status_pembayaran == 'Dibayar Sebagian' ? 'selected' : '' }}>Dibayar DP</option>
-                                        <option value="Lunas" {{ $booking->status_pembayaran == 'Lunas' ? 'selected' : '' }}>Lunas</option>
-                                    </select>
-                                </form>
+                                <a href="{{ route('admin.bookings.show', $booking->id) }}"
+                                    style="display: block; margin-top: 0.5rem; background: var(--primary); color: white; padding: 0.4rem; text-align: center; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">➡️
+                                    Detail & Proses</a>
                                 <form action="{{ route('admin.bookings.destroy', $booking->id) }}" method="POST"
                                     onsubmit="return confirm('Hapus data pesanan ini?')" style="display: inline;">
                                     @csrf

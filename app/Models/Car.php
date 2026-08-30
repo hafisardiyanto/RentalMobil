@@ -17,7 +17,8 @@ class Car extends Model
         'price_per_day',
         'image_path',
         'images',
-        'is_available'
+        'is_available',
+        'status_mobil'
     ];
 
     protected $casts = [

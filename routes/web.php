@@ -45,13 +45,12 @@ Route::middleware('auth')->group(function () {
 
         // Bookings Management
         Route::get('/bookings', [AdminController::class, 'bookingsIndex'])->name('admin.bookings.index');
+        Route::get('/bookings/{booking}/detail', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
         Route::put('/bookings/{booking}/status', [AdminController::class, 'updateBookingStatus'])->name('admin.bookings.update-status');
         Route::put('/bookings/{booking}/payment-status', [AdminController::class, 'updatePaymentStatus'])->name('admin.bookings.update-payment-status');
 
-        // Handover & Return
-        Route::get('/bookings/{booking}/handover', [AdminController::class, 'handoverForm'])->name('admin.bookings.handover');
+        // Handover & Return POST processing
         Route::post('/bookings/{booking}/handover', [AdminController::class, 'processHandover'])->name('admin.bookings.process-handover');
-        Route::get('/bookings/{booking}/return', [AdminController::class, 'returnForm'])->name('admin.bookings.return');
         Route::post('/bookings/{booking}/return', [AdminController::class, 'processReturn'])->name('admin.bookings.process-return');
 
         // Reports

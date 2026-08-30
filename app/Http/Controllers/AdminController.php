@@ -152,6 +152,10 @@ class AdminController extends Controller
 
     public function destroy(Car $car)
     {
+        if ($car->bookings()->exists()) {
+            return redirect()->route('admin.cars.index')->with('error', 'Gagal: Mobil tidak dapat dihapus karena memiliki histori pemesanan. Silakan ubah status mobil menjadi "Tidak Aktif".');
+        }
+
         if (is_array($car->images)) {
             foreach ($car->images as $img) {
                 Storage::disk('public')->delete(str_replace('/storage/', '', $img));
@@ -184,21 +188,25 @@ class AdminController extends Controller
     {
         $validated = $request->validate([
             'status_pembayaran' => 'required|in:Belum Bayar,Menunggu Verifikasi,Dibayar Sebagian,Lunas',
+            'deposit' => 'nullable|integer'
         ]);
 
-        $booking->update(['status_pembayaran' => $validated['status_pembayaran']]);
+        $booking->update([
+            'status_pembayaran' => $validated['status_pembayaran'],
+            'deposit' => $validated['deposit'] ?? $booking->deposit
+        ]);
 
         // Auto update booking status if Lunas
-        if ($validated['status_pembayaran'] === 'Lunas') {
+        if ($validated['status_pembayaran'] === 'Lunas' && $booking->status_booking === 'Menunggu Konfirmasi') {
             $booking->update(['status_booking' => 'Booking Dikonfirmasi']);
         }
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Status Pembayaran berhasil diperbarui!');
+        return redirect()->route('admin.bookings.index')->with('success', 'Status Pembayaran & Deposit berhasil diperbarui!');
     }
 
-    public function handoverForm(Booking $booking)
+    public function showBooking(Booking $booking)
     {
-        return view('admin.bookings.handover', compact('booking'));
+        return view('admin.bookings.show', compact('booking'));
     }
 
     public function processHandover(Request $request, Booking $booking)
@@ -219,13 +227,15 @@ class AdminController extends Controller
 
         $booking->update($validated);
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil diserahterimakan.');
+        // Update Status Mobil
+        if ($booking->car) {
+            $booking->car->update(['status_mobil' => 'Sedang Disewa']);
+        }
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil diserahterimakan ke Customer.');
     }
 
-    public function returnForm(Booking $booking)
-    {
-        return view('admin.bookings.return', compact('booking'));
-    }
+
 
     public function processReturn(Request $request, Booking $booking)
     {
@@ -249,32 +259,58 @@ class AdminController extends Controller
         $validated['waktu_pengembalian'] = now();
         $validated['status_booking'] = 'Selesai';
 
-        // Update Total tagihan dengan denda
         $additional = $validated['denda_terlambat'] + $validated['biaya_kerusakan'];
+
+        // Logika Deposit
         if ($additional > 0) {
             $booking->total += $additional;
             $booking->biaya_tambahan += $additional;
+
+            if ($booking->deposit > 0) {
+                if ($additional > $booking->deposit) {
+                    $sisaTagihan = $additional - $booking->deposit;
+                    $booking->deposit = 0; // Deposit hangus 100%
+                    $booking->tagihan_susulan = $sisaTagihan;
+                    $booking->status_pembayaran = 'Belum Lunas'; // Rubah bayaran karena ada tunggakan
+                } else {
+                    $booking->deposit = $booking->deposit - $additional; // Sisa deposit dikembalikan
+                }
+            } else {
+                $booking->tagihan_susulan = $additional;
+                $booking->status_pembayaran = 'Belum Lunas';
+            }
             $booking->save();
         }
 
         $booking->update($validated);
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil dikembalikan.');
+        // Update Status Mobil kembali
+        if ($booking->car) {
+            $booking->car->update(['status_mobil' => 'Tersedia']);
+        }
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Mobil berhasil dikembalikan & Kalkulasi Tagihan Selesai.');
     }
 
     public function reports(Request $request)
     {
         $query = Booking::where('status_booking', 'Selesai')->with(['user', 'car']);
 
-        if ($request->has('bulan') && $request->bulan) {
-            $query->whereMonth('created_at', date('m', strtotime($request->bulan)))
-                ->whereYear('created_at', date('Y', strtotime($request->bulan)));
+        if ($request->has('start_date') && $request->start_date && $request->has('end_date') && $request->end_date) {
+            $query->whereBetween('waktu_pengembalian', [
+                $request->start_date . ' 00:00:00',
+                $request->end_date . ' 23:59:59'
+            ]);
         }
 
         $bookings = $query->orderBy('waktu_pengembalian', 'desc')->get();
-        $totalPendapatan = $bookings->sum('total');
 
-        return view('admin.reports.index', compact('bookings', 'totalPendapatan'));
+        $totalSewaPokok = $bookings->sum('subtotal');
+        $totalDenda = $bookings->sum('denda_terlambat');
+        $totalKerusakan = $bookings->sum('biaya_kerusakan');
+        $totalPendapatan = $totalSewaPokok + $totalDenda + $totalKerusakan;
+
+        return view('admin.reports.index', compact('bookings', 'totalPendapatan', 'totalSewaPokok', 'totalDenda', 'totalKerusakan'));
     }
 
     public function destroyBooking(Booking $booking)
