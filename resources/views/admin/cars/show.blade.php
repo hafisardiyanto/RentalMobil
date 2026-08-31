@@ -59,18 +59,9 @@
         <div class="gallery-grid">
             @if(is_array($car->images) && count($car->images) > 0)
                 @foreach($car->images as $index => $img)
-                    <div class="gallery-item" style="position: relative;">
-                        <button type="button"
-                            onclick="if(confirm('Hapus foto ini dari galeri?')) document.getElementById('delete-img-show-{{ $index }}').submit();"
-                            style="position: absolute; top:5px; right:5px; background:#ef4444; color:white; border:none; border-radius:50%; width:25px; height:25px; cursor:pointer; font-weight:bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;">&times;</button>
+                    <div class="gallery-item">
                         <img src="{{ $img }}" alt="Foto {{ $index + 1 }}">
                         <div class="gallery-item-label">Foto {{ $index + 1 }}</div>
-                        <form id="delete-img-show-{{ $index }}" action="{{ route('admin.cars.destroy-image', $car->id) }}"
-                            method="POST" style="display:none;">
-                            @csrf
-                            @method('DELETE')
-                            <input type="hidden" name="image_url" value="{{ $img }}">
-                        </form>
                     </div>
                 @endforeach
             @elseif($car->image_path)
