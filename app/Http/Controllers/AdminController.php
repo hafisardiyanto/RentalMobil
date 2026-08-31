@@ -138,26 +138,14 @@ class AdminController extends Controller
         $firstImagePath = $car->image_path;
 
         if ($request->hasFile('images')) {
-            // Delete old images
-            if (is_array($car->images)) {
-                foreach ($car->images as $img) {
-                    // Cek jika path lokal storage bukan URL external
-                    if (str_contains($img, '/storage/')) {
-                        Storage::disk('public')->delete(str_replace('/storage/', '', $img));
-                    }
-                }
-            } elseif ($car->image_path && str_contains($car->image_path, '/storage/')) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $car->image_path));
-            }
-
-            // Replace with new images
-            $imagePaths = [];
+            // Append new images
             foreach ($request->file('images') as $key => $file) {
                 $path = $file->store('cars', 'public');
                 $url = Storage::url($path);
                 $imagePaths[] = $url;
 
-                if ($key === 0) {
+                // Update thumbnail only if it's empty
+                if (empty($firstImagePath)) {
                     $firstImagePath = $url;
                 }
             }
@@ -189,13 +177,45 @@ class AdminController extends Controller
 
         if (is_array($car->images)) {
             foreach ($car->images as $img) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $img));
+                if (str_contains($img, '/storage/')) {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $img));
+                }
             }
-        } elseif ($car->image_path) {
+        } elseif ($car->image_path && str_contains($car->image_path, '/storage/')) {
             Storage::disk('public')->delete(str_replace('/storage/', '', $car->image_path));
         }
+
         $car->delete();
         return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil dihapus!');
+    }
+
+    public function destroyImage(Request $request, Car $car)
+    {
+        $imageUrl = $request->image_url;
+        $images = is_array($car->images) ? $car->images : [];
+
+        // Hapus file fisik dari storage
+        if (str_contains($imageUrl, '/storage/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $imageUrl));
+        }
+
+        // Buang dari array
+        $images = array_filter($images, function ($img) use ($imageUrl) {
+            return $img !== $imageUrl;
+        });
+
+        // Re-index array (wajib untuk JSON)
+        $images = array_values($images);
+
+        // Pilih ulang thumbnail depan
+        $firstImagePath = count($images) > 0 ? $images[0] : null;
+
+        $car->update([
+            'images' => $images,
+            'image_path' => $firstImagePath
+        ]);
+
+        return back()->with('success', 'Foto mobil berhasil dihapus!');
     }
 
     public function bookingsIndex()

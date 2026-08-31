@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('can:edit_cars')->group(function () {
             Route::get('/cars/{car}/edit', [AdminController::class, 'edit'])->name('admin.cars.edit');
             Route::put('/cars/{car}', [AdminController::class, 'update'])->name('admin.cars.update');
+            Route::delete('/cars/{car}/image', [AdminController::class, 'destroyImage'])->name('admin.cars.destroy-image');
         });
         Route::middleware('can:delete_cars')->group(function () {
             Route::delete('/cars/{car}', [AdminController::class, 'destroy'])->name('admin.cars.destroy');
