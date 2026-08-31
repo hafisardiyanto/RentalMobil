@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookingFineController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/armada', [HomeController::class, 'armada'])->name('armada');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

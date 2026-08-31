@@ -19,8 +19,10 @@
         <div class="logo">RentalMobil</div>
         <div class="nav-links">
             <a href="/">Beranda</a>
-            <a href="/#armada">Armada</a>
+            <a href="/armada">Armada</a>
+            <a href="/#cara-sewa">Cara Sewa</a>
             <a href="/#tentang">Tentang</a>
+            <a href="/#faq">FAQ</a>
             @auth
                 @if(in_array(Auth::user()->role, ['admin', 'owner']))
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-sm">Dashboard
@@ -56,7 +58,7 @@
     </footer>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/6285748174062?text=Halo,%20saya%20butuh%20bantuan%20mengenai%20sewa%20mobil."
+    <a href="https://wa.me/62857a48174062?text=Halo,%20saya%20butuh%20bantuan%20mengenai%20sewa%20mobil."
         class="floating-wa" target="_blank"
         style="position: fixed; bottom: 30px; right: 30px; background-color: #25D366; color: white; border-radius: 50Px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 15px -3px rgba(37, 211, 102, 0.4); z-index: 1000; transition: transform 0.3s ease;">
         <svg width="35" height="35" viewBox="0 0 24 24" fill="#ffffff" stroke="#ffffff" stroke-width="0">
