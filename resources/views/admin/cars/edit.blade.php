@@ -92,6 +92,9 @@
                     <label class="form-label">Fasilitas / Inclusions (Ceklis yang tersedia)</label>
                     <div
                         style="display: flex; gap: 20px; flex-wrap: wrap; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        @php
+                            $selectedFacilities = is_array($car->facilities) ? $car->facilities : [];
+                        @endphp
                         @forelse($facilities as $facility)
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                 <input type="checkbox" name="facilities[]" value="{{ $facility->name }}" {{ (is_array(old('facilities')) && in_array($facility->name, old('facilities'))) || in_array($facility->name, $selectedFacilities) ? 'checked' : '' }}> {{ $facility->name }}
