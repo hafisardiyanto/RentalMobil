@@ -19,19 +19,29 @@
     </div>
 
     <!-- Quick Search Widget -->
-    <div class="search-widget" style="max-width: 900px; margin: -50px auto 40px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10;">
-        <h3 style="margin-top: 0; color: #1e293b; text-align: center; margin-bottom: 20px;">🔎 Cari Kendaraan yang Tersedia</h3>
-        <form action="/armada" method="GET" style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: flex-end;">
+    <div class="search-widget"
+        style="max-width: 900px; margin: -50px auto 40px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative; z-index: 10;">
+        <h3 style="margin-top: 0; color: #1e293b; text-align: center; margin-bottom: 20px;">🔎 Cari Kendaraan yang Tersedia
+        </h3>
+        <form action="/armada" method="GET"
+            style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; align-items: flex-end;">
             <div style="flex: 1; min-width: 200px;">
-                <label style="display:block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #64748b;">Mulai Sewa</label>
-                <input type="date" name="start_date" required class="form-control-cs" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px;">
+                <label
+                    style="display:block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #64748b;">Mulai
+                    Sewa</label>
+                <input type="date" name="start_date" required class="form-control-cs"
+                    style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px;">
             </div>
             <div style="flex: 1; min-width: 200px;">
-                <label style="display:block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #64748b;">Selesai Sewa</label>
-                <input type="date" name="end_date" required class="form-control-cs" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px;">
+                <label
+                    style="display:block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #64748b;">Selesai
+                    Sewa</label>
+                <input type="date" name="end_date" required class="form-control-cs"
+                    style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px;">
             </div>
             <div style="flex: 1; min-width: 200px;">
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; border-radius: 8px; height: 43px;">Cari Mobil &rsaquo;</button>
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; padding: 12px; border-radius: 8px; height: 43px;">Cari Mobil &rsaquo;</button>
             </div>
         </form>
     </div>
@@ -42,8 +52,10 @@
             @forelse($featuredCars ?? [] as $car)
                 @if(is_object($car))
                     <div class="card">
-                        <div style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">
-                            <span style="display:inline-block; width:8px; height:8px; background: #10b981; border-radius: 50%;"></span>
+                        <div
+                            style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">
+                            <span
+                                style="display:inline-block; width:8px; height:8px; background: #10b981; border-radius: 50%;"></span>
                             Tersedia
                         </div>
 
@@ -52,8 +64,42 @@
                             alt="{{ $car->name }}">
                         <h3>{{ $car->brand }} {{ $car->name }}</h3>
                         <p class="car-meta-text">Tahun {{ $car->year }} &bull; Plat: {{ $car->license_plate }}</p>
+
+                        @if($car->description)
+                            <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px; margin-bottom: 10px; line-height: 1.4;">
+                                {{ \Illuminate\Support\Str::limit($car->description, 100) }}</p>
+                        @endif
+
+                        <div
+                            style="display: flex; gap: 15px; margin-top: 5px; margin-bottom: 15px; font-size: 0.85rem; color: #475569;">
+                            <span>👤 {{ $car->seats }} Kursi</span>
+                            <span>🧳 {{ $car->luggage }} Koper</span>
+                        </div>
+
                         <div class="price">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}<span
                                 class="price-suffix">/hari</span></div>
+
+                        <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                            <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 5px;">Daftar Fasilitas:</p>
+                            <ul
+                                style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #475569; display: flex; flex-direction: column; gap: 4px;">
+                                @php
+                                    $facilities = is_array($car->facilities) ? $car->facilities : [];
+                                    $allFacilities = ['Lepas Kunci', 'Termasuk Pengemudi', 'Mobil + Driver + BBM', 'Durasi 12 Jam', 'Unit Bersih dan Terawat'];
+                                @endphp
+                                @foreach($allFacilities as $facility)
+                                    @if(in_array($facility, $facilities))
+                                        <li>✅ {{ $facility }}</li>
+                                    @else
+                                        @if($facility == 'Lepas Kunci')
+                                            <li>❌ Tidak Melayani Lepas Kunci</li>
+                                        @else
+                                            <li>❌ {{ $facility }}</li>
+                                        @endif
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
 
                         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
                             @php
@@ -81,35 +127,57 @@
             @endforelse
         </div>
         <div style="text-align: center; margin-top: 30px;">
-            <a href="/armada" class="btn btn-outline" style="padding: 12px 30px; font-weight: bold;">Lihat Semua Armada &rsaquo;</a>
+            <a href="/armada" class="btn btn-outline" style="padding: 12px 30px; font-weight: bold;">Lihat Semua Armada
+                &rsaquo;</a>
         </div>
     </div>
 
     <div class="features features-bg" id="cara-sewa">
         <h2>Cara Sewa Mobil</h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; text-align: left; max-width: 1000px; margin: 0 auto; justify-content: center;">
-            <div style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
-                <div style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">01</div>
-                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span style="font-size: 1.4rem; vertical-align: middle;">🚗</span> Pilih Armada</h3>
-                <p style="color: #64748b; font-size: 0.9rem;">Cari dan pilih kendaraan favorit yang sesuai dengan kebutuhan perjalanan Anda.</p>
+        <div
+            style="display: flex; flex-wrap: wrap; gap: 20px; text-align: left; max-width: 1000px; margin: 0 auto; justify-content: center;">
+            <div
+                style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
+                <div
+                    style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">
+                    01</div>
+                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span
+                        style="font-size: 1.4rem; vertical-align: middle;">🚗</span> Pilih Armada</h3>
+                <p style="color: #64748b; font-size: 0.9rem;">Cari dan pilih kendaraan favorit yang sesuai dengan kebutuhan
+                    perjalanan Anda.</p>
             </div>
 
-            <div style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
-                <div style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">02</div>
-                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span style="font-size: 1.4rem; vertical-align: middle;">📅</span> Tentukan Jadwal</h3>
-                <p style="color: #64748b; font-size: 0.9rem;">Masukkan tanggal keberangkatan dan sistem kami mengecek ketersediaannya otomatis.</p>
+            <div
+                style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
+                <div
+                    style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">
+                    02</div>
+                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span
+                        style="font-size: 1.4rem; vertical-align: middle;">📅</span> Tentukan Jadwal</h3>
+                <p style="color: #64748b; font-size: 0.9rem;">Masukkan tanggal keberangkatan dan sistem kami mengecek
+                    ketersediaannya otomatis.</p>
             </div>
 
-            <div style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
-                <div style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">03</div>
-                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span style="font-size: 1.4rem; vertical-align: middle;">📝</span> Booking Aman</h3>
-                <p style="color: #64748b; font-size: 0.9rem;">Buat pesanan secara instan dan unit Anda akan langsung terkunci di sistem kami.</p>
+            <div
+                style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
+                <div
+                    style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">
+                    03</div>
+                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span
+                        style="font-size: 1.4rem; vertical-align: middle;">📝</span> Booking Aman</h3>
+                <p style="color: #64748b; font-size: 0.9rem;">Buat pesanan secara instan dan unit Anda akan langsung
+                    terkunci di sistem kami.</p>
             </div>
 
-            <div style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
-                <div style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">04</div>
-                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span style="font-size: 1.4rem; vertical-align: middle;">💳</span> Pembayaran</h3>
-                <p style="color: #64748b; font-size: 0.9rem;">Unggah bukti transfer untuk Deposit atau Pelunasan pada halaman tagihan Anda.</p>
+            <div
+                style="flex: 1 1 200px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
+                <div
+                    style="color: #cbd5e1; font-weight: 800; font-size: 2.5rem; position: absolute; top: 10px; right: 20px; line-height: 1;">
+                    04</div>
+                <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;"><span
+                        style="font-size: 1.4rem; vertical-align: middle;">💳</span> Pembayaran</h3>
+                <p style="color: #64748b; font-size: 0.9rem;">Unggah bukti transfer untuk Deposit atau Pelunasan pada
+                    halaman tagihan Anda.</p>
             </div>
         </div>
     </div>
@@ -129,7 +197,8 @@
             <div class="card feature-card">
                 <div class="feature-icon">📅</div>
                 <h3>Booking Mudah</h3>
-                <p class="feature-desc">Pesan kendaraan secara online dengan sistem pengecekan ketersediaan (Anti-Double Booking) instan.</p>
+                <p class="feature-desc">Pesan kendaraan secara online dengan sistem pengecekan ketersediaan (Anti-Double
+                    Booking) instan.</p>
             </div>
             <div class="card feature-card">
                 <div class="feature-icon">💬</div>

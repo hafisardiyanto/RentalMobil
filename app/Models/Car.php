@@ -18,11 +18,16 @@ class Car extends Model
         'image_path',
         'images',
         'is_available',
-        'status_mobil'
+        'status_mobil',
+        'description',
+        'seats',
+        'luggage',
+        'facilities'
     ];
 
     protected $casts = [
         'images' => 'array',
+        'facilities' => 'array',
     ];
 
     public function bookings()

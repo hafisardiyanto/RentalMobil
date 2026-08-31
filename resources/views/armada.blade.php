@@ -68,8 +68,42 @@
                         alt="{{ $car->name }}">
                     <h3>{{ $car->brand }} {{ $car->name }}</h3>
                     <p class="car-meta-text">Tahun {{ $car->year }} &bull; Plat: {{ $car->license_plate }}</p>
+
+                    @if($car->description)
+                        <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px; margin-bottom: 10px; line-height: 1.4;">
+                            {{ \Illuminate\Support\Str::limit($car->description, 100) }}</p>
+                    @endif
+
+                    <div
+                        style="display: flex; gap: 15px; margin-top: 5px; margin-bottom: 15px; font-size: 0.85rem; color: #475569;">
+                        <span>👤 {{ $car->seats }} Kursi</span>
+                        <span>🧳 {{ $car->luggage }} Koper</span>
+                    </div>
+
                     <div class="price">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}<span
                             class="price-suffix">/hari</span></div>
+
+                    <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                        <p style="font-size: 0.8rem; font-weight: bold; margin-bottom: 5px;">Daftar Fasilitas:</p>
+                        <ul
+                            style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #475569; display: flex; flex-direction: column; gap: 4px;">
+                            @php
+                                $facilities = is_array($car->facilities) ? $car->facilities : [];
+                                $allFacilities = ['Lepas Kunci', 'Termasuk Pengemudi', 'Mobil + Driver + BBM', 'Durasi 12 Jam', 'Unit Bersih dan Terawat'];
+                            @endphp
+                            @foreach($allFacilities as $facility)
+                                @if(in_array($facility, $facilities))
+                                    <li>✅ {{ $facility }}</li>
+                                @else
+                                    @if($facility == 'Lepas Kunci')
+                                        <li>❌ Tidak Melayani Lepas Kunci</li>
+                                    @else
+                                        <li>❌ {{ $facility }}</li>
+                                    @endif
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
 
                     <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
                         @php
