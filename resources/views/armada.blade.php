@@ -71,7 +71,8 @@
 
                     @if($car->description)
                         <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px; margin-bottom: 10px; line-height: 1.4;">
-                            {{ \Illuminate\Support\Str::limit($car->description, 100) }}</p>
+                            {{ \Illuminate\Support\Str::limit($car->description, 100) }}
+                        </p>
                     @endif
 
                     <div
@@ -88,17 +89,17 @@
                         <ul
                             style="list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: #475569; display: flex; flex-direction: column; gap: 4px;">
                             @php
-                                $facilities = is_array($car->facilities) ? $car->facilities : [];
-                                $allFacilities = ['Lepas Kunci', 'Termasuk Pengemudi', 'Mobil + Driver + BBM', 'Durasi 12 Jam', 'Unit Bersih dan Terawat'];
+                                $carFacilities = is_array($car->facilities) ? $car->facilities : [];
+                                $allFacilities = \App\Models\Facility::orderBy('id')->pluck('name')->toArray();
                             @endphp
                             @foreach($allFacilities as $facility)
-                                @if(in_array($facility, $facilities))
+                                @if(in_array($facility, $carFacilities))
                                     <li>✅ {{ $facility }}</li>
                                 @else
                                     @if($facility == 'Lepas Kunci')
                                         <li>❌ Tidak Melayani Lepas Kunci</li>
                                     @else
-                                        <li>❌ {{ $facility }}</li>
+                                        <li>❌ Tidak {{ $facility }}</li>
                                     @endif
                                 @endif
                             @endforeach

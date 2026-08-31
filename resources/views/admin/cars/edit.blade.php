@@ -66,7 +66,8 @@
             <div class="form-grid-4">
                 <div style="grid-column: 1 / -1;">
                     <label class="form-label">Deskripsi Singkat</label>
-                    <textarea name="description" rows="3" placeholder="Deskripsikan keunggulan dan kenyamanan mobil ini..." class="form-input">{{ old('description', $car->description) }}</textarea>
+                    <textarea name="description" rows="3" placeholder="Deskripsikan keunggulan dan kenyamanan mobil ini..."
+                        class="form-input">{{ old('description', $car->description) }}</textarea>
                     @error('description') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -80,7 +81,7 @@
                 </div>
                 <div>
                     <label class="form-label">Kapasitas Koper</label>
-                    <input type="number" name="luggage" value="{{ old('luggage', $car->luggage) }}" required min="0" 
+                    <input type="number" name="luggage" value="{{ old('luggage', $car->luggage) }}" required min="0"
                         placeholder="2" class="form-input">
                     @error('luggage') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
@@ -89,25 +90,16 @@
             <div class="form-grid-2" style="margin-top: 15px; margin-bottom: 25px;">
                 <div style="grid-column: 1 / -1;">
                     <label class="form-label">Fasilitas / Inclusions (Ceklis yang tersedia)</label>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                        @php
-                            $facilities = is_array($car->facilities) ? $car->facilities : [];
-                        @endphp
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Lepas Kunci" {{ (is_array(old('facilities')) && in_array('Lepas Kunci', old('facilities'))) || in_array('Lepas Kunci', $facilities) ? 'checked' : '' }}> Lepas Kunci
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Termasuk Pengemudi" {{ (is_array(old('facilities')) && in_array('Termasuk Pengemudi', old('facilities'))) || in_array('Termasuk Pengemudi', $facilities) ? 'checked' : '' }}> Termasuk Pengemudi
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Mobil + Driver + BBM" {{ (is_array(old('facilities')) && in_array('Mobil + Driver + BBM', old('facilities'))) || in_array('Mobil + Driver + BBM', $facilities) ? 'checked' : '' }}> Mobil + Driver + BBM
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Durasi 12 Jam" {{ (is_array(old('facilities')) && in_array('Durasi 12 Jam', old('facilities'))) || in_array('Durasi 12 Jam', $facilities) ? 'checked' : '' }}> Durasi 12 Jam
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Unit Bersih dan Terawat" {{ (is_array(old('facilities')) && in_array('Unit Bersih dan Terawat', old('facilities'))) || in_array('Unit Bersih dan Terawat', $facilities) ? 'checked' : '' }}> Unit Bersih dan Terawat
-                        </label>
+                    <div
+                        style="display: flex; gap: 20px; flex-wrap: wrap; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        @forelse($facilities as $facility)
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="facilities[]" value="{{ $facility->name }}" {{ (is_array(old('facilities')) && in_array($facility->name, old('facilities'))) || in_array($facility->name, $selectedFacilities) ? 'checked' : '' }}> {{ $facility->name }}
+                            </label>
+                        @empty
+                            <span style="font-size: 0.85rem; color:#64748b;">Belum ada master data fasilitas yang ditambahkan.
+                                <a href="{{ route('facilities.index') }}" style="color: #3b82f6;">Tambah Fasilitas</a></span>
+                        @endforelse
                     </div>
                 </div>
             </div>

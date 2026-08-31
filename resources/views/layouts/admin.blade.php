@@ -33,6 +33,8 @@
             @if($isOwner || in_array('view_cars', $permissions))
                 <a href="{{ route('admin.cars.index') }}"
                     class="nav-cars {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">🚗 Manajemen Mobil</a>
+                <a href="{{ route('facilities.index') }}"
+                    class="nav-cars {{ request()->routeIs('facilities.*') ? 'active' : '' }}">✨ Master Fasilitas</a>
                 <a href="{{ route('admin.maintenances.index') }}"
                     class="nav-cars {{ request()->routeIs('admin.maintenances.*') ? 'active' : '' }}">🔧 Perawatan Mobil</a>
             @endif

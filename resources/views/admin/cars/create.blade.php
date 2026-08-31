@@ -58,71 +58,68 @@
                     </select>
                     @error('is_available') <span class="error-msg">{{ $message }}</span> @enderror
                 </div>
-            <div class="form-grid-4">
-                <div style="grid-column: 1 / -1;">
-                    <label class="form-label">Deskripsi Singkat</label>
-                    <textarea name="description" rows="3" placeholder="Deskripsikan keunggulan dan kenyamanan mobil ini..." class="form-input">{{ old('description') }}</textarea>
-                    @error('description') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
-
-            <div class="form-grid-4">
-                <div>
-                    <label class="form-label">Jumlah Kursi</label>
-                    <input type="number" name="seats" value="{{ old('seats', 5) }}" required min="1"
-                        placeholder="5" class="form-input">
-                    @error('seats') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-                <div>
-                    <label class="form-label">Kapasitas Koper</label>
-                    <input type="number" name="luggage" value="{{ old('luggage', 2) }}" required min="0" 
-                        placeholder="2" class="form-input">
-                    @error('luggage') <span class="error-msg">{{ $message }}</span> @enderror
-                </div>
-            </div>
-
-            <div class="form-grid-2" style="margin-top: 15px; margin-bottom: 25px;">
-                <div style="grid-column: 1 / -1;">
-                    <label class="form-label">Fasilitas / Inclusions (Ceklis yang tersedia)</label>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Lepas Kunci" {{ (is_array(old('facilities')) && in_array('Lepas Kunci', old('facilities'))) ? 'checked' : '' }}> Lepas Kunci
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Termasuk Pengemudi" {{ (is_array(old('facilities')) && in_array('Termasuk Pengemudi', old('facilities'))) ? 'checked' : '' }}> Termasuk Pengemudi
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Mobil + Driver + BBM" {{ (is_array(old('facilities')) && in_array('Mobil + Driver + BBM', old('facilities'))) ? 'checked' : '' }}> Mobil + Driver + BBM
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Durasi 12 Jam" {{ (is_array(old('facilities')) && in_array('Durasi 12 Jam', old('facilities'))) ? 'checked' : '' }}> Durasi 12 Jam
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="facilities[]" value="Unit Bersih dan Terawat" {{ (is_array(old('facilities')) && in_array('Unit Bersih dan Terawat', old('facilities'))) ? 'checked' : '' }}> Unit Bersih dan Terawat
-                        </label>
+                <div class="form-grid-4">
+                    <div style="grid-column: 1 / -1;">
+                        <label class="form-label">Deskripsi Singkat</label>
+                        <textarea name="description" rows="3"
+                            placeholder="Deskripsikan keunggulan dan kenyamanan mobil ini..."
+                            class="form-input">{{ old('description') }}</textarea>
+                        @error('description') <span class="error-msg">{{ $message }}</span> @enderror
                     </div>
                 </div>
-            </div>
 
-            <div class="upload-section">
-                <label class="form-label">Unggah Foto Kendaraan (Bisa lebih dari 1)</label>
-                <div class="upload-box">
-                    <input type="file" name="images[]" id="imageInput" multiple accept="image/jpeg,image/png,image/jpg"
-                        required class="upload-input">
-                    <div id="uploadPlaceholder" class="upload-placeholder">
-                        <span class="upload-icon">📸</span>
-                        <strong>Klik / Tarik file Foto ke sini</strong><br>
-                        <span class="upload-subtext">Bisa upload beberapa file (Maksimal 2MB per file)</span>
+                <div class="form-grid-4">
+                    <div>
+                        <label class="form-label">Jumlah Kursi</label>
+                        <input type="number" name="seats" value="{{ old('seats', 5) }}" required min="1" placeholder="5"
+                            class="form-input">
+                        @error('seats') <span class="error-msg">{{ $message }}</span> @enderror
                     </div>
-                    <div id="previewContainer" class="preview-container"></div>
+                    <div>
+                        <label class="form-label">Kapasitas Koper</label>
+                        <input type="number" name="luggage" value="{{ old('luggage', 2) }}" required min="0" placeholder="2"
+                            class="form-input">
+                        @error('luggage') <span class="error-msg">{{ $message }}</span> @enderror
+                    </div>
                 </div>
-                @error('images') <span class="error-msg">{{ $message }}</span> @enderror
-            </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Simpan Mobil</button>
-                <a href="{{ route('admin.cars.index') }}" class="btn btn-cancel">Batal</a>
-            </div>
+                <div class="form-grid-2" style="margin-top: 15px; margin-bottom: 25px;">
+                    <div style="grid-column: 1 / -1;">
+                        <label class="form-label">Fasilitas / Inclusions (Ceklis yang tersedia)</label>
+                        <div
+                            style="display: flex; gap: 20px; flex-wrap: wrap; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            @forelse($facilities as $facility)
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" name="facilities[]" value="{{ $facility->name }}" {{ (is_array(old('facilities')) && in_array($facility->name, old('facilities'))) ? 'checked' : '' }}> {{ $facility->name }}
+                                </label>
+                            @empty
+                                <span style="font-size: 0.85rem; color:#64748b;">Belum ada master data fasilitas yang
+                                    ditambahkan. <a href="{{ route('facilities.index') }}" style="color: #3b82f6;">Tambah
+                                        Fasilitas</a></span>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <label class="form-label">Unggah Foto Kendaraan (Bisa lebih dari 1)</label>
+                    <div class="upload-box">
+                        <input type="file" name="images[]" id="imageInput" multiple accept="image/jpeg,image/png,image/jpg"
+                            required class="upload-input">
+                        <div id="uploadPlaceholder" class="upload-placeholder">
+                            <span class="upload-icon">📸</span>
+                            <strong>Klik / Tarik file Foto ke sini</strong><br>
+                            <span class="upload-subtext">Bisa upload beberapa file (Maksimal 2MB per file)</span>
+                        </div>
+                        <div id="previewContainer" class="preview-container"></div>
+                    </div>
+                    @error('images') <span class="error-msg">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Simpan Mobil</button>
+                    <a href="{{ route('admin.cars.index') }}" class="btn btn-cancel">Batal</a>
+                </div>
 
         </form>
     </div>

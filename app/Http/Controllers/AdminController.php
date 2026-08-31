@@ -53,7 +53,8 @@ class AdminController extends Controller
 
     public function create()
     {
-        return view('admin.cars.create');
+        $facilities = \App\Models\Facility::orderBy('name')->get();
+        return view('admin.cars.create', compact('facilities'));
     }
 
     public function store(Request $request)
@@ -112,7 +113,8 @@ class AdminController extends Controller
 
     public function edit(Car $car)
     {
-        return view('admin.cars.edit', compact('car'));
+        $facilities = \App\Models\Facility::orderBy('name')->get();
+        return view('admin.cars.edit', compact('car', 'facilities'));
     }
 
     public function update(Request $request, Car $car)
