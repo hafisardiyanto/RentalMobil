@@ -39,10 +39,13 @@ Route::middleware('auth')->group(function () {
         Route::middleware('can:view_cars')->group(function () {
             Route::get('/cars', [AdminController::class, 'index'])->name('admin.cars.index');
             Route::get('/cars/{car}', [AdminController::class, 'show'])->name('admin.cars.show');
+            Route::get('/maintenances', [\App\Http\Controllers\Admin\MaintenanceController::class, 'index'])->name('admin.maintenances.index');
         });
         Route::middleware('can:create_cars')->group(function () {
             Route::get('/cars/create', [AdminController::class, 'create'])->name('admin.cars.create');
             Route::post('/cars', [AdminController::class, 'store'])->name('admin.cars.store');
+            Route::get('/cars/{car}/maintenance/create', [\App\Http\Controllers\Admin\MaintenanceController::class, 'create'])->name('admin.maintenances.create');
+            Route::post('/cars/{car}/maintenance', [\App\Http\Controllers\Admin\MaintenanceController::class, 'store'])->name('admin.maintenances.store');
         });
         Route::middleware('can:edit_cars')->group(function () {
             Route::get('/cars/{car}/edit', [AdminController::class, 'edit'])->name('admin.cars.edit');
@@ -56,6 +59,11 @@ Route::middleware('auth')->group(function () {
         Route::middleware('can:view_bookings')->group(function () {
             Route::get('/bookings', [AdminController::class, 'bookingsIndex'])->name('admin.bookings.index');
             Route::get('/bookings/{booking}/detail', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
+            Route::get('/calendar', [\App\Http\Controllers\Admin\CalendarController::class, 'index'])->name('admin.calendar.index');
+        });
+
+        Route::middleware('can:edit_bookings')->group(function () {
+            Route::put('/payments/{payment}/verify', [\App\Http\Controllers\Admin\BookingPaymentController::class, 'verify'])->name('admin.payments.verify');
         });
 
         Route::middleware('can:delete_bookings')->group(function () {
@@ -79,6 +87,7 @@ Route::middleware('auth')->group(function () {
         // Reports
         Route::middleware('can:view_reports')->group(function () {
             Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports.index');
+            Route::get('/reports/fleet-utilization', [AdminController::class, 'fleetUtilization'])->name('admin.reports.fleet');
         });
 
     });

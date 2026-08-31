@@ -96,10 +96,36 @@
                     </tr>
                 </table>
 
-                @if($booking->payment_proof)
-                    <div class="proof-box">
-                        <small>Bukti Transfer (Customer):</small><br>
-                        <img src="{{ $booking->payment_proof }}" class="proof-img" onclick="window.open(this.src)">
+                @if($booking->payments && $booking->payments->count() > 0)
+                    <div class="proof-box" style="margin-top: 1rem;">
+                        <h4
+                            style="margin-top:0; font-size:1rem; color:#1e293b; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">
+                            Riwayat Pembayaran ({{ $booking->payments->count() }})</h4>
+                        <table style="width: 100%; text-align: left; border-collapse: collapse; font-size:0.9rem;">
+                            @foreach($booking->payments as $payment)
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="padding: 8px 0;">
+                                        <b>{{ $payment->type }}</b><br>
+                                        <span style="color:#64748b;">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+                                    </td>
+                                    <td style="padding: 8px 0; text-align:right;">
+                                        @if($payment->status === 'Menunggu Verifikasi')
+                                            <span class="badge"
+                                                style="background: #fef08a; color: #854d0e; padding:3px 6px; border-radius:4px; font-size:0.75rem;">Menunggu</span>
+                                        @elseif($payment->status === 'Diterima')
+                                            <span class="badge"
+                                                style="background: #bbf7d0; color: #166534; padding:3px 6px; border-radius:4px; font-size:0.75rem;">Diterima</span>
+                                        @else
+                                            <span class="badge"
+                                                style="background: #fecaca; color: #991b1b; padding:3px 6px; border-radius:4px; font-size:0.75rem;">Ditolak</span>
+                                        @endif
+                                        <br>
+                                        <a href="{{ $payment->payment_proof }}" target="_blank"
+                                            style="color: #3b82f6; font-size: 0.8rem;">Cek Bukti</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </table>
                     </div>
                 @endif
             </div>
@@ -109,34 +135,40 @@
         <div class="action-area">
             <h3 class="action-area-title">Tindakan Operasional</h3>
 
-            @if($booking->status_pembayaran === 'Menunggu Verifikasi')
+            @if($booking->payments && $booking->payments->where('status', 'Menunggu Verifikasi')->count() > 0)
                 <div class="action-panel panel-primary">
-                    <h4>✓ Verifikasi Pembayaran Customer</h4>
-                    <p class="panel-desc">Customer telah mengunggah bukti pembayaran. Harap pastikan mutasi rekening valid
-                        sebelum menekan Lunas.</p>
+                    <h4>✓ Verifikasi Pembayaran Baru</h4>
+                    <p class="panel-desc">Terdapat mutasi masuk yang dikirim oleh customer dan menunggu Validasi
+                        (DP/Lunas/Deposit).</p>
                     @can('edit_bookings')
-                        <form action="{{ route('admin.bookings.update-payment-status', $booking->id) }}" method="POST"
-                            class="form-inline">
-                            @csrf
-                            @method('PUT')
-
-                            <div>
-                                <label class="b-label">Input Nominal Deposit (Jaminan)</label>
-                                <input type="number" name="deposit" value="{{ $booking->deposit > 0 ? $booking->deposit : '' }}"
-                                    placeholder="Rp 0 (Kosongkan bila tidak ada)" class="b-input b-input-inline">
+                        @foreach($booking->payments->where('status', 'Menunggu Verifikasi') as $pendingPayment)
+                            <div
+                                style="background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <strong>{{ $pendingPayment->type }}</strong> - Rp
+                                    {{ number_format($pendingPayment->amount, 0, ',', '.') }}<br>
+                                    <a href="{{ $pendingPayment->payment_proof }}" target="_blank"
+                                        style="font-size:0.85rem; color:#0284c7; text-decoration:underline;">Lihat Gambar Bukti Transfer
+                                        &raquo;</a>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <form action="{{ route('admin.payments.verify', $pendingPayment->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="Diterima">
+                                        <button class="btn btn-sm btn-success"
+                                            style="background:#10b981; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Terima</button>
+                                    </form>
+                                    <form action="{{ route('admin.payments.verify', $pendingPayment->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="Ditolak">
+                                        <button class="btn btn-sm btn-danger"
+                                            style="background:#ef4444; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Tolak</button>
+                                    </form>
+                                </div>
                             </div>
-
-                            <input type="hidden" name="status_pembayaran" value="Lunas">
-                            <button type="submit" class="btn btn-primary btn-action-primary">Lunas & Dikonfirmasi</button>
-                            <a href="#" onclick="event.preventDefault(); document.getElementById('reject-form').submit();"
-                                class="btn-action-danger">Tolak & Batalkan</a>
-                        </form>
-                        <form id="reject-form" action="{{ route('admin.bookings.update-status', $booking->id) }}" method="POST"
-                            class="d-none">
-                            @csrf
-                            @method('PUT')
-                            <input type="hidden" name="status_booking" value="Ditolak">
-                        </form>
+                        @endforeach
                     @else
                         <p class="text-danger-bold">Hubungi Kasir yang berwenang untuk memverifikasi pesanan ini.</p>
                     @endcan

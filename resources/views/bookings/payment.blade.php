@@ -36,7 +36,25 @@
             <form action="{{ route('bookings.payment.upload', $booking->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <h4 class="pt-subtitle">Upload Bukti Transfer</h4>
+                <div style="margin-bottom: 1.5rem; text-align: left;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569;">Jenis Pembayaran
+                        *</label>
+                    <select name="type" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                        <option value="DP">Uang Muka (DP)</option>
+                        <option value="Pelunasan">Pelunasan Total & Tagihan</option>
+                        <option value="Deposit">Deposit Jaminan Sewa</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1.5rem; text-align: left;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569;">Nominal Transfer
+                        (Rp) *</label>
+                    <input type="number" name="amount" required min="1" placeholder="Cth: 500000"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                </div>
+
+                <h4 class="pt-subtitle">Upload Bukti Transfer *</h4>
                 <div class="file-upload-box" onclick="document.getElementById('payment_proof').click()">
                     <div class="pt-emoji">📸</div>
                     <div class="pt-hint">Klik untuk memilih foto dari galeri/folder</div>

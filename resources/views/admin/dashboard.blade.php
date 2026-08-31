@@ -8,7 +8,31 @@
 
     <h1 class="page-title">Dashboard Analitik</h1>
 
-    <div class="grid-dashboard">
+    <div class="dashboard-stats">
+        @php
+            $carsInMaintenance = \App\Models\Car::where('status_mobil', 'Maintenance')->get();
+        @endphp
+
+        @if($carsInMaintenance->count() > 0)
+            <div class="alert alert-danger"
+                style="grid-column: 1 / -1; background:#fef2f2; border: 1px solid #fecaca; color: #991b1b; padding:1.5rem; border-radius:12px; margin-bottom: 0;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 2rem;">⚠️</span>
+                    <div>
+                        <h4 style="margin:0 0 0.5rem 0; font-size:1.1rem; font-weight:700;">Perhatian: Ada Mobil Sedang Diservis
+                            (Nonaktif)</h4>
+                        <span style="font-size: 0.95rem;">Terdapat <b>{{ $carsInMaintenance->count() }} unit</b> mobil yang
+                            tidak bisa disewa oleh pelanggan dan sedang dalam perbaikan:
+                            {{ $carsInMaintenance->pluck('name')->join(', ') }}.
+                        </span>
+                        <br><a href="{{ route('admin.maintenances.index') }}"
+                            style="color: #991b1b; font-weight: 600; text-decoration: underline; margin-top: 5px; display: inline-block;">Lihat
+                            Jadwal Servis &raquo;</a>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="stat-card">
             <div class="stat-title">Total Pendapatan (Revenue)</div>
             <div class="stat-value text-success">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</div>

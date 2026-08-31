@@ -333,6 +333,75 @@ class AdminController extends Controller
         return view('admin.reports.index', compact('bookings', 'totalPendapatan', 'totalSewaPokok', 'totalDenda', 'totalKerusakan'));
     }
 
+    public function fleetUtilization(Request $request)
+    {
+        $startDate = $request->get('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->get('end_date', Carbon::now()->format('Y-m-d'));
+
+        $cars = Car::with([
+            'bookings' => function ($q) use ($startDate, $endDate) {
+                $q->whereIn('status_booking', ['Selesai', 'Sedang Disewa', 'Menunggu Pengembalian'])
+                    ->where(function ($subq) use ($startDate, $endDate) {
+                        $subq->whereBetween('start_date', [$startDate, $endDate])
+                            ->orWhereBetween('end_date', [$startDate, $endDate]);
+                    });
+            },
+            'maintenances' => function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+        ])->get();
+
+        // Calculate days span
+        $carbonStart = Carbon::parse($startDate);
+        $carbonEnd = Carbon::parse($endDate);
+        $daysInPeriod = $carbonStart->diffInDays($carbonEnd) ?: 1;
+
+        $fleetStats = [];
+        $totalFleetRevenue = 0;
+        $totalFleetMaintenance = 0;
+
+        foreach ($cars as $car) {
+            $daysActive = 0;
+            $carRevenue = 0;
+
+            foreach ($car->bookings as $booking) {
+                // Calculate overlapping days in period
+                $bStart = Carbon::parse($booking->start_date)->max($carbonStart);
+                $bEnd = Carbon::parse($booking->end_date)->min($carbonEnd);
+                if ($bEnd->greaterThanOrEqualTo($bStart)) {
+                    $daysActive += $bStart->diffInDays($bEnd) + 1;
+                }
+
+                // Add revenue conservatively based on total minus what hasn't been paid
+                $carRevenue += $booking->subtotal; // Base revenue excluding fines (fines can be added if needed)
+            }
+
+            $carMaintenance = $car->maintenances->sum('cost');
+
+            $utilizationRate = ($daysActive / $daysInPeriod) * 100;
+            $roi = $carRevenue - $carMaintenance;
+
+            $totalFleetRevenue += $carRevenue;
+            $totalFleetMaintenance += $carMaintenance;
+
+            $fleetStats[] = [
+                'car' => $car,
+                'days_active' => $daysActive,
+                'utilization_rate' => min($utilizationRate, 100), // Cap at 100%
+                'revenue' => $carRevenue,
+                'maintenance_cost' => $carMaintenance,
+                'net_profit' => $roi
+            ];
+        }
+
+        // Sort by utilization rate descending
+        usort($fleetStats, function ($a, $b) {
+            return $b['utilization_rate'] <=> $a['utilization_rate'];
+        });
+
+        return view('admin.reports.fleet', compact('fleetStats', 'startDate', 'endDate', 'daysInPeriod', 'totalFleetRevenue', 'totalFleetMaintenance'));
+    }
+
     public function destroyBooking(Booking $booking)
     {
         // Don't need to manually update car availability as it is dynamic now based on date span

@@ -127,19 +127,34 @@ class BookingController extends Controller
         }
 
         $request->validate([
-            'payment_proof' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120', // maks 5MB
+            'payment_proof' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'type' => 'required|string|in:DP,Pelunasan,Deposit',
+            'amount' => 'required|numeric|min:0',
         ]);
 
         if ($request->hasFile('payment_proof')) {
             $path = $request->file('payment_proof')->store('payments', 'public');
             $url = Storage::url($path);
 
+            // Refactoring to Multi-payment
+            \App\Models\BookingPayment::create([
+                'booking_id' => $booking->id,
+                'type' => $request->type,
+                'amount' => $request->amount,
+                'payment_proof' => $url,
+                'status' => 'Menunggu Verifikasi'
+            ]);
+
+            // Still update legacy column for fast reference
+            if ($request->type === 'Deposit') {
+                $booking->update(['deposit' => $request->amount]);
+            }
+
             $booking->update([
                 'payment_proof' => $url,
                 'status_pembayaran' => 'Menunggu Verifikasi',
             ]);
         }
-
 
         return redirect()->route('bookings.index')->with('success', 'Bukti pembayaran berhasil diunggah! Mohon tunggu verifikasi admin.');
     }

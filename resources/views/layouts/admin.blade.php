@@ -33,17 +33,26 @@
             @if($isOwner || in_array('view_cars', $permissions))
                 <a href="{{ route('admin.cars.index') }}"
                     class="nav-cars {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">🚗 Manajemen Mobil</a>
+                <a href="{{ route('admin.maintenances.index') }}"
+                    class="nav-cars {{ request()->routeIs('admin.maintenances.*') ? 'active' : '' }}">🔧 Perawatan Mobil</a>
             @endif
 
             @if($isOwner || in_array('view_bookings', $permissions))
                 <a href="{{ route('admin.bookings.index') }}"
                     class="nav-bookings {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">📂 Manajemen
                     Booking</a>
+                <a href="{{ route('admin.calendar.index') }}"
+                    class="nav-bookings {{ request()->routeIs('admin.calendar.index') ? 'active' : '' }}">📅 Kalender
+                    Sewa</a>
             @endif
 
             @if($isOwner || in_array('view_reports', $permissions))
                 <a href="{{ route('admin.reports.index') }}"
-                    class="nav-reports {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">📈 Laporan Keuangan</a>
+                    class="nav-reports {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">📈 Laporan
+                    Keuangan</a>
+                <a href="{{ route('admin.reports.fleet') }}"
+                    class="nav-reports {{ request()->routeIs('admin.reports.fleet') ? 'active' : '' }}">📊 Utilisasi & ROI
+                    Mobil</a>
             @endif
         </div>
 

@@ -30,6 +30,11 @@ class Car extends Model
         return $this->hasMany(Booking::class);
     }
 
+    public function maintenances()
+    {
+        return $this->hasMany(Maintenance::class);
+    }
+
     /**
      * Mengecek ketersediaan mobil berdasarkan retang tanggal, 
      * mengabaikan booking yang statusnya ditolak/dibatalkan/selesai.

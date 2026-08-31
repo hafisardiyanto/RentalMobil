@@ -49,6 +49,11 @@ class Booking extends Model
         return $this->belongsTo(Car::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(BookingPayment::class);
+    }
+
     public function fines()
     {
         return $this->hasMany(BookingFine::class);
