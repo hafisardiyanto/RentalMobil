@@ -151,7 +151,6 @@ class BookingController extends Controller
             }
 
             $booking->update([
-                'payment_proof' => $url,
                 'status_pembayaran' => 'Menunggu Verifikasi',
             ]);
         }
