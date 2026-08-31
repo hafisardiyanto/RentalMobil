@@ -71,7 +71,7 @@
 
                     @if($car->description)
                         <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px; margin-bottom: 10px; line-height: 1.4;">
-                            {{ \Illuminate\Support\Str::limit($car->description, 100) }}
+                            {!! nl2br(e($car->description)) !!}
                         </p>
                     @endif
 
