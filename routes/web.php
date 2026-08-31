@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
         Route::middleware('can:view_cars')->group(function () {
             Route::get('/cars', [AdminController::class, 'index'])->name('admin.cars.index');
             Route::get('/maintenances', [\App\Http\Controllers\Admin\MaintenanceController::class, 'index'])->name('admin.maintenances.index');
+            Route::get('/facilities', [\App\Http\Controllers\FacilityController::class, 'index'])->name('facilities.index');
+            Route::post('/facilities', [\App\Http\Controllers\FacilityController::class, 'store'])->name('facilities.store');
+            Route::delete('/facilities/{facility}', [\App\Http\Controllers\FacilityController::class, 'destroy'])->name('facilities.destroy');
         });
         Route::middleware('can:create_cars')->group(function () {
             Route::get('/cars/create', [AdminController::class, 'create'])->name('admin.cars.create');
