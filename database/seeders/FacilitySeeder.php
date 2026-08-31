@@ -12,6 +12,16 @@ class FacilitySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $facilities = [
+            'Lepas Kunci',
+            'Termasuk Pengemudi',
+            'Mobil + Driver + BBM',
+            'Durasi 12 Jam',
+            'Unit Bersih dan Terawat'
+        ];
+
+        foreach ($facilities as $facility) {
+            \App\Models\Facility::firstOrCreate(['name' => $facility]);
+        }
     }
 }
