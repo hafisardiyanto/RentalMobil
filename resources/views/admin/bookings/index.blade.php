@@ -39,8 +39,12 @@
                         </td>
                         <td>
                             <span class="price-text price-block">Rp {{ number_format($booking->total, 0, ',', '.') }}</span>
-                            @if($booking->payment_proof)
-                                <a href="{{ $booking->payment_proof }}" target="_blank" class="link-detail">🔍 Lihat Bukti TF</a>
+                            @if($booking->status_pembayaran === 'Lunas')
+                                <span style="font-size: 0.8rem; font-weight: bold; color: #10b981;">Lunas</span>
+                            @elseif($booking->status_pembayaran === 'Dibayar Sebagian')
+                                <span style="font-size: 0.8rem; font-weight: bold; color: #f59e0b;">Cicilan (DP)</span>
+                            @elseif($booking->status_pembayaran === 'Menunggu Verifikasi')
+                                <span style="font-size: 0.8rem; font-weight: bold; color: #3b82f6;">Menunggu Verifikasi</span>
                             @else
                                 <span class="unpaid-text">Belum bayar</span>
                             @endif
