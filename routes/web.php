@@ -38,7 +38,6 @@ Route::middleware('auth')->group(function () {
         // Cars CRUD
         Route::middleware('can:view_cars')->group(function () {
             Route::get('/cars', [AdminController::class, 'index'])->name('admin.cars.index');
-            Route::get('/cars/{car}', [AdminController::class, 'show'])->name('admin.cars.show');
             Route::get('/maintenances', [\App\Http\Controllers\Admin\MaintenanceController::class, 'index'])->name('admin.maintenances.index');
         });
         Route::middleware('can:create_cars')->group(function () {
@@ -46,6 +45,11 @@ Route::middleware('auth')->group(function () {
             Route::post('/cars', [AdminController::class, 'store'])->name('admin.cars.store');
             Route::get('/cars/{car}/maintenance/create', [\App\Http\Controllers\Admin\MaintenanceController::class, 'create'])->name('admin.maintenances.create');
             Route::post('/cars/{car}/maintenance', [\App\Http\Controllers\Admin\MaintenanceController::class, 'store'])->name('admin.maintenances.store');
+        });
+
+        // Parameter {car} routes MUST be at the bottom to prevent catching static routes like "create"
+        Route::middleware('can:view_cars')->group(function () {
+            Route::get('/cars/{car}', [AdminController::class, 'show'])->name('admin.cars.show');
         });
         Route::middleware('can:edit_cars')->group(function () {
             Route::get('/cars/{car}/edit', [AdminController::class, 'edit'])->name('admin.cars.edit');
