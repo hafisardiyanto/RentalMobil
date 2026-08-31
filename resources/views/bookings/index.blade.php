@@ -39,7 +39,7 @@
                                     {{ number_format($booking->total, 0, ',', '.') }}
                                 </div>
                                 <div class="cs-date-text">
-                                    @if(in_array($booking->status_pembayaran, ['Belum Bayar', 'Menunggu Verifikasi']) && !in_array($booking->status_booking, ['Ditolak', 'Dibatalkan']))
+                                    @if($booking->status_pembayaran !== 'Lunas' && !in_array($booking->status_booking, ['Ditolak', 'Dibatalkan']))
                                         <a href="{{ route('bookings.payment', $booking->id) }}" class="cs-btn-pay">💸 Bayar /
                                             Konfirmasi</a>
 
