@@ -38,6 +38,14 @@
                                 <div class="cs-accent">Rp
                                     {{ number_format($booking->total, 0, ',', '.') }}
                                 </div>
+                                @if($booking->totalPaid() > 0 && $booking->remainingBalance() > 0)
+                                    <div style="font-size: 0.85rem; color: #ef4444; font-weight: 700; margin-top: 4px;">
+                                        Sisa: Rp {{ number_format($booking->remainingBalance(), 0, ',', '.') }}
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: #10b981; margin-top: 2px;">
+                                        Terbayar: Rp {{ number_format($booking->totalPaid(), 0, ',', '.') }}
+                                    </div>
+                                @endif
                                 <div class="cs-date-text">
                                     @if($booking->status_pembayaran !== 'Lunas' && !in_array($booking->status_booking, ['Ditolak', 'Dibatalkan']))
                                         <a href="{{ route('bookings.payment', $booking->id) }}" class="cs-btn-pay">💸 Bayar /

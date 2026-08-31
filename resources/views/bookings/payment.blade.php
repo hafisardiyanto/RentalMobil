@@ -23,10 +23,22 @@
                     <span class="info-value-cs">{{ $booking->durasi }} Hari</span>
                 </div>
                 <div class="info-row-cs">
-                    <span class="info-label-cs">Total Tagihan</span>
+                    <span class="info-label-cs">Total Biaya Sewa</span>
                     <span class="info-value-cs pt-accent">Rp
                         {{ number_format($booking->total, 0, ',', '.') }}</span>
                 </div>
+                
+                @if($booking->totalPaid() > 0)
+                <div class="info-row-cs">
+                    <span class="info-label-cs">Telah Dibayar (Dikonfirmasi)</span>
+                    <span class="info-value-cs" style="color: #10b981;">Rp {{ number_format($booking->totalPaid(), 0, ',', '.') }}</span>
+                </div>
+                <div class="info-row-cs" style="border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 10px;">
+                    <span class="info-label-cs" style="font-weight: 700; color: #ef4444;">Sisa Pelunasan</span>
+                    <span class="info-value-cs pt-accent" style="color: #ef4444; font-size: 1.3rem;">Rp
+                        {{ number_format($booking->remainingBalance(), 0, ',', '.') }}</span>
+                </div>
+                @endif
                 <p class="pt-desc">
                     Silakan transfer ke rekening <strong>BCA 1234567890 a.n RentalMobil</strong> sejumlah Total Tagihan
                     (Lunas) atau Deposit yang telah disepakati via WhatsApp.

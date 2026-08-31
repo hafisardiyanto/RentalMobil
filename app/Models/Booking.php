@@ -63,4 +63,14 @@ class Booking extends Model
     {
         return $this->hasMany(FineAuditLog::class);
     }
+
+    public function totalPaid()
+    {
+        return $this->payments()->where('status', 'Diterima')->whereIn('type', ['DP', 'Pelunasan', 'Deposit', 'Lainnya'])->sum('amount');
+    }
+
+    public function remainingBalance()
+    {
+        return max(0, $this->total - $this->totalPaid());
+    }
 }
