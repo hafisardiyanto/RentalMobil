@@ -108,8 +108,8 @@
             </div>
 
             <div class="upload-section">
-                <label class="form-label">Gambar Saat Ini</label>
-                <div class="preview-container d-flex mb-1-5">
+                <label class="form-label" style="font-weight: bold; margin-bottom:10px;">Gambar Saat Ini</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
                     @if(is_array($car->images) && count($car->images) > 0)
                         @foreach($car->images as $index => $img)
                             <div class="img-wrapper" style="position: relative;">
