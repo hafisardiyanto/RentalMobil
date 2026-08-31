@@ -52,12 +52,22 @@
             @forelse($featuredCars ?? [] as $car)
                 @if(is_object($car))
                     <div class="card">
-                        <div
-                            style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">
-                            <span
-                                style="display:inline-block; width:8px; height:8px; background: #10b981; border-radius: 50%;"></span>
-                            Tersedia
-                        </div>
+                        <!-- Status Badge -->
+                        @if($car->is_available)
+                            <div
+                                style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">
+                                <span
+                                    style="display:inline-block; width:8px; height:8px; background: #10b981; border-radius: 50%;"></span>
+                                Tersedia
+                            </div>
+                        @else
+                            <div
+                                style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 6px;">
+                                <span
+                                    style="display:inline-block; width:8px; height:8px; background: #ef4444; border-radius: 50%;"></span>
+                                Sedang Dipakai
+                            </div>
+                        @endif
 
                         <img src="{{ $car->image_path ?: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600' }}"
                             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600'"
