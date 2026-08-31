@@ -42,6 +42,16 @@
                     <span class="total-amount-cs" id="total_price_label">Rp 0</span>
                 </div>
 
+                <div class="form-group-cs" style="margin-top: 20px; margin-bottom: 20px;">
+                    <label
+                        style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; color: #475569; position: relative;">
+                        <input type="checkbox" required name="terms_agreed"
+                            style="min-width: 20px; min-height: 20px; cursor: pointer;">
+                        <span>Saya telah membaca dan menyetujui <a href="/#faq" style="color: #3b82f6; font-weight: 500;"
+                                target="_blank">Syarat & Ketentuan Rental</a></span>
+                    </label>
+                </div>
+
                 <button type="submit" class="btn btn-primary cs-btn-submit">
                     Konfirmasi Sewa Sekarang
                 </button>
