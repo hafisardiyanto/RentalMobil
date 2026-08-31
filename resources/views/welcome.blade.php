@@ -35,7 +35,7 @@
                             @php
                                 $waText = urlencode("Halo, saya ingin menanyakan mobil {$car->brand} {$car->name}. Apakah masih tersedia untuk disewa?");
                             @endphp
-                            <a href="https://wa.me/6281234567890?text={{ $waText }}" target="_blank"
+                            <a href="https://wa.me/6285748174062?text={{ $waText }}" target="_blank"
                                 class="btn btn-outline btn-full-width"
                                 style="display: flex; align-items: center; justify-content: center; gap: 8px;">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366" stroke="#25D366" stroke-width="0">
