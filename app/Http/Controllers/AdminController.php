@@ -138,13 +138,26 @@ class AdminController extends Controller
         $firstImagePath = $car->image_path;
 
         if ($request->hasFile('images')) {
-            // Append new images instead of replacing them
+            // Delete old images
+            if (is_array($car->images)) {
+                foreach ($car->images as $img) {
+                    // Cek jika path lokal storage bukan URL external
+                    if (str_contains($img, '/storage/')) {
+                        Storage::disk('public')->delete(str_replace('/storage/', '', $img));
+                    }
+                }
+            } elseif ($car->image_path && str_contains($car->image_path, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $car->image_path));
+            }
+
+            // Replace with new images
+            $imagePaths = [];
             foreach ($request->file('images') as $key => $file) {
                 $path = $file->store('cars', 'public');
                 $url = Storage::url($path);
                 $imagePaths[] = $url;
 
-                if (empty($firstImagePath) && count($imagePaths) === 1) {
+                if ($key === 0) {
                     $firstImagePath = $url;
                 }
             }
