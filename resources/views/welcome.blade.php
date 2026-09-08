@@ -518,6 +518,9 @@
         <p style="text-align:center; max-width: 600px; margin: -20px auto 30px auto; color: #64748b; font-size: 1.1rem;">
             Pengalaman nyata ratusan pelanggan yang telah mempercayakan perjalanan mereka.</p>
         <div class="grid">
+            @php
+                /** @var \App\Models\Review $review */
+            @endphp
             @forelse($reviews ?? [] as $review)
                 <div class="testimonial-card">
                     <div class="stars">{{ str_repeat('⭐', $review->rating) }}</div>
