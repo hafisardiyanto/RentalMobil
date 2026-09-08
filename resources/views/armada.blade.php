@@ -63,9 +63,8 @@
                         </div>
                     @endif
 
-                    <img src="{{ $car->image_path ?: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600' }}"
-                        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600'"
-                        alt="{{ $car->name }}">
+                    <img src="{{ $car->image_path ?: '/storage/cars/inova%20reborn.jpg' }}"
+                        onerror="this.onerror=null; this.src='/storage/cars/inova%20reborn.jpg'" alt="{{ $car->name }}">
                     <h3>{{ $car->brand }} {{ $car->name }}</h3>
                     <p class="car-meta-text">Tahun {{ $car->year }} &bull; Plat: {{ $car->license_plate }}</p>
 

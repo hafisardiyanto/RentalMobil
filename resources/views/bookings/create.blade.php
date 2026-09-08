@@ -9,8 +9,8 @@
     <div class="booking-container-cs">
         <div class="car-summary-cs">
             <h2 class="cs-margin-bottom">Ringkasan Armada</h2>
-            <img src="{{ $car->image_path ?? 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600' }}"
-                class="cs-car-img" alt="{{ $car->name }}">
+            <img src="{{ $car->image_path ?? '/storage/cars/inova%20reborn.jpg' }}" class="cs-car-img"
+                alt="{{ $car->name }}">
             <h3>{{ $car->brand }} {{ $car->name }}</h3>
             <p class="cs-text-muted">Tahun: {{ $car->year }}</p>
             <p class="cs-price-text">

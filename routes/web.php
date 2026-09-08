@@ -99,6 +99,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/reports/fleet-utilization', [AdminController::class, 'fleetUtilization'])->name('admin.reports.fleet');
         });
 
+        // Reviews
+        Route::get('/reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('admin.reviews.index');
+        Route::put('/reviews/{review}/toggle', [\App\Http\Controllers\Admin\ReviewController::class, 'toggleFeatured'])->name('admin.reviews.toggle');
+        Route::delete('/reviews/{review}', [\App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
+
     });
 
     // ==========================================
@@ -124,6 +129,9 @@ Route::middleware('auth')->group(function () {
 
     // Cancellation
     Route::put('/bookings/{booking}/cancel', [BookingController::class, 'cancelBooking'])->name('bookings.cancel');
+
+    // Reviews
+    Route::post('/bookings/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
     // Invoice
     Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->name('bookings.invoice');

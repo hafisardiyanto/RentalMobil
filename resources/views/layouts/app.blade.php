@@ -23,6 +23,7 @@
             <a href="/#cara-sewa">Cara Sewa</a>
             <a href="/#tentang">Tentang</a>
             <a href="/#faq">FAQ</a>
+            <a href="{{ route('bookings.index') }}" class="nav-link-special">Cek Booking</a>
             @auth
                 @if(in_array(Auth::user()->role, ['admin', 'owner']))
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-sm">Dashboard

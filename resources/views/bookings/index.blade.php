@@ -62,6 +62,59 @@
                                         @if($booking->status_booking === 'Selesai')
                                             <a href="{{ route('bookings.invoice', $booking->id) }}" class="cs-btn-invoice"
                                                 target="_blank">📄 Cetak Invoice</a>
+                                            <!-- Review Button Logic -->
+                                            @if(!\App\Models\Review::where('booking_id', $booking->id)->exists())
+                                                <button
+                                                    onclick="document.getElementById('reviewModal-{{ $booking->id }}').style.display='block'"
+                                                    class="cs-btn-pay"
+                                                    style="background-color:#f59e0b; margin-top:5px; border-color:#f59e0b; cursor:pointer;">⭐
+                                                    Beri Ulasan</button>
+
+                                                <!-- The Modal -->
+                                                <div id="reviewModal-{{ $booking->id }}" class="modal"
+                                                    style="display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.5);">
+                                                    <div
+                                                        style="background-color:#fff; margin:10% auto; padding:25px; border:1px solid #888; width:90%; max-width:500px; border-radius:12px; position:relative; text-align:left;">
+                                                        <span
+                                                            onclick="document.getElementById('reviewModal-{{ $booking->id }}').style.display='none'"
+                                                            style="color:#64748b; position:absolute; top:15px; right:20px; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
+                                                        <h3 style="margin-top:0; color:#1e293b;">🌟 Pengalaman Sewa</h3>
+                                                        <p style="color:#64748b; font-size:0.9rem; margin-bottom:20px;">Berikan ulasan Anda
+                                                            tentang <b>{{ $booking->car->brand }} {{ $booking->car->name }}</b>.</p>
+                                                        <form action="{{ route('reviews.store') }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                                            <div style="margin-bottom:15px;">
+                                                                <label
+                                                                    style="display:block; font-weight:bold; margin-bottom:5px; color:#1e293b;">Rating
+                                                                    Bintang</label>
+                                                                <select name="rating" required
+                                                                    style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                                                    <option value="5">⭐⭐⭐⭐⭐ (Sangat Memuaskan)</option>
+                                                                    <option value="4">⭐⭐⭐⭐ (Memuaskan)</option>
+                                                                    <option value="3">⭐⭐⭐ (Cukup)</option>
+                                                                    <option value="2">⭐⭐ (Kurang Baik)</option>
+                                                                    <option value="1">⭐ (Sangat Buruk)</option>
+                                                                </select>
+                                                            </div>
+                                                            <div style="margin-bottom:20px;">
+                                                                <label
+                                                                    style="display:block; font-weight:bold; margin-bottom:5px; color:#1e293b;">Komentar
+                                                                    / Ulasan</label>
+                                                                <textarea name="comment" required rows="4"
+                                                                    placeholder="Ceritakan kondisi mobil, pelayanan CS/driver, dll..."
+                                                                    style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;"></textarea>
+                                                            </div>
+                                                            <button type="submit" class="cs-btn-pay"
+                                                                style="width:100%; background:#2563eb; border-color:#2563eb;">Kirim
+                                                                Ulasan</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <span class="cs-text-muted" style="display:block; margin-top:5px; font-size:0.8rem;">✔️
+                                                    Ulasan telah diberikan</span>
+                                            @endif
                                         @endif
                                     @endif
                                 </div>

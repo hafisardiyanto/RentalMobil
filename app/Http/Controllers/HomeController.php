@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Car;
+use App\Models\Review;
 
 class HomeController extends Controller
 {
@@ -11,7 +12,8 @@ class HomeController extends Controller
     {
         // Get 6 featured cars available
         $featuredCars = Car::where('is_available', true)->take(6)->get();
-        return view('welcome', compact('featuredCars'));
+        $reviews = Review::with('user')->where('is_featured', true)->latest()->take(3)->get();
+        return view('welcome', compact('featuredCars', 'reviews'));
     }
 
     public function armada(Request $request)

@@ -46,6 +46,9 @@
                 <a href="{{ route('admin.calendar.index') }}"
                     class="nav-bookings {{ request()->routeIs('admin.calendar.index') ? 'active' : '' }}">📅 Kalender
                     Sewa</a>
+                <a href="{{ route('admin.reviews.index') }}"
+                    class="nav-bookings {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">⭐ Manajemen
+                    Testimoni</a>
             @endif
 
             @if($isOwner || in_array('view_reports', $permissions))

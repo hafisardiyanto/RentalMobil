@@ -40,7 +40,8 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Toyota',
                 'year' => 2022,
                 'price_per_day' => 350000,
-                'image_path' => 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=600',
+                'image_path' => '/storage/cars/inova reborn.jpg',
+                'images' => ['/storage/cars/inova reborn.jpg'],
             ]
         );
 
@@ -51,7 +52,8 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Honda',
                 'year' => 2021,
                 'price_per_day' => 300000,
-                'image_path' => 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600',
+                'image_path' => '/storage/cars/inova reborn.jpg',
+                'images' => ['/storage/cars/inova reborn.jpg'],
             ]
         );
 
@@ -62,7 +64,8 @@ class DatabaseSeeder extends Seeder
                 'brand' => 'Toyota',
                 'year' => 2023,
                 'price_per_day' => 1500000,
-                'image_path' => 'https://images.unsplash.com/photo-1503376760384-59e81fdd21d7?auto=format&fit=crop&q=80&w=600',
+                'image_path' => '/storage/cars/inova reborn.jpg',
+                'images' => ['/storage/cars/inova reborn.jpg'],
             ]
         );
     }
