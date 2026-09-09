@@ -94,6 +94,31 @@
                             {{ number_format($booking->total, 0, ',', '.') }}
                         </td>
                     </tr>
+                    <tr>
+                        <td class="label-col" style="padding-top: 10px;">Total Terbayar</td>
+                        <td class="info-val text-success" style="padding-top: 10px; font-weight: bold;">: Rp
+                            {{ number_format($booking->totalPaid(), 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr style="border-top: 1px dashed #cbd5e1;">
+                        <td class="label-col" style="padding-top: 10px; font-weight: bold; color: #1e293b;">Sisa Tagihan
+                        </td>
+                        @php
+                            $sisa = $booking->remainingBalance();
+                        @endphp
+                        <td class="info-val"
+                            style="padding-top: 10px; font-weight: bold; font-size: 1.1rem; color: {{ $sisa == 0 ? '#10b981' : '#ef4444' }};">
+                            : Rp
+                            {{ number_format($sisa, 0, ',', '.') }}
+                            @if($sisa == 0 && $booking->total > 0)
+                                <span class="badge"
+                                    style="background:#10b981; margin-left:5px; font-size: 0.75rem;">Lunas</span>
+                            @elseif($sisa > 0)
+                                <span class="badge" style="background:#ef4444; margin-left:5px; font-size: 0.75rem;">Belum
+                                    Lunas</span>
+                            @endif
+                        </td>
+                    </tr>
                 </table>
 
                 @if($booking->payments && $booking->payments->count() > 0)
