@@ -32,7 +32,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/')->with('success', 'Login berhasil!');
+            $user = Auth::user();
+            $defaultRoute = in_array($user->role, ['admin', 'owner']) ? route('admin.dashboard') : route('bookings.index');
+            return redirect()->intended($defaultRoute)->with('success', 'Login berhasil!');
         }
 
         return back()->withErrors([
@@ -212,16 +214,16 @@ class AuthController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
-            
+
             // Cari user berdasarkan google_id atau email
             $user = User::where('google_id', $googleUser->id)
-                        ->orWhere('email', $googleUser->email)
-                        ->first();
+                ->orWhere('email', $googleUser->email)
+                ->first();
 
             if (!$user) {
                 // User Baru: Generate Password Acak
                 $randomPassword = Str::random(10);
-                
+
                 $user = User::create([
                     'name' => $googleUser->name,
                     'email' => $googleUser->email,
@@ -243,7 +245,8 @@ class AuthController extends Controller
             }
 
             Auth::login($user);
-            return redirect()->route('home')->with('success', 'Berhasil masuk dengan Google!');
+            $defaultRoute = in_array($user->role, ['admin', 'owner']) ? route('admin.dashboard') : route('bookings.index');
+            return redirect()->intended($defaultRoute)->with('success', 'Berhasil masuk dengan Google!');
 
         } catch (\Exception $e) {
             \Log::error("Google Login Error: " . $e->getMessage());
