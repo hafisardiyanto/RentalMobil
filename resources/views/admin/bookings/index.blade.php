@@ -39,6 +39,11 @@
                         </td>
                         <td>
                             <span class="price-text price-block">Rp {{ number_format($booking->total, 0, ',', '.') }}</span>
+                            @if($booking->totalPaid() > 0 && $booking->remainingBalance() > 0)
+                                <div style="font-size: 0.85rem; color: #ef4444; font-weight: 600; margin-bottom: 2px;">
+                                    Sisa: Rp {{ number_format($booking->remainingBalance(), 0, ',', '.') }}
+                                </div>
+                            @endif
                             @if($booking->status_pembayaran === 'Lunas')
                                 <span style="font-size: 0.8rem; font-weight: bold; color: #10b981;">Lunas</span>
                             @elseif($booking->status_pembayaran === 'Dibayar Sebagian')
