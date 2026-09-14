@@ -10,6 +10,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Mail\SendPasswordMail;
 use Illuminate\Support\Facades\Mail;
 use App\Traits\WhatsappTrait;
+use App\Mail\PasswordChangedMail;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -175,20 +176,15 @@ class AuthController extends Controller
             // Hapus token setelah digunakan
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
-            // KIRIM KONFIRMASI VIA WHATSAPP (Password Baru)
-            $message = "*[RESET PASSWORD BERHASIL]*\n\n"
-                . "Halo " . $user->name . ",\n"
-                . "Password akun User RentalMobil Anda telah berhasil diubah.\n\n"
-                . "Keamanan akun Anda adalah prioritas kami. Jika Anda tidak merasa melakukan perubahan ini, segera hubungi admin kami. Terima kasih.";
-
-            if ($user->phone) {
-                \Log::info("Mengirim WA konfirmasi ke: " . $user->phone);
-                $this->sendWhatsapp($user->phone, $message);
-            } else {
-                \Log::warning("User tidak punya nomor HP untuk dikirimi WA: " . $request->email);
+            // KIRIM KONFIRMASI VIA EMAIL (Password Baru)
+            try {
+                \Log::info("Mengirim Email konfirmasi ke: " . $user->email);
+                Mail::to($user->email)->send(new PasswordChangedMail($user));
+            } catch (\Exception $e) {
+                \Log::error("Gagal mengirim email konfirmasi password: " . $e->getMessage());
             }
 
-            return redirect()->route('login')->with('success', 'Password berhasil diubah. Konfirmasi telah dikirim ke WhatsApp Anda.');
+            return redirect()->route('login')->with('success', 'Password berhasil diubah. Konfirmasi telah dikirim ke email Anda.');
 
         } catch (\Exception $e) {
             \Log::error("Eror saat processResetPassword: " . $e->getMessage());
