@@ -36,6 +36,9 @@ class CalendarController extends Controller
                             $subq->where('start_date', '<', $startDate)->where('end_date', '>', $endDate);
                         });
                 });
+            },
+            'maintenances' => function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('service_date', [$startDate, $endDate]);
             }
         ])->get();
 

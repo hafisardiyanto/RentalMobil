@@ -1,0 +1,85 @@
+/* CRM Stylesheet */
+
+.crm-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.crm-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+.crm-title {
+    margin: 0;
+    color: #1e293b;
+    font-size: 1.5rem;
+}
+
+.crm-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.crm-table th,
+.crm-table td {
+    border: 1px solid #f1f5f9;
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.crm-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+}
+
+.crm-table tbody tr:hover {
+    background: #f1f5f9;
+}
+
+.crm-badge-gold {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.crm-badge-silver {
+    background: linear-gradient(135deg, #cbd5e1 0%, #64748b 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.crm-badge-reguler {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.crm-points {
+    color: #10b981;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.crm-money {
+    color: #0f172a;
+    font-weight: 600;
+}

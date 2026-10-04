@@ -55,6 +55,7 @@
                                             class="cs-form-inline"
                                             onsubmit="return confirm('Apakah Anda yakin ingin membatalkan booking ini?')">
                                             @csrf
+                                            @method('PUT')
                                             <button type="submit" class="cs-btn-cancel">Batalkan</button>
                                         </form>
                                     @else

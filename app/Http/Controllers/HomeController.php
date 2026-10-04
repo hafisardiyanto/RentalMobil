@@ -10,8 +10,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Get 6 featured cars available
-        $featuredCars = Car::where('is_available', true)->take(6)->get();
+        // Menampilkan 6 mobil pertama lintas ketersediaan agar katalog tampil penuh, 
+        // namun UI akan mencegah penyewaan jika is_available=0
+        $featuredCars = Car::take(6)->get();
         $reviews = Review::with('user')->where('is_featured', true)->latest()->take(3)->get();
         return view('welcome', compact('featuredCars', 'reviews'));
     }

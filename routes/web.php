@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::middleware('can:edit_bookings')->group(function () {
+            Route::post('/bookings/{booking}/payments', [\App\Http\Controllers\Admin\BookingPaymentController::class, 'store'])->name('admin.payments.store');
             Route::put('/payments/{payment}/verify', [\App\Http\Controllers\Admin\BookingPaymentController::class, 'verify'])->name('admin.payments.verify');
         });
 
@@ -98,6 +99,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports.index');
             Route::get('/reports/fleet-utilization', [AdminController::class, 'fleetUtilization'])->name('admin.reports.fleet');
         });
+
+        // CRM / Customer Management
+        Route::get('/customers', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('admin.customers.index');
 
         // Reviews
         Route::get('/reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('admin.reviews.index');

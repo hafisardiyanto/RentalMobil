@@ -257,7 +257,7 @@
         <div class="grid">
             @forelse($featuredCars ?? [] as $car)
                 @if(is_object($car))
-                    <div class="card">
+                    <div class="card" style="position: relative; overflow:hidden;">
                         <!-- Status Badge -->
                         @if($car->is_available)
                             <div
@@ -437,8 +437,7 @@
                 <div class="step-number">05</div>
                 <div class="step-content">
                     <h3 style="margin-top: 5px; font-size: 1.1rem; color: #1e293b;">💳 Pembayaran</h3>
-                    <p style="color: #64748b; font-size: 0.9rem;">Upload bukti transfer Deposit / Lunas untuk garansi
-                        pesanan.</p>
+                    <p style="color: #64748b; font-size: 0.9rem;">Upload bukti transfer Deposit / Lunas untuk garansi pesanan. <br><small style="color:#ef4444; font-weight:bold;">*Pembatalan sepihak setelah dana ditransfer akan dipotong 5%.</small></p>
                 </div>
             </div>
             <div class="step-box">
@@ -582,6 +581,10 @@
                 <p style="color: #64748b; margin-bottom: 0;">Ya, deposit diwajibkan sebagai jaminan kerugian kecil di mana
                     jumlahnya bervariasi bergantung jenis mobil. Dana deposit akan dikembalikan saat mobil kembali dalam
                     kondisi baik.</p>
+            </div>
+            <div style="margin-bottom: 20px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <h4 style="margin-top: 0; color: #1e293b;">Bagaimana jika saya membatalkan pesanan (Batal Sewa)?</h4>
+                <p style="color: #64748b; margin-bottom: 0;">Pembatalan pesanan dapat dilakukan kapan saja sebelum serah terima kunci. Namun, <b>CATATAN PENTING:</b> Jika Anda telah mentransfer DP/Deposit dan melakukan pembatalan, pengembalian dana (refund) akan otomatis disunat/dikenakan <b>biaya potongan 5%</b> dari total kas yang masuk. Sisa uang akan direfund langsung ke rekening Anda minimal 1x24 Jam kerja.</p>
             </div>
             <div style="margin-bottom: 20px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
                 <h4 style="margin-top: 0; color: #1e293b;">Bagaimana pertanggungan jika terjadi kerusakan/baret?</h4>

@@ -138,15 +138,16 @@ class AdminController extends Controller
         $firstImagePath = $car->image_path;
 
         if ($request->hasFile('images')) {
-            // Append new images
-            foreach ($request->file('images') as $key => $file) {
+            $isFirstNew = true;
+            foreach ($request->file('images') as $file) {
                 $path = $file->store('cars', 'public');
                 $url = Storage::url($path);
                 $imagePaths[] = $url;
 
-                // Update thumbnail only if it's empty
-                if (empty($firstImagePath)) {
+                // Selalu perbarui foto utama (thumbnail) dengan foto baru pertama yang diunggah
+                if (empty($firstImagePath) || $isFirstNew) {
                     $firstImagePath = $url;
+                    $isFirstNew = false;
                 }
             }
         }

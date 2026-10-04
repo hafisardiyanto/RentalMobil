@@ -8,6 +8,40 @@ use App\Models\BookingPayment;
 
 class BookingPaymentController extends Controller
 {
+    public function store(Request $request, \App\Models\Booking $booking)
+    {
+        $request->validate([
+            'type' => 'required|in:Refund,Lainnya',
+            'amount' => 'required|numeric|min:1',
+            'payment_method' => 'nullable|string'
+        ]);
+
+        if ($request->type === 'Refund') {
+            if ($request->has('is_dp_cancel')) {
+                // Refund ini dari form Batal Sewa (bukan mengurai $booking->deposit)
+                $request->merge(['amount' => -$request->amount]);
+            } else {
+                if ($request->amount > $booking->deposit) {
+                    return back()->with('error', 'Gagal: Nominal Refund melebihi saldo deposit yang tersisa.');
+                }
+                // Mengurangi saldo deposit booking
+                $booking->deposit -= $request->amount;
+                $booking->save();
+            }
+        }
+
+        BookingPayment::create([
+            'booking_id' => $booking->id,
+            'type' => $request->type,
+            'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
+            'status' => 'Diterima',
+            'verified_by' => auth()->user()->name ?? 'Admin',
+        ]);
+
+        return back()->with('success', 'Riwayat ' . $request->type . ' berhasil dicatat.');
+    }
+
     public function verify(Request $request, BookingPayment $payment)
     {
         $request->validate([

@@ -131,7 +131,10 @@
                                 <tr style="border-bottom:1px solid #e2e8f0;">
                                     <td style="padding: 8px 0;">
                                         <b>{{ $payment->type }}</b><br>
-                                        <span style="color:#64748b;">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+                                        <span style="color:{{ $payment->type === 'Refund' ? '#ef4444' : '#64748b' }};">
+                                            {{ $payment->type === 'Refund' ? '- ' : '' }}Rp
+                                            {{ number_format($payment->amount, 0, ',', '.') }}
+                                        </span>
                                     </td>
                                     <td style="padding: 8px 0; text-align:right;">
                                         @if($payment->status === 'Menunggu Verifikasi')
@@ -413,6 +416,82 @@
                     <a href="{{ route('bookings.invoice', $booking->id) }}" class="btn-print" target="_blank">Cetak Invoice
                         Final</a>
                 </div>
+
+                @if($booking->deposit > 0)
+                    <div class="action-panel panel-warning" style="margin-top:20px;">
+                        <h4>💸 Kembalikan Uang Jaminan (Refund Deposit)</h4>
+                        <p class="panel-desc">Booking ini masih memiliki sisa Deposit terahan sebesar <b>Rp
+                                {{ number_format($booking->deposit, 0, ',', '.') }}</b>. Jika mobil aman, mohon lakukan refund ke
+                            pelanggan.</p>
+                        @can('edit_bookings')
+                            <form action="{{ route('admin.payments.store', $booking->id) }}" method="POST" style="margin-top:10px;">
+                                @csrf
+                                <input type="hidden" name="type" value="Refund">
+                                <div style="display:flex; gap:10px; align-items:flex-end;">
+                                    <div style="flex-grow:1;">
+                                        <label class="b-label">Nominal Refund (Rp)</label>
+                                        <input type="number" name="amount" value="{{ $booking->deposit }}" max="{{ $booking->deposit }}"
+                                            class="b-input" required>
+                                    </div>
+                                    <div style="flex-grow:1;">
+                                        <label class="b-label">Metode (Cth: BCA, Cash)</label>
+                                        <input type="text" name="payment_method" placeholder="Misal: Trf BCA" class="b-input" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success"
+                                        style="height: 42px; padding: 0 15px; background: #ea580c; border:none; color:white; border-radius:6px; cursor:pointer; font-weight:bold;">Refund
+                                        Sekarang</button>
+                                </div>
+                            </form>
+                        @endcan
+                    </div>
+                @endif
+            @elseif(in_array($booking->status_booking, ['Dibatalkan', 'Ditolak']))
+                <div class="completed-box" style="background-color: #fef2f2; border: 1px solid #fecaca;">
+                    <h3>❌ Transaksi Dibatalkan</h3>
+                    <p>Penyewaan ini terhenti dengan status {{ $booking->status_booking }}.</p>
+                </div>
+
+                @if($booking->totalPaid() > 0)
+                    <div class="action-panel panel-warning" style="margin-top:20px;">
+                        <h4>💸 Refund Dana Batal (Potongan 5%)</h4>
+                        <p class="panel-desc">Pelanggan telah terlanjur membayar sejumlah <b>Rp
+                                {{ number_format($booking->totalPaid(), 0, ',', '.') }}</b> sebelum pesanan ini dibatalkan.
+                            Berdasarkan aturan, pengembalian dana <b>dikenakan potongan 5%</b> biaya pembatalan.</p>
+                        @php
+                            $potongan = $booking->totalPaid() * 0.05;
+                            $jumlahRefund = $booking->totalPaid() - $potongan;
+                        @endphp
+                        <div
+                            style="background:#fffbeb; padding:10px; border-radius:5px; margin-bottom:15px; border:1px solid #fde68a;">
+                            <b>Rincian Kalkulasi Refund:</b><br>
+                            Dana Masuk Pelanggan: Rp {{ number_format($booking->totalPaid(), 0, ',', '.') }} <br>
+                            Potongan Penalti (5%): <span style="color:#ef4444">- Rp
+                                {{ number_format($potongan, 0, ',', '.') }}</span> <br>
+                            <b>Total Uang yang Dikembalikan: Rp {{ number_format($jumlahRefund, 0, ',', '.') }}</b>
+                        </div>
+                        @can('edit_bookings')
+                            <form action="{{ route('admin.payments.store', $booking->id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="type" value="Refund">
+                                <input type="hidden" name="is_dp_cancel" value="1">
+                                <div style="display:flex; gap:10px; align-items:flex-end;">
+                                    <div style="flex-grow:1;">
+                                        <label class="b-label">Nominal Refund (Rp)</label>
+                                        <input type="number" name="amount" value="{{ $jumlahRefund }}" class="b-input" required>
+                                    </div>
+                                    <div style="flex-grow:1;">
+                                        <label class="b-label">Metode (Misal: Trf BCA)</label>
+                                        <input type="text" name="payment_method" class="b-input" required placeholder="Trf ke Rekening">
+                                    </div>
+                                    <button type="submit" class="btn btn-success"
+                                        style="height: 42px; padding: 0 15px; background: #ea580c; border:none; color:white; border-radius:6px; font-weight:bold; cursor:pointer;">Refund
+                                        Dana</button>
+                                </div>
+                            </form>
+                        @endcan
+                    </div>
+                @endif
+
             @else
                 <div class="empty-msg">
                     <p>Menunggu aksi dari Pelanggan. (Status: {{ $booking->status_booking }})</p>

@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
+use App\Models\User;
+use App\Models\Car;
+use App\Models\Booking;
+use App\Models\BookingPayment;
 
 class BookingSeeder extends Seeder
 {
@@ -12,57 +16,85 @@ class BookingSeeder extends Seeder
      */
     public function run(): void
     {
-        $cars = \App\Models\Car::all();
-        $admin = \App\Models\User::where('role', 'admin')->first(); // Fallback user
-        $today = \Carbon\Carbon::today();
+        // 1. Buat/Ambil Mobil Brio untuk pencocokan visual
+        $brio = Car::firstOrCreate(
+            ['license_plate' => 'D 5678 EFG'],
+            [
+                'brand' => 'Honda',
+                'name' => 'Brio RS',
+                'type' => 'City Car',
+                'year' => '2022',
+                'color' => 'Kuning',
+                'seats' => 5,
+                'luggage' => 2,
+                'transmission' => 'Automatic',
+                'gas_type' => 'Bensin',
+                'price_per_day' => 300000,
+                'is_available' => true,
+            ]
+        );
 
-        // Buat user dummy jika perlu
-        $user1 = \App\Models\User::firstOrCreate(
+        // 2. Buat Pengguna
+        $user1 = User::firstOrCreate(
+            ['email' => 'customer@test.com'],
+            ['name' => 'Budi Customer', 'password' => bcrypt('password'), 'role' => 'user', 'phone' => '081234567890']
+        );
+
+        $user2 = User::firstOrCreate(
             ['email' => 'pelanggan1@gmail.com'],
-            ['name' => 'Budi Santoso', 'password' => bcrypt('password'), 'role' => 'user']
+            ['name' => 'Budi Santoso', 'password' => bcrypt('password'), 'role' => 'user', 'phone' => '089912341234']
         );
 
-        $user2 = \App\Models\User::firstOrCreate(
-            ['email' => 'pelanggan2@gmail.com'],
-            ['name' => 'Siti Aminah', 'password' => bcrypt('password'), 'role' => 'user']
-        );
+        // --- SKENARIO 1: BATAL (Sesuai Gambar) ---
+        $booking1 = Booking::create([
+            'nomor_booking' => 'RB-20260901-BTAL',
+            'user_id' => $user1->id,
+            'car_id' => $brio->id,
+            'start_date' => '2026-09-26',
+            'end_date' => '2026-09-30',
+            'durasi' => 5,
+            'harga_per_hari' => 200000,
+            'subtotal' => 1000000,
+            'total' => 1000000,
+            'deposit' => 0,
+            'status_booking' => 'Dibatalkan',
+            'status_pembayaran' => 'Belum Lunas'
+        ]);
 
-        if ($cars->count() >= 3) {
-            // Skenario 1: Mobil Paling Laku (Sering disewa di masa lalu)
-            $popularCar = $cars[0];
-            for ($i = 1; $i <= 5; $i++) {
-                \App\Models\Booking::create([
-                    'user_id' => $user1->id,
-                    'car_id' => $popularCar->id,
-                    'start_date' => $today->copy()->subDays($i * 5),
-                    'end_date' => $today->copy()->subDays(($i * 5) - 2),
-                    'total_price' => $popularCar->price_per_day * 2,
-                    'status' => 'completed'
-                ]);
-            }
+        // Pembayaran DP awal sebelum dibatalkan
+        BookingPayment::create([
+            'booking_id' => $booking1->id,
+            'type' => 'DP',
+            'amount' => 500000,
+            'status' => 'Diterima',
+            'payment_method' => 'Transfer BCA'
+        ]);
 
-            // Skenario 2: Mobil sedang Disewa Saat Ini (Active)
-            $activeCar = $cars[1];
-            \App\Models\Booking::create([
-                'user_id' => $user2->id,
-                'car_id' => $activeCar->id,
-                'start_date' => $today->copy()->subDays(1),
-                'end_date' => $today->copy()->addDays(2),
-                'total_price' => $activeCar->price_per_day * 3,
-                'status' => 'approved'
-            ]);
-            $activeCar->update(['is_available' => false]);
+        // --- SKENARIO 2: SEDANG DISEWA (Sesuai Gambar) ---
+        $booking2 = Booking::create([
+            'nomor_booking' => 'RB-20260831-SEWA',
+            'user_id' => $user2->id,
+            'car_id' => $brio->id,
+            'start_date' => '2026-08-31',
+            'end_date' => '2026-09-05',
+            'durasi' => 6,
+            'harga_per_hari' => 250000,
+            'subtotal' => 1500000,
+            'total' => 1500000,
+            'deposit' => 0,
+            'status_booking' => 'Sedang Disewa',
+            'status_pembayaran' => 'Belum Lunas'
+        ]);
 
-            // Skenario 3: Reservasi Mendatang (Upcoming)
-            $upcomingCar = $cars[2];
-            \App\Models\Booking::create([
-                'user_id' => $user1->id,
-                'car_id' => $upcomingCar->id,
-                'start_date' => $today->copy()->addDays(3),
-                'end_date' => $today->copy()->addDays(5),
-                'total_price' => $upcomingCar->price_per_day * 2,
-                'status' => 'pending'
-            ]);
-        }
+        // Pembayaran DP
+        BookingPayment::create([
+            'booking_id' => $booking2->id,
+            'type' => 'DP',
+            'amount' => 750000,
+            'status' => 'Diterima',
+            'payment_method' => 'Transfer BNI'
+        ]);
+
+        $brio->update(['is_available' => false]);
     }
 }

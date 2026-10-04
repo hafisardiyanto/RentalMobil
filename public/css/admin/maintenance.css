@@ -1,0 +1,65 @@
+/* Maintenance Specific Styles */
+
+.maint-alert-danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.maint-alert-warning {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #b45309;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.maint-btn-success {
+    background: #10b981 !important;
+    color: white !important;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.maint-btn-delete {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.maint-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.maint-select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.maint-btn-save {
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+}
+
+.maint-btn-cancel {
+    padding: 0.75rem 2rem;
+    background: #e5e7eb;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+}

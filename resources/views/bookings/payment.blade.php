@@ -27,23 +27,60 @@
                     <span class="info-value-cs pt-accent">Rp
                         {{ number_format($booking->total, 0, ',', '.') }}</span>
                 </div>
-                
+
                 @if($booking->totalPaid() > 0)
-                <div class="info-row-cs">
-                    <span class="info-label-cs">Telah Dibayar (Dikonfirmasi)</span>
-                    <span class="info-value-cs" style="color: #10b981;">Rp {{ number_format($booking->totalPaid(), 0, ',', '.') }}</span>
-                </div>
-                <div class="info-row-cs" style="border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 10px;">
-                    <span class="info-label-cs" style="font-weight: 700; color: #ef4444;">Sisa Pelunasan</span>
-                    <span class="info-value-cs pt-accent" style="color: #ef4444; font-size: 1.3rem;">Rp
-                        {{ number_format($booking->remainingBalance(), 0, ',', '.') }}</span>
-                </div>
+                    <div class="info-row-cs">
+                        <span class="info-label-cs">Telah Dibayar (Dikonfirmasi)</span>
+                        <span class="info-value-cs" style="color: #10b981;">Rp
+                            {{ number_format($booking->totalPaid(), 0, ',', '.') }}</span>
+                    </div>
+                    <div class="info-row-cs" style="border-top: 1px dashed #cbd5e1; padding-top: 10px; margin-top: 10px;">
+                        <span class="info-label-cs" style="font-weight: 700; color: #ef4444;">Sisa Pelunasan</span>
+                        <span class="info-value-cs pt-accent" style="color: #ef4444; font-size: 1.3rem;">Rp
+                            {{ number_format($booking->remainingBalance(), 0, ',', '.') }}</span>
+                    </div>
                 @endif
+                <div class="info-row-cs" style="margin-top: 10px;">
+                    <span class="info-label-cs">Uang Deposit Ditahan</span>
+                    <span class="info-value-cs">Rp {{ number_format($booking->deposit, 0, ',', '.') }}</span>
+                </div>
                 <p class="pt-desc">
                     Silakan transfer ke rekening <strong>BCA 1234567890 a.n RentalMobil</strong> sejumlah Total Tagihan
                     (Lunas) atau Deposit yang telah disepakati via WhatsApp.
                 </p>
             </div>
+
+            @if($booking->payments && $booking->payments->count() > 0)
+                <div
+                    style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                    <h4
+                        style="margin-top:0; font-size:1rem; color:#1e293b; border-bottom:1px solid #cbd5e1; padding-bottom:8px; margin-bottom:10px;">
+                        Riwayat Transaksi</h4>
+                    <ul style="list-style:none; padding:0; margin:0; font-size:0.9rem;">
+                        @foreach($booking->payments as $payment)
+                            <li
+                                style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px dashed #e2e8f0; padding-bottom:8px;">
+                                <div>
+                                    <strong>{{ $payment->type }}</strong><br>
+                                    <span
+                                        style="font-size:0.8rem; color:#64748b;">{{ $payment->created_at->format('d M H:i') }}</span>
+                                </div>
+                                <div style="text-align:right;">
+                                    <span
+                                        style="color:{{ $payment->type === 'Refund' ? '#ef4444' : '#10b981' }}; font-weight:bold;">
+                                        {{ $payment->type === 'Refund' ? '-' : '' }}Rp
+                                        {{ number_format($payment->amount, 0, ',', '.') }}
+                                    </span><br>
+                                    <span
+                                        style="font-size:0.75rem; color:{{ $payment->status === 'Diterima' ? '#166534' : ($payment->status === 'Ditolak' ? '#991b1b' : '#b45309') }};">
+                                        {{ $payment->status }}
+                                    </span>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <form action="{{ route('bookings.payment.upload', $booking->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf

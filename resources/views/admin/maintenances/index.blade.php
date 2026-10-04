@@ -2,6 +2,7 @@
 
 @push('admin_styles')
     <link rel="stylesheet" href="{{ asset('css/admin/cars.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/maintenance.css') }}">
 @endpush
 
 @section('content')
@@ -10,8 +11,7 @@
     </div>
 
     @if(count($alerts) > 0)
-        <div class="alert alert-danger"
-            style="background:#fef2f2; border: 1px solid #fecaca; color: #991b1b; padding:1rem; border-radius:8px; margin-bottom: 2rem;">
+        <div class="alert alert-danger maint-alert-danger">
             <h4 style="margin-top:0">⚠️ Peringatan Mobil Dalam Servis</h4>
             <ul style="margin-bottom:0">
                 @foreach($alerts as $alertCar)
@@ -71,8 +71,7 @@
                                         onsubmit="return confirm('Tandai servis selesai dan aktifkan mobil kembali?')">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-sm btn-success"
-                                            style="background:#10b981; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:600; cursor:pointer;">Selesai</button>
+                                        <button type="submit" class="btn btn-sm maint-btn-success">Selesai</button>
                                     </form>
                                 @endif
 
@@ -82,8 +81,7 @@
                                         class="d-inline" onsubmit="return confirm('Hapus riwayat perawatan ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-delete"
-                                            style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:500;">Hapus</button>
+                                        <button type="submit" class="btn-delete maint-btn-delete">Hapus</button>
                                     </form>
                                 @endcan
                             </div>

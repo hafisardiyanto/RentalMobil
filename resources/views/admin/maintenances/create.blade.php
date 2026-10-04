@@ -3,6 +3,7 @@
 @push('admin_styles')
     <link rel="stylesheet" href="{{ asset('css/admin/cars.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/maintenance.css') }}">
 @endpush
 
 @section('content')
@@ -14,11 +15,10 @@
         <form action="{{ route('admin.maintenances.store', $car->id) }}" method="POST">
             @csrf
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="maint-grid">
                 <div class="form-group">
                     <label for="type" class="form-label">Jenis Servis/Perawatan *</label>
-                    <select name="type" id="type" class="form-control" required
-                        style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #d1d5db;">
+                    <select name="type" id="type" class="form-control maint-select" required>
                         <option value="Servis Rutin">Servis Rutin (Ganti Oli dsb)</option>
                         <option value="Perbaikan Mesin">Perbaikan Mesin</option>
                         <option value="Perbaikan Bodi">Perbaikan Body / Cat</option>
@@ -51,7 +51,7 @@
             <h4 style="margin-top:0; margin-bottom:1rem; color:#4b5563;">Pencatatan Kilometer (Opsional tapi Disarankan)
             </h4>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="maint-grid">
                 <div class="form-group">
                     <label for="last_km" class="form-label">Kilometer Saat Ini (KM)</label>
                     <input type="number" name="last_km" id="last_km" class="form-control" placeholder="Contoh: 59800"
@@ -64,18 +64,16 @@
                 </div>
             </div>
 
-            <div class="alert alert-warning"
-                style="background:#fffbeb; border: 1px solid #fde68a; color: #b45309; padding:1rem; border-radius:8px; margin-bottom: 2rem;">
+            <div class="alert alert-warning maint-alert-warning">
                 <strong>Perhatian:</strong> Dengan menyimpan data penyervisan ini, mobil akan otomatis berstatus
                 <strong>"Maintenance"</strong> dan akan disembunyikan dari halaman depan (tidak bisa disewa) hingga Anda
                 menandainya sebagai "Selesai".
             </div>
 
             <div style="display: flex; gap: 1rem;">
-                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-weight: 600;">Simpan
+                <button type="submit" class="btn btn-primary maint-btn-save">Simpan
                     Perawatan & Nonaktifkan Mobil</button>
-                <a href="{{ route('admin.cars.show', $car->id) }}" class="btn"
-                    style="padding: 0.75rem 2rem; background: #e5e7eb; color: #374151; text-decoration: none; border-radius: 8px; font-weight: 600;">Batal</a>
+                <a href="{{ route('admin.cars.show', $car->id) }}" class="btn maint-btn-cancel">Batal</a>
             </div>
         </form>
     </div>
